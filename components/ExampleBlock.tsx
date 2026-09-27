@@ -63,7 +63,7 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
   }, [query]);
 
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/40 overflow-hidden">
+    <div className="rounded border border-slate-800 bg-slate-900/40 overflow-hidden">
       <div className="px-4 py-3 border-b border-slate-800 font-mono text-xs flex items-center justify-between bg-slate-800/60">
         <span className="text-indigo-400 font-medium">
           # example {String(index + 1).padStart(2, '0')}
