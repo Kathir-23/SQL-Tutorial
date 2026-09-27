@@ -50,7 +50,7 @@ function FillCard({ item, index }: { item: FillItem; index: number }) {
                     setVals(next);
                     setChecked(false);
                   }}
-                  className={`mx-1 inline-block w-28 rounded border bg-slate-900 px-2 py-0.5 text-slate-100 align-baseline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+                  className={`mx-1 inline-block w-28 rounded border bg-slate-900 px-2 py-0.5 text-slate-100 align-baseline focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-400/50 ${
                     revealed
                       ? 'border-amber-400/60'
                       : checked

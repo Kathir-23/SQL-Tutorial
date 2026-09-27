@@ -1719,6 +1719,14 @@ button, a, input, textarea {
   color: #1e293b !important;
 }
 
+/* Soft subtle focus ring for text inputs in light mode */
+[data-theme="light"] input:focus,
+[data-theme="light"] input:focus-visible {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.25) !important;
+  outline: none !important;
+}
+
 /* ── Editor drag-to-resize / expand bar under run and reset buttons ───── */
 [data-theme="light"] .flex.items-center.justify-between.-mt-px {
   background-color: #f1f5f9 !important;
