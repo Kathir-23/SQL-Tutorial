@@ -22,66 +22,75 @@ function FillCard({ item, index }: { item: FillItem; index: number }) {
   const solved = correct || revealed;
 
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
-      <p className="text-sm text-slate-100">
-        <span className="font-mono text-xs text-indigo-300">your turn{blankCount > 1 ? ` (${index + 1})` : ''} · </span>
-        {item.prompt}
-      </p>
-      <pre className="mt-3 overflow-x-auto rounded-lg bg-slate-950 border border-slate-800 p-3 font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">
-        {parts.map((seg, i) => (
-          <span key={i}>
-            {seg}
-            {i < blankCount && (
-              <input
-                aria-label={`blank ${i + 1}`}
-                value={revealed ? item.answers[i][0] : vals[i]}
-                disabled={solved}
-                onChange={(e) => {
-                  const next = [...vals];
-                  next[i] = e.target.value;
-                  setVals(next);
-                  setChecked(false);
-                }}
-                className={`mx-1 inline-block w-28 rounded border bg-slate-900 px-2 py-0.5 text-slate-100 align-baseline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
-                  revealed
-                    ? 'border-amber-400/60'
-                    : checked
-                      ? item.answers[i].some((a) => norm(a) === norm(vals[i]))
-                        ? 'border-emerald-500/60'
-                        : 'border-rose-500/60'
-                      : 'border-slate-700'
-                }`}
-              />
-            )}
-          </span>
-        ))}
-      </pre>
-      <div className="mt-3 flex items-center gap-3">
-        <button
-          type="button"
-          disabled={vals.some((v) => !v.trim()) || solved}
-          onClick={() => setChecked(true)}
-          className="px-3 py-1.5 rounded border border-indigo-400 text-indigo-300 text-xs font-mono hover:bg-indigo-400/10 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-        >
-          check
-        </button>
-        {!solved && (
+    <div className="rounded-lg border border-slate-800 bg-slate-900/40 overflow-hidden">
+      <div className="px-4 py-3 border-b border-slate-800 font-mono text-xs flex items-center justify-between bg-slate-800/60">
+        <span className="text-indigo-400 font-medium">
+          # your turn {blankCount > 1 ? `(${index + 1})` : ''}
+        </span>
+        <span className="text-slate-500 font-mono text-[11px]">quiz</span>
+      </div>
+
+      <div className="p-4 border-b border-slate-800/60">
+        <p className="text-sm text-slate-100">{item.prompt}</p>
+      </div>
+
+      <div className="p-4">
+        <pre className="overflow-x-auto rounded-lg bg-slate-950 border border-slate-800 p-3 font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">
+          {parts.map((seg, i) => (
+            <span key={i}>
+              {seg}
+              {i < blankCount && (
+                <input
+                  aria-label={`blank ${i + 1}`}
+                  value={revealed ? item.answers[i][0] : vals[i]}
+                  disabled={solved}
+                  onChange={(e) => {
+                    const next = [...vals];
+                    next[i] = e.target.value;
+                    setVals(next);
+                    setChecked(false);
+                  }}
+                  className={`mx-1 inline-block w-28 rounded border bg-slate-900 px-2 py-0.5 text-slate-100 align-baseline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+                    revealed
+                      ? 'border-amber-400/60'
+                      : checked
+                        ? item.answers[i].some((a) => norm(a) === norm(vals[i]))
+                          ? 'border-emerald-500/60'
+                          : 'border-rose-500/60'
+                        : 'border-slate-700'
+                  }`}
+                />
+              )}
+            </span>
+          ))}
+        </pre>
+        <div className="mt-3 flex items-center gap-3">
           <button
             type="button"
-            onClick={() => setRevealed(true)}
-            className="px-3 py-1.5 rounded border border-slate-700 text-slate-400 text-xs font-mono hover:text-slate-200 hover:border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            disabled={vals.some((v) => !v.trim()) || solved}
+            onClick={() => setChecked(true)}
+            className="px-3 py-1.5 rounded border border-indigo-400 text-indigo-300 text-xs font-mono hover:bg-indigo-400/10 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
           >
-            show answer
+            check
           </button>
-        )}
-        {checked && !revealed && (
-          <span className={`font-mono text-xs ${correct ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {correct ? '✓ nice' : 'not quite, try again or reveal'}
-          </span>
-        )}
-        {revealed && <span className="font-mono text-xs text-amber-400">answer shown</span>}
+          {!solved && (
+            <button
+              type="button"
+              onClick={() => setRevealed(true)}
+              className="px-3 py-1.5 rounded border border-slate-700 text-slate-400 text-xs font-mono hover:text-slate-200 hover:border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            >
+              show answer
+            </button>
+          )}
+          {checked && !revealed && (
+            <span className={`font-mono text-xs ${correct ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {correct ? '✓ nice' : 'not quite, try again or reveal'}
+            </span>
+          )}
+          {revealed && <span className="font-mono text-xs text-amber-400">answer shown</span>}
+        </div>
+        {solved && <p className="mt-2 font-mono text-xs text-slate-400">{item.explain}</p>}
       </div>
-      {solved && <p className="mt-2 font-mono text-xs text-slate-400">{item.explain}</p>}
     </div>
   );
 }

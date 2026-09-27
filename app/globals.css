@@ -1718,3 +1718,16 @@ button, a, input, textarea {
   border-color: #cbd5e1 !important;
   color: #1e293b !important;
 }
+
+/* ── Editor drag-to-resize / expand bar under run and reset buttons ───── */
+[data-theme="light"] .flex.items-center.justify-between.-mt-px {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+[data-theme="light"] .flex.items-center.justify-between.-mt-px button,
+[data-theme="light"] .flex.items-center.justify-between.-mt-px span {
+  color: #475569 !important;
+}
+[data-theme="light"] .flex.items-center.justify-between.-mt-px button:hover {
+  color: #0f172a !important;
+}

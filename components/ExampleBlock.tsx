@@ -63,10 +63,10 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
   }, [query]);
 
   return (
-    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4 hover:border-slate-600/80 transition-colors">
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          Example {index + 1}
+    <div className="rounded-lg border border-slate-800 bg-slate-900/40 overflow-hidden">
+      <div className="px-4 py-3 border-b border-slate-800 font-mono text-xs flex items-center justify-between bg-slate-800/60">
+        <span className="text-indigo-400 font-medium">
+          # example {String(index + 1).padStart(2, '0')}
         </span>
         <button
           onClick={handleCopy}
@@ -86,31 +86,37 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
           )}
         </button>
       </div>
-      <h3 className="font-normal text-white mb-1">{example.title}</h3>
-      {showExplanation ? (
-        <p className="text-slate-400 text-sm mb-4">{example.explanation}</p>
-      ) : (
-        <div className="mb-4">
-          <p className="text-slate-500 text-xs mb-2">
-            predict the result from the SQL, then reveal.
-          </p>
-          <button
-            onClick={() => setRevealed(true)}
-            className="px-2 py-1 rounded border border-slate-700 text-xs text-indigo-400 hover:border-indigo-400/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-          >
-            reveal explanation →
-          </button>
-        </div>
-      )}
-      <SQLEditor
-        value={query}
-        onChange={handleChange}
-        onRun={handleRun}
-        onReset={handleReset}
-        initialValue={example.sql}
-        height="120px"
-      />
-      {result && <ResultsTable result={result} executionTime={executionTime} className="mt-4" />}
+
+      <div className="p-4 border-b border-slate-800/60">
+        <h3 className="font-normal text-white mb-1">{example.title}</h3>
+        {showExplanation ? (
+          <p className="text-slate-400 text-sm">{example.explanation}</p>
+        ) : (
+          <div>
+            <p className="text-slate-500 text-xs mb-2">
+              predict the result from the SQL, then reveal.
+            </p>
+            <button
+              onClick={() => setRevealed(true)}
+              className="px-2 py-1 rounded border border-slate-700 text-xs text-indigo-400 hover:border-indigo-400/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            >
+              reveal explanation →
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="p-4">
+        <SQLEditor
+          value={query}
+          onChange={handleChange}
+          onRun={handleRun}
+          onReset={handleReset}
+          initialValue={example.sql}
+          height="120px"
+        />
+        {result && <ResultsTable result={result} executionTime={executionTime} className="mt-4" />}
+      </div>
     </div>
   );
 }
