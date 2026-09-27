@@ -2,7 +2,7 @@
 
 Interactive SQL learning platform. Write real queries against real databases in the browser. 55 lessons across 11 modules, with an AI tutor that helps when you get stuck.
 
-**Live site:** [damato-sql.vercel.app](https://damato-sql.vercel.app)
+**Live site:** [sql-tutorial.vercel.app](https://sql-tutorial.vercel.app)
 
 **Stack:** Next.js · TypeScript · Tailwind · SQL.js (SQLite in the browser)
 
@@ -29,17 +29,17 @@ Interactive SQL learning platform. Write real queries against real databases in 
 | 9 | SQL Server Advanced: transactions, optimization | 4 |
 | 10 | Advanced SQL (WCTC): stored procs, triggers, UDFs, XML/JSON, temporal tables | 10 |
 
-## Why I built it
+## About this fork
 
-Same reason as [python-mastery](https://github.com/Damatnic/python-mastery). I'm in WCTC's AI Data Specialist program and I wanted a way to practice SQL that wasn't "read a textbook chapter then attempt a problem set." Browser-based, instant feedback, real schemas. Built for myself, free for anyone else.
+This is a personal fork of the original [sql-mastery project by Damatnic](https://github.com/Damatnic/sql-mastery). It was created to host my own instance of the interactive SQL learning platform for personal practice and deployment.
 
-The advanced SQL Server module matches what's being taught in the Advanced SQL class at WCTC. CTEs, window functions, partitioning, all of it.
+*Original project description: Browser-based, instant feedback, real schemas. Free for anyone else.*
 
 ## Local dev
 
 ```bash
-git clone https://github.com/Damatnic/sql-mastery.git
-cd sql-mastery
+git clone https://github.com/Kathir-23/SQL-Tutorial.git
+cd SQL-Tutorial
 npm install
 npm run dev
 ```
