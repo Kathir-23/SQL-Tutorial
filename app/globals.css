@@ -1633,7 +1633,7 @@ button, a, input, textarea {
 /* ── Example blocks ───────────────────────────────────────────────────────── */
 [data-theme="light"] .bg-slate-800\/50 { background-color: #f8fafc !important; }
 [data-theme="light"] .border-slate-700 { border-color: #cbd5e1 !important; }
-[data-theme="light"] .hover\:border-slate-600\/80:hover { border-color: #94a3b8 !important; }
+[data-theme="light"] .hover\:border-slate-600\/80:hover { border-color: #cbd5e1 !important; } /* No hover border change in light mode */
 /* "Copy" button hover in example block */
 [data-theme="light"] .hover\:bg-slate-700\/50:hover { background-color: #e2e8f0 !important; }
 /* Title "text-white" */
