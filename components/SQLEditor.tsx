@@ -56,15 +56,19 @@ function registerLightTheme(monaco: Monaco) {
       // Pure white crisp background
       'editor.background': '#ffffff',
       'editor.foreground': '#1e293b',
-      // Current line highlight — subtle indigo tint
-      'editor.lineHighlightBackground': '#f1f5f9',
-      'editor.lineHighlightBorder': '#e2e8f0',
+      // Current line highlight — disabled text row background/border (Option 1)
+      'editor.lineHighlightBackground': '#00000000',
+      'editor.lineHighlightBorder': '#00000000',
+      // Hide overview ruler marks (removes dark dash on right margin)
+      'editorOverviewRuler.currentLineForeground': '#00000000',
+      'editorOverviewRuler.border': '#00000000',
+      'editorOverviewRuler.background': '#00000000',
       // Selection
       'editor.selectionBackground': '#c7d2fe',
       'editor.inactiveSelectionBackground': '#e0e7ff',
       // Cursor
       'editorCursor.foreground': '#4f46e5',
-      // Line numbers
+      // Line numbers (Option 1: line number highlight only)
       'editorLineNumber.foreground': '#94a3b8',
       'editorLineNumber.activeForeground': '#4f46e5',
       // Gutter / margin
@@ -155,12 +159,14 @@ export default function SQLEditor({
             wordWrap: 'on',
             readOnly,
             padding: { top: 12, bottom: 12 },
-            renderLineHighlight: 'line',
+            renderLineHighlight: 'gutter',
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
+            overviewRulerBorder: false,
             cursorBlinking: 'smooth',
             folding: false,
             lineDecorationsWidth: 8,
             lineNumbersMinChars: 3,
-            overviewRulerBorder: false,
             scrollbar: {
               vertical: 'auto',
               horizontal: 'auto',
