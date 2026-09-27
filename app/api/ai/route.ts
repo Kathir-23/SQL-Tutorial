@@ -7,7 +7,7 @@ import { clientIp, rateLimit } from '@/lib/rate-limit';
 let _genAI: GoogleGenerativeAI | null = null;
 function getGenAI(): GoogleGenerativeAI | null {
   if (_genAI) return _genAI;
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
   _genAI = new GoogleGenerativeAI(apiKey);
   return _genAI;
