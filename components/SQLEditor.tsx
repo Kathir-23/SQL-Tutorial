@@ -131,9 +131,9 @@ export default function SQLEditor({
 
   return (
     <div
-      className="rounded-lg overflow-hidden border"
+      className="rounded-lg overflow-hidden border border-slate-800"
       style={{
-        borderColor: theme === 'light' ? '#e2e8f0' : undefined,
+        borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b',
         background: theme === 'light' ? '#f6f8fa' : undefined,
       }}
     >
@@ -172,10 +172,10 @@ export default function SQLEditor({
       </div>
 
       <div
-        className="flex items-center gap-2 px-3 py-2 border-t font-mono text-xs"
+        className="flex items-center gap-2 px-3 py-2 border-t border-slate-800 font-mono text-xs"
         style={{
           background: theme === 'light' ? '#f1f5f9' : undefined,
-          borderColor: theme === 'light' ? '#e2e8f0' : undefined,
+          borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b',
         }}
       >
         <button
