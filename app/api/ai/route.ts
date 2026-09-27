@@ -118,10 +118,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ content });
-  } catch (error) {
+  } catch (error: any) {
     console.error('AI API error:', error);
     return NextResponse.json(
-      { error: 'Failed to process AI request' },
+      { error: \`Failed to process AI request: \${error.message}\` },
       { status: 500 }
     );
   }
