@@ -1619,3 +1619,67 @@ button, a, input, textarea {
 [data-theme="light"] .min-h-screen { background-color: #ffffff; }
 [data-theme="light"] .bg-background { background-color: #ffffff !important; }
 [data-theme="light"] .text-foreground { color: #18181b !important; }
+
+/* ── Sidebar/LessonNav ────────────────────────────────────────────────────── */
+/* The lesson list card */
+[data-theme="light"] .bg-slate-900\/40 { background-color: #f1f5f9 !important; }
+/* Hover state for non-active lessons */
+[data-theme="light"] .hover\:bg-slate-800\/60:hover { background-color: #e2e8f0 !important; }
+/* Tiny lesson number text */
+[data-theme="light"] .text-slate-600 { color: #94a3b8 !important; }
+/* Active lesson highlight stays indigo but on lighter bg */
+[data-theme="light"] .bg-indigo-400\/10 { background-color: rgba(79,70,229,0.1) !important; }
+
+/* ── Example blocks ───────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-slate-800\/50 { background-color: #f8fafc !important; }
+[data-theme="light"] .border-slate-700 { border-color: #cbd5e1 !important; }
+[data-theme="light"] .hover\:border-slate-600\/80:hover { border-color: #94a3b8 !important; }
+/* "Copy" button hover in example block */
+[data-theme="light"] .hover\:bg-slate-700\/50:hover { background-color: #e2e8f0 !important; }
+/* Title "text-white" */
+[data-theme="light"] .text-white { color: #0f172a !important; }
+
+/* ── Schema Viewer panel ──────────────────────────────────────────────────── */
+/* Main panel background */
+[data-theme="light"] .bg-slate-900 { background-color: #ffffff !important; }
+/* Panel border */
+[data-theme="light"] .border-slate-700 { border-color: #e2e8f0 !important; }
+/* "DATABASE / Company" header bar */
+[data-theme="light"] .bg-slate-800\/60 { background-color: #f1f5f9 !important; }
+[data-theme="light"] .bg-slate-800\/30 { background-color: #f8fafc !important; }
+/* Search input */
+[data-theme="light"] .bg-slate-800 { background-color: #f1f5f9 !important; }
+[data-theme="light"] .text-slate-200 { color: #1e293b !important; }
+[data-theme="light"] .placeholder\:text-slate-500::placeholder { color: #94a3b8 !important; }
+/* Table row hover in schema */
+[data-theme="light"] .hover\:bg-slate-800\/50:hover { background-color: #f0f4ff !important; }
+/* Count badge next to table name */
+[data-theme="light"] .bg-slate-800.px-1\.5 { background-color: #e2e8f0 !important; }
+/* Expanded column row background */
+[data-theme="light"] .bg-slate-950\/50 { background-color: #f8fafc !important; }
+/* Column hover */
+[data-theme="light"] .hover\:bg-slate-800\/50 { background-color: #f0f4ff !important; }
+/* Sample data mini-table */
+[data-theme="light"] .bg-slate-800.rounded.border { background-color: #f1f5f9 !important; }
+/* Header row of sample data table */
+[data-theme="light"] .bg-slate-800:is(tr) { background-color: #e2e8f0 !important; }
+[data-theme="light"] tr.bg-slate-800 { background-color: #e2e8f0 !important; }
+[data-theme="light"] tr.bg-slate-800\/30 { background-color: rgba(226,232,240,0.4) !important; }
+/* Footer bar ("4 tables · 18 columns") */
+[data-theme="light"] .bg-slate-800\/50:not(button) { background-color: #f1f5f9 !important; }
+[data-theme="light"] .border-t.border-slate-700.bg-slate-800\/30 { background-color: #f1f5f9 !important; }
+/* Close / toggle buttons in panel */
+[data-theme="light"] .hover\:bg-slate-700:hover { background-color: #e2e8f0 !important; }
+[data-theme="light"] .bg-slate-700 { background-color: #e2e8f0 !important; }
+
+/* ── XP badge / bottom left ───────────────────────────────────────────────── */
+[data-theme="light"] .bg-slate-800\/80 { background-color: #f1f5f9 !important; }
+
+/* ── Lesson anchor nav tabs ───────────────────────────────────────────────── */
+[data-theme="light"] .border-b.border-slate-800 { border-color: #e2e8f0 !important; }
+
+/* ── Any remaining bg-slate-800 used as a surface ────────────────────────── */
+[data-theme="light"] [class*="bg-slate-800"]:not([class*="text-"]) {
+  background-color: #f1f5f9;
+}
+
