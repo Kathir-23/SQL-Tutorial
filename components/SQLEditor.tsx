@@ -56,9 +56,9 @@ function registerLightTheme(monaco: Monaco) {
       // Soft off-white, non-glare background
       'editor.background': '#f6f8fa',
       'editor.foreground': '#1e293b',
-      // Current line highlight — subtle indigo tint
-      'editor.lineHighlightBackground': '#eef2ff',
-      'editor.lineHighlightBorder': '#c7d2fe',
+      // Current line highlight — disabled (transparent)
+      'editor.lineHighlightBackground': '#00000000',
+      'editor.lineHighlightBorder': '#00000000',
       // Selection
       'editor.selectionBackground': '#c7d2fe',
       'editor.inactiveSelectionBackground': '#e0e7ff',
@@ -155,7 +155,7 @@ export default function SQLEditor({
             wordWrap: 'on',
             readOnly,
             padding: { top: 12, bottom: 12 },
-            renderLineHighlight: 'line',
+            renderLineHighlight: 'none',
             cursorBlinking: 'smooth',
             folding: false,
             lineDecorationsWidth: 8,
