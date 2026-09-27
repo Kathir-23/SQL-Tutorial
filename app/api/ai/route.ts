@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SCHEMA_DESCRIPTIONS } from '@/lib/databases';
 import { clientIp, rateLimit } from '@/lib/rate-limit';
 
 // Lazy so a keyless deploy degrades gracefully instead of crashing at import.
-let _openai: OpenAI | null = null;
-function getOpenAI(): OpenAI | null {
-  if (_openai) return _openai;
-  const apiKey = process.env.OPENAI_API_KEY;
+let _genAI: GoogleGenerativeAI | null = null;
+function getGenAI(): GoogleGenerativeAI | null {
+  if (_genAI) return _genAI;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
-  _openai = new OpenAI({ apiKey });
-  return _openai;
+  _genAI = new GoogleGenerativeAI(apiKey);
+  return _genAI;
 }
 
 interface AIRequest {
@@ -62,8 +62,6 @@ export async function POST(request: NextRequest) {
 
     const { messages, context } = body;
 
-    // Basic shape validation, prevents crashes and nonsense prompts from
-    // reaching the model if the client sends a malformed payload.
     if (!Array.isArray(messages)) {
       return NextResponse.json({ error: 'messages must be an array.' }, { status: 400 });
     }
@@ -74,8 +72,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'conversation too long.' }, { status: 400 });
     }
 
-    const openai = getOpenAI();
-    if (!openai) {
+    const genAI = getGenAI();
+    if (!genAI) {
       return NextResponse.json(
         { error: 'AI tutor is not configured on this deployment.' },
         { status: 503 }
@@ -96,20 +94,28 @@ export async function POST(request: NextRequest) {
       .replace('{currentQuery}', context.currentQuery || 'No query entered')
       .replace('{errorContext}', errorContext);
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messages.map((m) => ({
-          role: m.role as 'user' | 'assistant',
-          content: m.content,
-        })),
-      ],
-      max_tokens: 1000,
-      temperature: 0.7,
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-1.5-flash',
+      systemInstruction: systemPrompt 
     });
 
-    const content = completion.choices[0]?.message?.content || 'No response generated.';
+    const geminiMessages = messages.map((m) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }],
+    }));
+
+    const chat = model.startChat({
+      history: geminiMessages.slice(0, -1),
+    });
+
+    const lastMessage = geminiMessages[geminiMessages.length - 1];
+    let content = 'No response generated.';
+    
+    if (lastMessage) {
+      const result = await chat.sendMessage(lastMessage.parts[0].text);
+      const response = await result.response;
+      content = response.text();
+    }
 
     return NextResponse.json({ content });
   } catch (error) {
