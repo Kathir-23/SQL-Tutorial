@@ -2,6 +2,8 @@
 
 import { useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import { useTheme } from '@/lib/theme';
+import type { Monaco } from '@monaco-editor/react';
 
 // Dynamic import Monaco to prevent SSR issues
 const MonacoEditor = dynamic(
@@ -27,6 +29,62 @@ interface SQLEditorProps {
   isRunning?: boolean;
 }
 
+// Register a premium light theme that matches the mockup
+function registerLightTheme(monaco: Monaco) {
+  monaco.editor.defineTheme('sql-light', {
+    base: 'vs',
+    inherit: true,
+    rules: [
+      // SQL keywords — deep indigo/purple
+      { token: 'keyword', foreground: '4f46e5', fontStyle: 'bold' },
+      { token: 'keyword.sql', foreground: '4f46e5', fontStyle: 'bold' },
+      // Identifiers / table names — royal blue
+      { token: 'identifier', foreground: '0369a1' },
+      // Strings — forest green
+      { token: 'string', foreground: '15803d' },
+      { token: 'string.sql', foreground: '15803d' },
+      // Numbers — amber
+      { token: 'number', foreground: 'b45309' },
+      // Comments — muted gray-blue italic
+      { token: 'comment', foreground: '64748b', fontStyle: 'italic' },
+      // Operators
+      { token: 'operator', foreground: '7c3aed' },
+      // Default text — dark slate
+      { token: '', foreground: '1e293b' },
+    ],
+    colors: {
+      // Soft off-white, non-glare background
+      'editor.background': '#f6f8fa',
+      'editor.foreground': '#1e293b',
+      // Current line highlight — subtle indigo tint
+      'editor.lineHighlightBackground': '#eef2ff',
+      'editor.lineHighlightBorder': '#c7d2fe',
+      // Selection
+      'editor.selectionBackground': '#c7d2fe',
+      'editor.inactiveSelectionBackground': '#e0e7ff',
+      // Cursor
+      'editorCursor.foreground': '#4f46e5',
+      // Line numbers
+      'editorLineNumber.foreground': '#94a3b8',
+      'editorLineNumber.activeForeground': '#4f46e5',
+      // Gutter / margin
+      'editorGutter.background': '#f1f5f9',
+      // Scrollbar
+      'scrollbarSlider.background': '#c7d2fe80',
+      'scrollbarSlider.hoverBackground': '#a5b4fc',
+      'scrollbarSlider.activeBackground': '#818cf8',
+      // Indentation guides
+      'editorIndentGuide.background': '#e2e8f0',
+      'editorIndentGuide.activeBackground': '#a5b4fc',
+      // Widget (autocomplete) background
+      'editorWidget.background': '#ffffff',
+      'editorWidget.border': '#e2e8f0',
+      // Focus border
+      'focusBorder': '#4f46e5',
+    },
+  });
+}
+
 export default function SQLEditor({
   value,
   onChange,
@@ -37,6 +95,9 @@ export default function SQLEditor({
   initialValue,
   isRunning = false,
 }: SQLEditorProps) {
+  const { theme } = useTheme();
+  const monacoTheme = theme === 'light' ? 'sql-light' : 'vs-dark';
+
   const handleEditorChange = useCallback(
     (newValue: string | undefined) => {
       onChange(newValue ?? '');
@@ -63,15 +124,27 @@ export default function SQLEditor({
     }
   }, [onReset, initialValue, onChange]);
 
+  const handleEditorMount = useCallback((_editor: unknown, monaco: Monaco) => {
+    registerLightTheme(monaco);
+    monaco.editor.setTheme(monacoTheme);
+  }, [monacoTheme]);
+
   return (
-    <div className="rounded-lg overflow-hidden border border-slate-700 bg-slate-900">
+    <div
+      className="rounded-lg overflow-hidden border"
+      style={{
+        borderColor: theme === 'light' ? '#e2e8f0' : undefined,
+        background: theme === 'light' ? '#f6f8fa' : undefined,
+      }}
+    >
       <div onKeyDown={handleKeyDown}>
         <MonacoEditor
           height={height}
           language="sql"
-          theme="vs-dark"
+          theme={monacoTheme}
           value={value}
           onChange={handleEditorChange}
+          onMount={handleEditorMount}
           options={{
             minimap: { enabled: false },
             fontSize: 14,
@@ -98,7 +171,13 @@ export default function SQLEditor({
         />
       </div>
 
-      <div className="flex items-center gap-2 px-3 py-2 bg-slate-900 border-t border-slate-800 font-mono text-xs">
+      <div
+        className="flex items-center gap-2 px-3 py-2 border-t font-mono text-xs"
+        style={{
+          background: theme === 'light' ? '#f1f5f9' : undefined,
+          borderColor: theme === 'light' ? '#e2e8f0' : undefined,
+        }}
+      >
         <button
           onClick={onRun}
           disabled={isRunning || readOnly}

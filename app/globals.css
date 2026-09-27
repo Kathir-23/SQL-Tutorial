@@ -67,9 +67,9 @@
   --text-dim:       #94a3b8;
   --line:           #e2e8f0;
   --line-strong:    #cbd5e1;
-  /* Code blocks deliberately stay dark for readability (like GitHub / Notion) */
-  --code-bg:        #1e1e2e;
-  --code-header:    #2d2d3f;
+  /* Code blocks use a premium soft off-white — matches Monaco sql-light theme */
+  --code-bg:        #f6f8fa;
+  --code-header:    #f1f5f9;
   --indigo-accent:  #4f46e5;
   --indigo-light:   #6366f1;
   --indigo-pale:    #818cf8;
@@ -1683,3 +1683,23 @@ button, a, input, textarea {
   background-color: #f1f5f9;
 }
 
+/* ── Light mode: static code blocks & SQL syntax highlighting ────────────── */
+[data-theme="light"] .code-block-wrapper {
+  background: #f6f8fa;
+  border-color: #e2e8f0;
+}
+[data-theme="light"] .code-block-header {
+  background: #f1f5f9;
+  border-bottom-color: #e2e8f0;
+}
+[data-theme="light"] .code-block-lang { color: #4f46e5; }
+[data-theme="light"] .code-block-label { color: #94a3b8; }
+[data-theme="light"] .code-block { background: #f6f8fa; }
+[data-theme="light"] .code-block code { color: #1e293b; }
+
+/* SQL token colors */
+[data-theme="light"] .sql-keyword    { color: #4f46e5; }  /* deep indigo */
+[data-theme="light"] .sql-string     { color: #15803d; }  /* forest green */
+[data-theme="light"] .sql-number     { color: #b45309; }  /* amber */
+[data-theme="light"] .sql-comment    { color: #64748b; }  /* muted slate */
+[data-theme="light"] .sql-placeholder { color: #0369a1; } /* royal blue */
