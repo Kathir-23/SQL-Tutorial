@@ -53,12 +53,12 @@ function registerLightTheme(monaco: Monaco) {
       { token: '', foreground: '1e293b' },
     ],
     colors: {
-      // Soft off-white, non-glare background
-      'editor.background': '#f6f8fa',
+      // Pure white crisp background
+      'editor.background': '#ffffff',
       'editor.foreground': '#1e293b',
       // Current line highlight — subtle indigo tint
-      'editor.lineHighlightBackground': '#eef2ff',
-      'editor.lineHighlightBorder': '#c7d2fe',
+      'editor.lineHighlightBackground': '#f1f5f9',
+      'editor.lineHighlightBorder': '#e2e8f0',
       // Selection
       'editor.selectionBackground': '#c7d2fe',
       'editor.inactiveSelectionBackground': '#e0e7ff',
@@ -68,7 +68,7 @@ function registerLightTheme(monaco: Monaco) {
       'editorLineNumber.foreground': '#94a3b8',
       'editorLineNumber.activeForeground': '#4f46e5',
       // Gutter / margin
-      'editorGutter.background': '#f1f5f9',
+      'editorGutter.background': '#ffffff',
       // Scrollbar
       'scrollbarSlider.background': '#c7d2fe80',
       'scrollbarSlider.hoverBackground': '#a5b4fc',
@@ -134,7 +134,7 @@ export default function SQLEditor({
       className="rounded-lg overflow-hidden border border-slate-800"
       style={{
         borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b',
-        background: theme === 'light' ? '#f6f8fa' : undefined,
+        background: theme === 'light' ? '#ffffff' : undefined,
       }}
     >
       <div onKeyDown={handleKeyDown}>
@@ -174,7 +174,7 @@ export default function SQLEditor({
       <div
         className="flex items-center gap-2 px-3 py-2 border-t border-slate-800 font-mono text-xs"
         style={{
-          background: theme === 'light' ? '#f1f5f9' : undefined,
+          background: theme === 'light' ? '#f8fafc' : undefined,
           borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b',
         }}
       >

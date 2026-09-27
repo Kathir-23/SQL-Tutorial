@@ -1685,16 +1685,16 @@ button, a, input, textarea {
 
 /* ── Light mode: static code blocks & SQL syntax highlighting ────────────── */
 [data-theme="light"] .code-block-wrapper {
-  background: #f6f8fa;
+  background: #ffffff;
   border-color: #e2e8f0;
 }
 [data-theme="light"] .code-block-header {
-  background: #f1f5f9;
+  background: #f8fafc;
   border-bottom-color: #e2e8f0;
 }
 [data-theme="light"] .code-block-lang { color: #4f46e5; }
 [data-theme="light"] .code-block-label { color: #94a3b8; }
-[data-theme="light"] .code-block { background: #f6f8fa; }
+[data-theme="light"] .code-block { background: #ffffff; }
 [data-theme="light"] .code-block code { color: #1e293b; }
 
 /* SQL token colors */
