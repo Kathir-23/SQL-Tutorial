@@ -6,6 +6,7 @@ import ModuleCard from '@/components/ModuleCard';
 import { getAllModules, getModuleLessons } from '@/lib/lessons';
 import { useProgressStore, getDueLessons } from '@/lib/progress';
 import { useShowcase } from '@/lib/mode';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function LearnPage() {
   const modules = getAllModules();
@@ -32,6 +33,7 @@ export default function LearnPage() {
             <Link href="/playground" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded">playground</Link>
             <Link href="/stats" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded">stats</Link>
             <XPBadge />
+            <ThemeToggle />
           </div>
         </div>
       </header>

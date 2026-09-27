@@ -32,6 +32,7 @@ import { useProgressStore, XP_VALUES, isLessonDue } from '@/lib/progress';
 import { useShowcase } from '@/lib/mode';
 import { getProjectChallengeForLesson, getProjectThread } from '@/lib/project-threads';
 import type { Database as SqlJsDatabase } from 'sql.js';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const databases = {
   company: COMPANY_DB,
@@ -245,7 +246,10 @@ export default function LessonPage({ params }: LessonPageProps) {
               <span className="text-indigo-400">$</span> cd ../lessons
             </Link>
           </div>
-          <XPBadge />
+          <div className="flex items-center gap-3">
+            <XPBadge />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import CommandPalette from '@/components/CommandPalette';
 import PopQuiz from '@/components/PopQuiz';
+import { ThemeProvider } from '@/lib/theme';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   title: 'sql-mastery',
   description:
     "Personal SQL practice. Lessons I built while taking Advanced SQL at WCTC, kept here as reference. SQLite runs in the browser via sql.js.",
-  authors: [{ name: "Nicholas D'Amato" }],
+  authors: [{ name: 'Kathir' }],
   robots: { index: false, follow: false },
   openGraph: {
     title: 'sql-mastery',
@@ -40,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" data-theme="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
@@ -50,9 +51,11 @@ export default function RootLayout({
         >
           skip to content
         </a>
-        {children}
-        <CommandPalette />
-        <PopQuiz />
+        <ThemeProvider>
+          {children}
+          <CommandPalette />
+          <PopQuiz />
+        </ThemeProvider>
       </body>
     </html>
   );
