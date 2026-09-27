@@ -188,7 +188,7 @@ export default function LessonPage({ params }: LessonPageProps) {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100 font-mono text-sm flex flex-col items-start justify-center px-6 max-w-2xl mx-auto">
         <p>
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">~$</span> cat /learn/{moduleSlug}/{lessonSlug}
         </p>
@@ -328,7 +328,7 @@ export default function LessonPage({ params }: LessonPageProps) {
           ) : dbError ? (
             <div className="h-32 flex flex-col items-start justify-center font-mono text-sm">
               <p>
-                <span className="text-indigo-400">damato@sql</span>
+                <span className="text-indigo-400">kathir@sql</span>
                 <span className="text-slate-500">:</span>
                 <span className="text-slate-500">~$</span> sqlite3 {lesson.database}.db
               </p>

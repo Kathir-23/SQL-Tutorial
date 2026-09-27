@@ -85,7 +85,7 @@ export default function HomeTerminal({ modules }: HomeTerminalProps) {
         {history.map((h, i) => (
           <div key={i} className="mb-1">
             <p>
-              <span className="text-indigo-400">damato@sql</span>
+              <span className="text-indigo-400">kathir@sql</span>
               <span className="text-slate-500">:</span>
               <span className="text-slate-500">{PROMPT_PATH}</span>{" "}
               <span>{h.cmd}</span>
@@ -101,7 +101,7 @@ export default function HomeTerminal({ modules }: HomeTerminalProps) {
 
       <label className="block rounded has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-400 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-slate-950">
         <p className="flex items-baseline flex-wrap">
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">{PROMPT_PATH}</span>{" "}
           <span className="inline-flex items-baseline">

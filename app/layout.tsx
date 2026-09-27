@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://damato-sql.vercel.app'),
+  metadataBase: new URL('https://sql-tutorial.vercel.app'),
   title: 'sql-mastery',
   description:
     "Personal SQL practice. Lessons I built while taking Advanced SQL at WCTC, kept here as reference. SQLite runs in the browser via sql.js.",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: 'sql-mastery',
     description: 'Personal SQL practice. SQLite runs in the browser via sql.js.',
     type: 'website',
-    url: 'https://damato-sql.vercel.app',
+    url: 'https://sql-tutorial.vercel.app',
   },
   twitter: {
     card: 'summary',

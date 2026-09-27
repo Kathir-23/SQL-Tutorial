@@ -30,7 +30,7 @@ export default async function Image() {
             }}
           />
           <div style={{ fontSize: 24, color: "#a8a29e" }}>
-            damato-sql.vercel.app
+            sql-tutorial.vercel.app
           </div>
         </div>
 

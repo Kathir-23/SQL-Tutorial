@@ -123,7 +123,7 @@ export function runTerminalCommand(raw: string, ctx: TerminalContext): TerminalR
       break;
     case "whoami": {
       const p = readProgress();
-      out.push(`damato · xp ${p.xp} · streak ${p.streak}d · ${p.completed.length} lessons done`);
+      out.push(`kathir · xp ${p.xp} · streak ${p.streak}d · ${p.completed.length} lessons done`);
       break;
     }
     case "review": {

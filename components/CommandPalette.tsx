@@ -159,7 +159,7 @@ export default function CommandPalette() {
                 {history.map((h, i) => (
                   <div key={i} className="mb-1">
                     <p>
-                      <span className="text-indigo-400">damato@sql</span>
+                      <span className="text-indigo-400">kathir@sql</span>
                       <span className="text-slate-500">:</span>
                       <span className="text-slate-500">{PROMPT_PATH}</span>{" "}
                       <span>{h.cmd}</span>
@@ -174,7 +174,7 @@ export default function CommandPalette() {
               </div>
 
               <p className="flex items-baseline flex-wrap">
-                <span className="text-indigo-400">damato@sql</span>
+                <span className="text-indigo-400">kathir@sql</span>
                 <span className="text-slate-500">:</span>
                 <span className="text-slate-500">{PROMPT_PATH}</span>{" "}
                 <span className="inline-flex items-baseline">

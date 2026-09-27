@@ -127,7 +127,7 @@ export default function PlaygroundPage() {
       <main id="main" tabIndex={-1} className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
         <section className="font-mono text-sm mb-6">
           <p>
-            <span className="text-indigo-400">damato@sql</span>
+            <span className="text-indigo-400">kathir@sql</span>
             <span className="text-slate-500">:</span>
             <span className="text-slate-500">~/playground$</span>{' '}
             <span>sqlite3 {selectedDb}.db</span>

@@ -194,7 +194,7 @@ export default function StatsPage() {
       <main id="main" tabIndex={-1} className="flex-1 max-w-5xl mx-auto w-full px-6 py-10 font-mono">
         <section className="text-sm">
           <p>
-            <span className="text-indigo-400">damato@sql</span>
+            <span className="text-indigo-400">kathir@sql</span>
             <span className="text-slate-500">:</span>
             <span className="text-slate-500">~$</span>{' '}
             <span>stats --all</span>

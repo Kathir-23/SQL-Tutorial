@@ -98,7 +98,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100 font-mono text-sm flex flex-col items-start justify-center px-6 max-w-2xl mx-auto">
         <p>
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">~$</span> cat /projects/{slug}
         </p>
@@ -134,7 +134,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       <main id="main" tabIndex={-1} className="max-w-5xl mx-auto px-6 py-8">
         <section className="font-mono text-sm">
           <p>
-            <span className="text-indigo-400">damato@sql</span>
+            <span className="text-indigo-400">kathir@sql</span>
             <span className="text-slate-500">:</span>
             <span className="text-slate-500">~/projects/{project.slug}$</span>{' '}
             <span>cat brief.md</span>

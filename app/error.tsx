@@ -12,7 +12,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     <main id="main" tabIndex={-1} className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-mono text-sm">
       <section className="flex-1 max-w-3xl mx-auto w-full px-6 py-16">
         <p>
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">~$</span> <span>./app</span>
         </p>
@@ -42,7 +42,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
         </div>
 
         <p className="mt-10">
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">~$</span>{" "}
           <span className="ml-1 inline-block w-2 h-4 align-text-bottom bg-slate-100 terminal-cursor" aria-hidden="true" />

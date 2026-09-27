@@ -11,7 +11,7 @@ export default function NotFound() {
     <main id="main" tabIndex={-1} className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-mono text-sm">
       <section className="flex-1 max-w-3xl mx-auto w-full px-6 py-16">
         <p>
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">~$</span>{" "}
           <span>cd {target}</span>
@@ -21,7 +21,7 @@ export default function NotFound() {
         </p>
 
         <p className="mt-8">
-          <span className="text-indigo-400">damato@sql</span>
+          <span className="text-indigo-400">kathir@sql</span>
           <span className="text-slate-500">:</span>
           <span className="text-slate-500">~$</span>{" "}
           <span>cd ~</span>
