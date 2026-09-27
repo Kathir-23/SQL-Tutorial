@@ -1703,3 +1703,18 @@ button, a, input, textarea {
 [data-theme="light"] .sql-number     { color: #b45309; }  /* amber */
 [data-theme="light"] .sql-comment    { color: #64748b; }  /* muted slate */
 [data-theme="light"] .sql-placeholder { color: #0369a1; } /* royal blue */
+
+/* ── Light mode: Disabled buttons & interactive challenge boxes ──────────── */
+[data-theme="light"] button:disabled {
+  opacity: 0.65 !important;
+}
+[data-theme="light"] pre.bg-slate-950 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+[data-theme="light"] input.bg-slate-900 {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}

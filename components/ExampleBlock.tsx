@@ -86,7 +86,7 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
           )}
         </button>
       </div>
-      <h3 className="font-semibold text-white mb-1">{example.title}</h3>
+      <h3 className="font-normal text-white mb-1">{example.title}</h3>
       {showExplanation ? (
         <p className="text-slate-400 text-sm mb-4">{example.explanation}</p>
       ) : (

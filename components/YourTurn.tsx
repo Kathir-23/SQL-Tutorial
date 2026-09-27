@@ -22,12 +22,12 @@ function FillCard({ item, index }: { item: FillItem; index: number }) {
   const solved = correct || revealed;
 
   return (
-    <div className="rounded border border-slate-800 bg-slate-900/40 p-4">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
       <p className="text-sm text-slate-100">
         <span className="font-mono text-xs text-indigo-300">your turn{blankCount > 1 ? ` (${index + 1})` : ''} · </span>
         {item.prompt}
       </p>
-      <pre className="mt-3 overflow-x-auto rounded bg-slate-950 border border-slate-800 p-3 font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">
+      <pre className="mt-3 overflow-x-auto rounded-lg bg-slate-950 border border-slate-800 p-3 font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">
         {parts.map((seg, i) => (
           <span key={i}>
             {seg}
@@ -61,7 +61,7 @@ function FillCard({ item, index }: { item: FillItem; index: number }) {
           type="button"
           disabled={vals.some((v) => !v.trim()) || solved}
           onClick={() => setChecked(true)}
-          className="px-3 py-1.5 rounded border border-indigo-400 text-indigo-300 text-xs font-mono hover:bg-indigo-400/10 disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          className="px-3 py-1.5 rounded border border-indigo-400 text-indigo-300 text-xs font-mono hover:bg-indigo-400/10 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
         >
           check
         </button>
