@@ -1534,3 +1534,88 @@ button, a, input, textarea {
 [data-theme="light"] .prose th,
 [data-theme="light"] .prose td { border-color: var(--line-strong); }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT MODE — TAILWIND UTILITY OVERRIDES
+   Many components use hardcoded Tailwind slate classes. These rules flip them
+   to light-appropriate values without touching any JSX.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Backgrounds ─────────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-slate-950\/95 { background-color: #ffffff !important; }
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-slate-900\/20,
+[data-theme="light"] .bg-slate-900\/95 { background-color: #f8fafc !important; }
+[data-theme="light"] .bg-slate-800 { background-color: #f1f5f9 !important; }
+[data-theme="light"] .bg-slate-700 { background-color: #e2e8f0 !important; }
+
+/* ── Text colors ─────────────────────────────────────────────────────────── */
+[data-theme="light"] .text-slate-100 { color: #0f172a !important; }
+[data-theme="light"] .text-slate-200 { color: #1e293b !important; }
+[data-theme="light"] .text-slate-300 { color: #334155 !important; }
+[data-theme="light"] .text-slate-400 { color: #64748b !important; }
+[data-theme="light"] .text-slate-500 { color: #94a3b8 !important; }
+[data-theme="light"] .text-slate-600 { color: #94a3b8 !important; }
+
+/* ── Borders ─────────────────────────────────────────────────────────────── */
+[data-theme="light"] .border-slate-800,
+[data-theme="light"] .border-slate-800\/60 { border-color: #e2e8f0 !important; }
+[data-theme="light"] .border-slate-700 { border-color: #cbd5e1 !important; }
+[data-theme="light"] .border-slate-600 { border-color: #94a3b8 !important; }
+[data-theme="light"] .divide-slate-800\/60 > * + * { border-color: #e2e8f0 !important; }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+[data-theme="light"] aside {
+  background-color: #f8fafc !important;
+  border-right-color: #e2e8f0 !important;
+}
+
+/* ── Sticky headers ──────────────────────────────────────────────────────── */
+[data-theme="light"] header {
+  background-color: rgba(255,255,255,0.95) !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+/* ── Breadcrumb bar ──────────────────────────────────────────────────────── */
+[data-theme="light"] .border-b.border-slate-800\/60.bg-slate-900\/20 {
+  background-color: #f1f5f9 !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+/* ── Indigo/accent text — keep vivid, just slightly deeper ──────────────── */
+[data-theme="light"] .text-indigo-400 { color: #4f46e5 !important; }
+[data-theme="light"] .border-indigo-400 { border-color: #4f46e5 !important; }
+[data-theme="light"] .ring-indigo-400 { --tw-ring-color: #4f46e5 !important; }
+
+/* ── Green/success ───────────────────────────────────────────────────────── */
+[data-theme="light"] .text-emerald-400 { color: #16a34a !important; }
+[data-theme="light"] .border-emerald-500 { border-color: #16a34a !important; }
+
+/* ── Amber/warning ───────────────────────────────────────────────────────── */
+[data-theme="light"] .text-amber-400 { color: #d97706 !important; }
+[data-theme="light"] .border-amber-400 { border-color: #d97706 !important; }
+[data-theme="light"] .border-amber-400\/30,
+[data-theme="light"] .border-amber-400\/40 { border-color: rgba(217,119,6,0.3) !important; }
+
+/* ── Rose/error ──────────────────────────────────────────────────────────── */
+[data-theme="light"] .text-rose-400 { color: #dc2626 !important; }
+
+/* ── Tool dock ───────────────────────────────────────────────────────────── */
+[data-theme="light"] .bg-slate-950\/95.backdrop-blur {
+  background-color: rgba(255,255,255,0.95) !important;
+}
+[data-theme="light"] .hover\:bg-slate-900:hover { background-color: #f1f5f9 !important; }
+[data-theme="light"] .hover\:bg-indigo-400\/10:hover { background-color: rgba(79,70,229,0.08) !important; }
+
+/* ── Focus ring offsets ──────────────────────────────────────────────────── */
+[data-theme="light"] .focus-visible\:ring-offset-slate-950:focus-visible { --tw-ring-offset-color: #ffffff !important; }
+
+/* ── Module/lesson nav cards ─────────────────────────────────────────────── */
+[data-theme="light"] .bg-card { background-color: #ffffff !important; }
+[data-theme="light"] .border-border { border-color: #e2e8f0 !important; }
+[data-theme="light"] .border-border\/60 { border-color: rgba(226,232,240,0.6) !important; }
+
+/* Ensure full page background is white */
+[data-theme="light"] .min-h-screen { background-color: #ffffff; }
+[data-theme="light"] .bg-background { background-color: #ffffff !important; }
+[data-theme="light"] .text-foreground { color: #18181b !important; }
