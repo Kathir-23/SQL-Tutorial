@@ -1,4 +1,6 @@
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
+import CertificateCard from "@/components/CertificateCard";
 
 export default function NextStepsPage() {
   return (
@@ -12,17 +14,32 @@ export default function NextStepsPage() {
             <Link href="/learn" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">lessons</Link>
             <Link href="/start" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">start</Link>
             <Link href="/glossary" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">glossary</Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 py-12">
-        <h1 className="text-2xl font-semibold">Where this leads</h1>
-        <p className="mt-3 text-muted-foreground leading-relaxed">
-          This site teaches SQL and gives you a lot of practice against realistic data. To use SQL for real
-          you connect to a real database with real tools. Here is the honest bridge from “I know the queries”
-          to “I can work with a production database.”
-        </p>
+      <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-12">
+        {/* Certificate Section */}
+        <section>
+          <div className="mb-6 space-y-1">
+            <span className="text-xs font-mono uppercase tracking-widest text-accent"># Course Completion</span>
+            <h1 className="text-2xl font-semibold">Your Verified Certificate</h1>
+            <p className="text-xs text-muted-foreground">
+              Customize your certificate, download a print-ready copy, or add your credential directly to your LinkedIn profile.
+            </p>
+          </div>
+          <CertificateCard />
+        </section>
+
+        <section className="pt-6 border-t border-border/60">
+          <h2 className="text-2xl font-semibold">Where this leads</h2>
+          <p className="mt-3 text-muted-foreground leading-relaxed">
+            This site teaches SQL and gives you a lot of practice against realistic data. To use SQL for real
+            you connect to a real database with real tools. Here is the honest bridge from “I know the queries”
+            to “I can work with a production database.”
+          </p>
+        </section>
 
         <section className="mt-10">
           <p className="text-xs uppercase tracking-widest text-muted-foreground"># what this browser sandbox cannot do</p>
