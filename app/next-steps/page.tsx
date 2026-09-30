@@ -1,8 +1,28 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import CertificateCard from "@/components/CertificateCard";
+import CertificateLockGate from "@/components/CertificateLockGate";
+import { useProgressStore } from "@/lib/progress";
+import { lessons } from "@/lib/lessons";
+import { useShowcase } from "@/lib/mode";
+import { ShieldCheck, Lock } from "lucide-react";
 
 export default function NextStepsPage() {
+  const { completedLessons } = useProgressStore();
+  const showcase = useShowcase();
+
+  const totalLessonsCount = lessons.length;
+  const completedCount = lessons.filter((l) => completedLessons.includes(l.slug)).length;
+  const isCompleted100 = completedCount >= totalLessonsCount;
+
+  // Allow manual override toggle for demonstration / testing in development
+  const [overrideUnlocked, setOverrideUnlocked] = useState(false);
+
+  const isUnlocked = isCompleted100 || showcase || overrideUnlocked;
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
       <header className="border-b border-border/60">
@@ -22,14 +42,38 @@ export default function NextStepsPage() {
       <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-12">
         {/* Certificate Section */}
         <section>
-          <div className="mb-6 space-y-1">
-            <span className="text-xs font-mono uppercase tracking-widest text-accent"># Course Completion</span>
-            <h1 className="text-2xl font-semibold">Your Verified Certificate</h1>
-            <p className="text-xs text-muted-foreground">
-              Customize your certificate, download a print-ready copy, or add your credential directly to your LinkedIn profile.
-            </p>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-mono uppercase tracking-widest text-accent"># Course Completion & Credential</span>
+              <h1 className="text-2xl font-semibold">Your Verified Certificate</h1>
+              <p className="text-xs text-muted-foreground">
+                Official SQL Mastery Credential of Completion and LinkedIn Integration.
+              </p>
+            </div>
+
+            {/* Dev / Showcase Testing Toggle */}
+            {!showcase && !isCompleted100 && (
+              <button
+                onClick={() => setOverrideUnlocked(!overrideUnlocked)}
+                className="text-[11px] px-2.5 py-1 rounded bg-secondary text-muted-foreground hover:text-foreground border border-border/60 transition-colors flex items-center gap-1.5"
+                title="Toggle unlocked preview mode"
+              >
+                {overrideUnlocked ? (
+                  <>
+                    <Lock className="w-3 h-3 text-amber-500" />
+                    <span>View Lock Gate</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                    <span>Preview Unlocked Certificate</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
-          <CertificateCard />
+
+          {isUnlocked ? <CertificateCard /> : <CertificateLockGate />}
         </section>
 
         <section className="pt-6 border-t border-border/60">
