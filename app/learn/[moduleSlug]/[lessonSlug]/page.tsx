@@ -33,6 +33,8 @@ import { useShowcase } from '@/lib/mode';
 import { getProjectChallengeForLesson, getProjectThread } from '@/lib/project-threads';
 import type { Database as SqlJsDatabase } from 'sql.js';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useAuth } from '@/lib/auth';
+import GuestConversionModal from '@/components/GuestConversionModal';
 
 const databases = {
   company: COMPANY_DB,
@@ -57,6 +59,8 @@ export default function LessonPage({ params }: LessonPageProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [tutorPrompt, setTutorPrompt] = useState<string | null>(null);
   const [completedChallengeIds, setCompletedChallengeIds] = useState<Set<string>>(new Set());
+  const { isAuthenticated } = useAuth();
+  const [showGuestModal, setShowGuestModal] = useState(false);
 
   const handleAskTutor = useCallback((prompt: string) => {
     setTutorPrompt(prompt);
@@ -168,11 +172,12 @@ export default function LessonPage({ params }: LessonPageProps) {
         lesson.challenges.every((c) => awarded.has(c.id))
       ) {
         completeLesson(lessonKey);
+        if (!isAuthenticated) setShowGuestModal(true);
         // Let the pop-quiz listener consider a surprise recall check.
         if (typeof window !== 'undefined') window.dispatchEvent(new Event('lesson-completed'));
       }
     },
-    [lesson, lessonKey, completeLesson, addXP, reviewSession, showcase, markReviewed],
+    [lesson, lessonKey, completeLesson, addXP, reviewSession, showcase, markReviewed, isAuthenticated],
   );
 
   const handleMarkComplete = useCallback(() => {
@@ -182,8 +187,9 @@ export default function LessonPage({ params }: LessonPageProps) {
     // completeLesson already awards the +10 lesson XP internally; do not add it
     // again here or no-challenge lessons would grant double.
     completeLesson(lessonKey);
+    if (!isAuthenticated) setShowGuestModal(true);
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('lesson-completed'));
-  }, [lesson, lessonKey, isAlreadyComplete, completeLesson]);
+  }, [lesson, lessonKey, isAlreadyComplete, completeLesson, isAuthenticated]);
 
   if (!lesson || !moduleInfo) {
     return (
@@ -531,6 +537,11 @@ export default function LessonPage({ params }: LessonPageProps) {
       </LessonToolDock>
 
       <InterfaceOnboarding />
+      <GuestConversionModal
+        isOpen={showGuestModal}
+        onClose={() => setShowGuestModal(false)}
+        lessonTitle={lesson?.title}
+      />
     </div>
   );
 }
