@@ -8,6 +8,9 @@ import DownloadNotesButton from "@/components/DownloadNotesButton";
 import { getAllModules, getModuleBySlug, getModuleLessons } from "@/lib/lessons";
 import { useShowcase } from "@/lib/mode";
 
+import { useAuth } from "@/lib/auth";
+import { User, LogIn, UserPlus, LogOut } from "lucide-react";
+
 // One-line descriptions keyed by slug. The module list itself is derived from
 // the lesson data (getAllModules) so it can never go stale when modules are
 // added; a missing description just renders blank.
@@ -64,6 +67,7 @@ function loadCompletedLessons(): Set<string> {
 export default function HomePage() {
   const [completed] = useState(loadCompletedLessons);
   const showcase = useShowcase();
+  const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
@@ -88,15 +92,54 @@ export default function HomePage() {
 
         <section className="mt-6 space-y-4">
           <ModeToggle />
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href="/start"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-accent text-accent hover:bg-accent/10 transition-colors text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              new here? start here →
-            </Link>
-            <Link href="/glossary" className="text-xs text-muted-foreground hover:text-foreground transition-colors">glossary</Link>
-            <Link href="/next-steps" className="text-xs text-muted-foreground hover:text-foreground transition-colors">where to go next</Link>
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/40">
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/start"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-accent text-accent hover:bg-accent/10 transition-colors text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                new here? start here →
+              </Link>
+              <Link href="/glossary" className="text-xs text-muted-foreground hover:text-foreground transition-colors">glossary</Link>
+              <Link href="/next-steps" className="text-xs text-muted-foreground hover:text-foreground transition-colors">where to go next</Link>
+            </div>
+
+            {/* Auth Navigation Links */}
+            <div className="flex items-center gap-2 text-xs">
+              {isAuthenticated && user ? (
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-accent/10 border border-accent/20 text-accent font-semibold">
+                    <User className="w-3.5 h-3.5" />
+                    <span>{user.certificateName}</span>
+                  </span>
+                  <button
+                    onClick={logout}
+                    className="text-muted-foreground hover:text-rose-400 transition-colors px-2 py-1 rounded flex items-center gap-1"
+                    title="Log Out"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>logout</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/login"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-border/80 text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+                  >
+                    <LogIn className="w-3.5 h-3.5 text-accent" />
+                    <span>Login</span>
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-accent text-accent-foreground font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Sign Up</span>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

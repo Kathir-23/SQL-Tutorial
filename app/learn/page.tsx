@@ -8,11 +8,15 @@ import { useProgressStore, getDueLessons } from '@/lib/progress';
 import { useShowcase } from '@/lib/mode';
 import ThemeToggle from '@/components/ThemeToggle';
 
+import { useAuth } from '@/lib/auth';
+import { User, LogIn, UserPlus } from 'lucide-react';
+
 export default function LearnPage() {
   const modules = getAllModules();
   const completedLessons = useProgressStore((state) => state.completedLessons);
   const reviewedAt = useProgressStore((state) => state.reviewedAt);
   const showcase = useShowcase();
+  const { user, isAuthenticated } = useAuth();
 
   const totalLessons = modules.reduce((sum, m) => sum + m.lessons.length, 0);
   const completedCount = showcase ? totalLessons : completedLessons.length;
@@ -32,6 +36,23 @@ export default function LearnPage() {
             <Link href="/projects" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded">projects</Link>
             <Link href="/playground" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded">playground</Link>
             <Link href="/stats" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded">stats</Link>
+            {isAuthenticated && user ? (
+              <Link href="/next-steps" className="inline-flex items-center gap-1 text-accent font-semibold hover:underline">
+                <User className="w-3.5 h-3.5" />
+                <span>{user.certificateName}</span>
+              </Link>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+                  <LogIn className="w-3 h-3 text-accent" />
+                  <span>login</span>
+                </Link>
+                <Link href="/signup" className="text-accent font-semibold hover:underline flex items-center gap-1">
+                  <UserPlus className="w-3 h-3" />
+                  <span>signup</span>
+                </Link>
+              </div>
+            )}
             <XPBadge />
             <ThemeToggle />
           </div>
