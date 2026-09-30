@@ -9,11 +9,10 @@ import { getAllModules, getModuleBySlug, getModuleLessons } from "@/lib/lessons"
 import { useShowcase } from "@/lib/mode";
 import { useAuth } from "@/lib/auth";
 import {
-  Sparkles,
-  Terminal,
   Database,
-  Award,
+  Terminal,
   Bot,
+  Award,
   ArrowRight,
   CheckCircle2,
   LogIn,
@@ -81,15 +80,8 @@ export default function HomePage() {
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur support-[backdrop-filter]:bg-background/60">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between gap-4 text-xs">
           <Link href="/" className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity">
-            <span className="px-2 py-0.5 rounded bg-accent/15 text-accent border border-accent/30">$ sql-mastery</span>
+            <span className="px-2.5 py-1 rounded bg-accent/15 text-accent border border-accent/30 font-bold">$ sql-mastery</span>
           </Link>
-
-          <nav className="hidden md:flex items-center gap-6 text-muted-foreground">
-            <a href="#curriculum" className="hover:text-foreground transition-colors">modules</a>
-            <Link href="/playground" className="hover:text-foreground transition-colors">playground</Link>
-            <Link href="/projects" className="hover:text-foreground transition-colors">projects</Link>
-            <Link href="/glossary" className="hover:text-foreground transition-colors">glossary</Link>
-          </nav>
 
           <div className="flex items-center gap-3">
             <ModeToggle />
@@ -112,7 +104,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-accent text-accent-foreground font-semibold hover:opacity-90 transition-opacity shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-accent text-accent-foreground font-bold hover:opacity-90 transition-opacity shadow-sm"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
                   <span>Start Free</span>
@@ -123,123 +115,122 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-5xl mx-auto w-full px-6 py-12 space-y-16">
-        {/* HERO SECTION */}
-        <section className="text-center space-y-6 pt-6 md:pt-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>100% In-Browser SQLite WASM · 52 Interactive Lessons</span>
-          </div>
+      <main id="main" tabIndex={-1} className="flex-1 max-w-5xl mx-auto w-full px-6 py-8 md:py-12 space-y-12">
+        {/* 2-COLUMN SIDE-BY-SIDE SPLIT HERO VIEWPORT */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2 md:pt-4">
+          {/* LEFT COLUMN: Headline & CTAs */}
+          <div className="lg:col-span-6 space-y-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
+              <span>100% In-Browser SQLite · 52 Interactive Lessons</span>
+            </div>
 
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15] max-w-3xl mx-auto">
-            Master SQL by Writing Real Queries in Your Browser.
-          </h1>
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold tracking-tight text-foreground leading-[1.18]">
+              Master SQL by Writing Real Queries in Your Browser.
+            </h1>
 
-          <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Learn database engineering through 52 hands-on lessons with instant SQLite execution, zero setup, AI query assistance, and official LinkedIn-verified credentials.
-          </p>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              Hands-on lessons, instant execution, zero setup, and an AI tutor to get you unstuck.
+            </p>
 
-          {/* Primary & Secondary CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            {isAuthenticated ? (
-              <Link
-                href="/learn"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent text-accent-foreground font-bold text-sm hover:opacity-90 transition-all shadow-md"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>Continue to Learning Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            ) : (
-              <>
+            {/* CTAs */}
+            <div className="space-y-3 pt-1">
+              {isAuthenticated ? (
                 <Link
-                  href="/signup"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent text-accent-foreground font-bold text-sm hover:opacity-90 transition-all shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  href="/learn"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-bold text-xs hover:opacity-90 transition-all shadow-sm"
                 >
-                  <UserPlus className="w-4 h-4" />
-                  <span>Create Free Account</span>
+                  <BookOpen className="w-4 h-4" />
+                  <span>Continue to Dashboard</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-bold text-xs hover:opacity-90 transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    <span>Create Free Account</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
 
-                <Link
-                  href="/learn/start-here/welcome"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-md border border-border bg-card text-foreground font-medium text-sm hover:bg-secondary/60 transition-colors"
-                >
-                  <Terminal className="w-4 h-4 text-accent" />
-                  <span>Try Lesson 1 as Guest →</span>
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Feature Trust Chips */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> 52 Core Lessons</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> In-Browser SQLite</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> AI Tutor Dock</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> LinkedIn Verified Certificate</span>
-          </div>
-        </section>
-
-        {/* FEATURE SPOTLIGHT GRID */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-6 rounded-lg border border-border/80 bg-card/60 space-y-3">
-            <div className="w-9 h-9 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
-              <Database className="w-5 h-5" />
+                  <Link
+                    href="/learn/start-here/welcome"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-border bg-card text-foreground font-semibold text-xs hover:bg-secondary/60 transition-colors"
+                  >
+                    <span className="text-accent">&gt;_</span>
+                    <span>Try Lesson 1 as Guest →</span>
+                  </Link>
+                </div>
+              )}
             </div>
-            <h3 className="text-base font-bold text-foreground">Interactive SQLite Engine</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Write queries directly against real company, store, and school databases using WebAssembly. No database server configuration required.
-            </p>
+
+            {/* Checkmark List */}
+            <div className="grid grid-cols-2 gap-y-2 gap-x-4 pt-2 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> 52 Lessons</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> In-Browser SQLite</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> AI Tutor</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Verified Certificate</span>
+            </div>
           </div>
 
-          <div className="p-6 rounded-lg border border-border/80 bg-card/60 space-y-3">
-            <div className="w-9 h-9 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
-              <Terminal className="w-5 h-5" />
+          {/* RIGHT COLUMN: 2x2 Feature Grid */}
+          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-4 rounded-xl border border-border/80 bg-card/70 hover:border-accent/40 transition-colors space-y-2 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                <Database className="w-4 h-4" />
+              </div>
+              <h3 className="text-xs font-bold text-foreground">Interactive SQLite Engine</h3>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Write queries against real company, store and school databases. No server setup.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-foreground">10 Structured Modules</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              From SELECT basics and multi-table JOINs to Window Functions, CTEs, Stored Procedures, and Query Execution Performance Tuning.
-            </p>
-          </div>
 
-          <div className="p-6 rounded-lg border border-border/80 bg-card/60 space-y-3">
-            <div className="w-9 h-9 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
-              <Bot className="w-5 h-5" />
+            <div className="p-4 rounded-xl border border-border/80 bg-card/70 hover:border-accent/40 transition-colors space-y-2 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                <Terminal className="w-4 h-4" />
+              </div>
+              <h3 className="text-xs font-bold text-foreground">10 Structured Modules</h3>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                From SELECT basics and JOINs to Window Functions and CTEs.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-foreground">AI-Powered Tutor</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Stuck on a query? The integrated Google Gemini AI tutor provides contextual hints and guides you to the correct syntax without giving away answers.
-            </p>
-          </div>
 
-          <div className="p-6 rounded-lg border border-border/80 bg-card/60 space-y-3">
-            <div className="w-9 h-9 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
-              <Award className="w-5 h-5" />
+            <div className="p-4 rounded-xl border border-border/80 bg-card/70 hover:border-accent/40 transition-colors space-y-2 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                <Bot className="w-4 h-4" />
+              </div>
+              <h3 className="text-xs font-bold text-foreground">AI-Powered Tutor</h3>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Stuck? Get hints that guide you to the answer without giving it away.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-foreground">LinkedIn-Verified Credentials</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Complete all 10 modules to unlock your official Certificate of Completion with permanent legal name binding and 1-click LinkedIn profile integration.
-            </p>
+
+            <div className="p-4 rounded-xl border border-border/80 bg-card/70 hover:border-accent/40 transition-colors space-y-2 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                <Award className="w-4 h-4" />
+              </div>
+              <h3 className="text-xs font-bold text-foreground">Verified Credentials</h3>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Finish all modules to unlock your Certificate of Completion.
+              </p>
+            </div>
           </div>
         </section>
 
         {/* EMBEDDED INTERACTIVE TERMINAL PROMPT */}
-        <section className="p-6 rounded-lg border border-border/80 bg-card space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-accent uppercase tracking-wider"># Interactive Command Shell</span>
-            <span className="text-xs text-muted-foreground">// type `help` or module slug</span>
+        <section className="p-5 rounded-lg border border-border/80 bg-card space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-accent uppercase tracking-wider"># Interactive Command Shell</span>
+            <span className="text-muted-foreground">// type `help` or module slug</span>
           </div>
           <HomeTerminal modules={modules} />
         </section>
 
-        {/* CURRICULUM OVERVIEW SECTION */}
-        <section id="curriculum" className="space-y-4 pt-4">
+        {/* CURRICULUM MODULES LIST */}
+        <section id="curriculum" className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-              <span className="text-accent">$</span> Curriculum Modules ({modules.length})
-            </h2>
-            <span className="text-xs text-muted-foreground">Select any module to start learning</span>
+            <h2 className="text-xs uppercase tracking-widest text-muted-foreground font-bold"># MODULES</h2>
+            <span className="text-xs text-muted-foreground">{modules.length} Modules Total</span>
           </div>
 
           <ul className="border-y border-border/60 divide-y divide-border/40">
@@ -263,7 +254,7 @@ export default function HomePage() {
                 <li key={m.slug} className="flex items-center gap-1">
                   <Link
                     href={`/learn/${m.slug}/${m.firstLesson}`}
-                    className="group grid flex-1 grid-cols-[2.5rem_minmax(0,1fr)_5rem_7rem_1rem] gap-3 items-center py-3 px-2 -ml-2 rounded hover:bg-card/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    className="group grid flex-1 grid-cols-[2.5rem_minmax(0,1fr)_5rem_7rem_1rem] gap-3 items-center py-2.5 px-2 -ml-2 rounded hover:bg-card/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     aria-label={`Open module: ${m.name}`}
                   >
                     <span className="text-muted-foreground font-bold">{m.num}</span>
@@ -289,7 +280,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-border/60 py-6 text-xs mt-12">
+      <footer className="border-t border-border/60 py-6 text-xs mt-8">
         <div className="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4 text-muted-foreground">
           <span>
             <span className="text-emerald-500 font-bold">exit 0</span> · SQL Mastery LMS · Next.js + SQLite WASM
