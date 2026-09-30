@@ -3,6 +3,7 @@ import './globals.css';
 import CommandPalette from '@/components/CommandPalette';
 import PopQuiz from '@/components/PopQuiz';
 import { ThemeProvider } from '@/lib/theme';
+import { AuthProvider } from '@/lib/auth';
 
 const geistSans = { variable: '--font-geist-sans' };
 const geistMono = { variable: '--font-geist-mono' };
@@ -44,9 +45,11 @@ export default function RootLayout({
           skip to content
         </a>
         <ThemeProvider>
-          {children}
-          <CommandPalette />
-          <PopQuiz />
+          <AuthProvider>
+            {children}
+            <CommandPalette />
+            <PopQuiz />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
