@@ -15,7 +15,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 **Lessons:** 10 modules, 52 total. Module 10 is the WCTC advanced SQL module (stored procs, triggers, UDFs, XML/JSON, temporal tables).
 
-**Deployment:** `vercel --prod` from project root. Live at https://damato-sql.vercel.app. Vercel project: astral-productions/sql-mastery.
+**Deployment:** `vercel --prod` from project root. Live at https://sql-tutorial.vercel.app. Vercel project: Kathir-23/SQL-Tutorial.
 
 **Common tasks:**
 - Adding a lesson: add entry to `lib/lessons.ts` in the right module section, matching existing shape
