@@ -47,13 +47,11 @@ export default function ProjectsPage() {
       <Header />
 
       <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-10">
-        <section className="font-mono text-sm">
-          <p>
-            <span className="text-accent font-bold">$</span>{' '}
-            <span>ls ~/projects</span>
-            <span className="ml-1 inline-block w-2 h-4 align-text-bottom bg-accent terminal-cursor" aria-hidden="true" />
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground font-semibold">
+        <section className="font-mono">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            Projects
+          </h1>
+          <p className="mt-2 text-xs text-slate-300 dark:text-slate-300 font-semibold">
             {completedStepsCombined} of {totalStepsCombined} steps done across 3 guided scenarios and 3 standalone projects
           </p>
         </section>
