@@ -83,7 +83,7 @@ export default function LearnPage() {
               </h1>
               <p className="text-xs text-muted-foreground max-w-lg leading-relaxed">
                 {isAuthenticated
-                  ? 'Pick up right where you left off. Complete all 10 core modules to lock your official LinkedIn certificate.'
+                  ? 'Pick up right where you left off. Complete all 16 core modules to lock your official LinkedIn certificate.'
                   : 'You are currently studying in Guest Mode. Create a free account anytime to persist progress and lock your certificate name.'}
               </p>
             </div>

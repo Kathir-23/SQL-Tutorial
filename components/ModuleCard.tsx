@@ -13,17 +13,22 @@ interface ModuleCardProps {
 }
 
 const moduleNumbers: Record<string, number> = {
-  'getting-started': 1,
-  'data-analysis': 2,
-  'joining-tables': 3,
-  'subqueries-ctes': 4,
-  'modifying-data': 5,
-  'functions': 6,
-  'window-functions': 7,
-  'database-objects': 8,
-  'advanced': 9,
-  'school-advanced': 10,
-  'set-design': 11,
+  'start-here': 1,
+  'getting-started': 2,
+  'data-analysis': 3,
+  'joining-tables': 4,
+  'subqueries-ctes': 5,
+  'modifying-data': 6,
+  'functions': 7,
+  'window-functions': 8,
+  'database-objects': 9,
+  'advanced': 10,
+  'school-advanced': 11,
+  'set-design': 12,
+  'window-advanced': 13,
+  'recursive-queries': 14,
+  'performance-indexing': 15,
+  'capstone': 16,
 };
 
 export default function ModuleCard({ module, lessonCount, firstLessonSlug }: ModuleCardProps) {

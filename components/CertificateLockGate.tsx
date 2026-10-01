@@ -33,7 +33,7 @@ export default function CertificateLockGate() {
               Official Certificate Locked
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-              To guarantee 100% proof-of-work credibility for recruiters and employers, official certificates of completion require clearing all 10 core modules.
+              To guarantee 100% proof-of-work credibility for recruiters and employers, official certificates of completion require clearing all 16 core modules.
             </p>
           </div>
 

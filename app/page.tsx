@@ -67,7 +67,7 @@ export default function HomePage() {
           {/* LEFT COLUMN: Badge, Headline, Paragraph, Buttons, Checkmarks */}
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
-              <span>100% In-Browser SQLite · 52 Interactive Lessons</span>
+              <span>100% In-Browser SQLite · 68 Interactive Lessons</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-[54px] font-extrabold tracking-tight text-foreground leading-[1.18]">
@@ -114,7 +114,7 @@ export default function HomePage() {
 
             {/* Checkmarks: 2 columns, 14px row gap, 40px column gap, 14px font */}
             <div className="grid grid-cols-2 gap-y-[14px] gap-x-[40px] pt-3 text-[14px] text-muted-foreground font-medium">
-              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> 52 Lessons</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> 68 Lessons</span>
               <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> In-Browser SQLite</span>
               <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> AI Tutor</span>
               <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Verified Certificate</span>
@@ -139,7 +139,7 @@ export default function HomePage() {
               <div className="w-[42px] h-[42px] rounded-[10px] bg-accent/10 border border-accent/20 flex items-center justify-center text-accent font-bold text-xs">
                 <Terminal className="w-5 h-5" />
               </div>
-              <h3 className="text-[14px] font-bold text-foreground tracking-tight">10 Structured Modules</h3>
+              <h3 className="text-[14px] font-bold text-foreground tracking-tight">16 Structured Modules</h3>
               <p className="text-[13px] leading-[1.8] text-muted-foreground">
                 From SELECT basics and JOINs to Window Functions and CTEs.
               </p>
