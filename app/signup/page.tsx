@@ -45,7 +45,8 @@ export default function SignUpPage() {
       return;
     }
 
-    const res = signup(email, password, legalName);
+    const uppercaseLegalName = legalName.trim().toUpperCase();
+    const res = signup(email, password, uppercaseLegalName);
     if (!res.success) {
       setError(res.error || 'Failed to create account.');
     } else {
@@ -201,18 +202,18 @@ export default function SignUpPage() {
                 {/* Preview Box */}
                 <div className="p-4 rounded-xl border border-accent/30 bg-accent/10 text-center space-y-1">
                   <span className="block text-[10px] text-muted-foreground uppercase tracking-widest">Certificate Preview</span>
-                  <span className="text-xl font-bold text-accent tracking-tight">{legalName || 'Your Name'}</span>
+                  <span className="text-xl font-bold text-accent tracking-tight">{legalName ? legalName.toUpperCase() : 'YOUR NAME'}</span>
                 </div>
 
                 <div className="p-3 rounded-lg border border-border/60 bg-muted/20 text-[11px] text-muted-foreground leading-relaxed">
                   💡 <strong>Note:</strong> You will receive 1 free correction credit after registration to fix any typo before permanent certificate lock.
                 </div>
 
-                <div className="flex items-center gap-3 pt-2">
+                <div className="flex items-center gap-2.5 pt-2">
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-card text-foreground text-xs font-semibold hover:bg-muted transition-colors flex items-center justify-center gap-1"
+                    className="px-3.5 py-2.5 rounded-lg border border-border bg-card text-foreground text-xs font-semibold hover:bg-muted transition-colors flex items-center justify-center gap-1 shrink-0"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Back</span>
@@ -221,10 +222,10 @@ export default function SignUpPage() {
                   <button
                     type="submit"
                     style={{ color: '#ffffff', backgroundColor: '#7c3aed', borderColor: '#7c3aed' }}
-                    className="flex-1 px-3 py-2.5 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
+                    className="flex-1 px-4 py-2.5 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
                   >
-                    <CheckCircle2 className="w-4 h-4" style={{ color: '#ffffff' }} />
-                    <span style={{ color: '#ffffff' }} className="font-bold">Confirm & Create Account</span>
+                    <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: '#ffffff' }} />
+                    <span style={{ color: '#ffffff' }} className="font-bold whitespace-nowrap">Confirm & Create Account</span>
                   </button>
                 </div>
               </form>
