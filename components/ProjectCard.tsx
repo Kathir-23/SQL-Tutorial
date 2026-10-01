@@ -19,7 +19,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     ? 'text-emerald-700 font-bold'
     : progress > 0
     ? 'text-purple-800 font-bold'
-    : 'text-slate-700 font-semibold';
+    : 'text-[#475569] font-semibold';
 
   return (
     <Link
@@ -31,9 +31,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className="text-sm">
           <span className="font-bold text-slate-900">projects/{project.slug}/</span>
         </div>
-        <p className="text-xs leading-relaxed text-slate-800">{project.description}</p>
+        <p className="text-xs leading-relaxed text-[#475569]">{project.description}</p>
 
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-700 font-semibold pt-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[#64748b] font-semibold pt-1">
           <span>[{project.difficulty}]</span>
           <span>·</span>
           <span>{project.estimatedTime}</span>
@@ -45,7 +45,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       </div>
 
       <div className="mt-4 pt-3 border-t border-slate-300 flex items-center justify-between text-xs">
-        <span className="text-slate-800 font-medium">{completedStepsCount} of {project.steps.length} done</span>
+        <span className="text-[#475569] font-medium">{completedStepsCount} of {project.steps.length} done</span>
         <span className={statusClass}>{statusText}</span>
       </div>
     </Link>

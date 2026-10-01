@@ -72,7 +72,7 @@ export default function ProjectsPage() {
                 ? 'text-emerald-700 font-bold'
                 : percent > 0
                 ? 'text-purple-800 font-bold'
-                : 'text-slate-700 font-semibold';
+                : 'text-[#475569] font-semibold';
 
               return (
                 <Link
@@ -83,16 +83,16 @@ export default function ProjectsPage() {
                 >
                   <div className="flex-1 space-y-3">
                     <div className="text-sm font-bold text-slate-900">scenarios/{thread.id}/</div>
-                    <p className="text-xs leading-relaxed text-slate-800">
+                    <p className="text-xs leading-relaxed text-[#475569]">
                       {thread.description}
                     </p>
-                    <p className="text-[11px] text-slate-700 font-semibold pt-1">
+                    <p className="text-[11px] text-[#64748b] font-semibold pt-1">
                       [{thread.databaseLabel}] · modules {thread.modules[0]}-{thread.modules[thread.modules.length - 1]}
                     </p>
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-slate-300 flex items-center justify-between text-xs">
-                    <span className="text-slate-800 font-medium">{completed} of {total} done</span>
+                    <span className="text-[#475569] font-medium">{completed} of {total} done</span>
                     <span className={statusClass}>{statusText}</span>
                   </div>
                 </Link>
