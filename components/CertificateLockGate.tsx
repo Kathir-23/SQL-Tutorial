@@ -27,13 +27,13 @@ export default function CertificateLockGate() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               <Lock className="w-3.5 h-3.5" />
-              <span>Pillar 2 · Locked Completion Gate</span>
+              <span>Locked</span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
               Official Certificate Locked
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-              To guarantee 100% proof-of-work credibility for recruiters and employers, official certificates of completion require clearing all 16 core modules.
+              Finish all 16 modules to unlock your official certificate.
             </p>
           </div>
 
@@ -53,7 +53,7 @@ export default function CertificateLockGate() {
           <div className="w-full bg-secondary h-3 rounded-full overflow-hidden p-0.5 border border-border/40">
             <div
               className="bg-accent h-full rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${Math.max(overallPercentage, 2)}%` }}
+              style={{ width: `${overallPercentage}%` }}
             />
           </div>
           <div className="flex justify-between text-xs text-muted-foreground">
