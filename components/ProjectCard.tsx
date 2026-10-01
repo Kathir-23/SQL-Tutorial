@@ -24,7 +24,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group flex flex-col justify-between h-full font-mono p-3.5 sm:p-4 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
+      className="group flex flex-col justify-between h-full font-mono p-4.5 sm:p-5 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
       aria-label={`Open project ${project.title}`}
     >
       <div className="flex-1 space-y-1.5">

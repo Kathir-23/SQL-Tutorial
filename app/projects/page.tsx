@@ -51,13 +51,13 @@ export default function ProjectsPage() {
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
             Projects
           </h1>
-          <p className="mt-1.5 text-xs text-slate-300 dark:text-slate-300 font-semibold">
-            {completedStepsCombined} of {totalStepsCombined} steps done across 3 guided scenarios and 3 standalone projects
+          <p className="mt-2 text-xs text-slate-300 dark:text-slate-300 font-semibold">
+            {completedStepsCombined} of {totalStepsCombined} steps done
           </p>
         </section>
 
         {/* GUIDED SCENARIOS SECTION */}
-        <section className="mt-4 sm:mt-5">
+        <section className="mt-4">
           <p className="text-xs uppercase tracking-widest text-accent font-bold font-mono"># Guided Scenarios</p>
           <p className="mt-0.5 text-xs text-muted-foreground font-mono">
             Longer running scenarios that span multiple modules.
@@ -78,7 +78,7 @@ export default function ProjectsPage() {
                 <Link
                   key={thread.id}
                   href={`/projects/thread/${thread.id}`}
-                  className="group flex flex-col justify-between h-full font-mono p-3.5 sm:p-4 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
+                  className="group flex flex-col justify-between h-full font-mono p-4.5 sm:p-5 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
                   aria-label={`Open scenario ${thread.title}`}
                 >
                   <div className="flex-1 space-y-1.5">
@@ -102,7 +102,7 @@ export default function ProjectsPage() {
         </section>
 
         {/* STANDALONE PROJECTS SECTION */}
-        <section className="mt-4 sm:mt-5">
+        <section className="mt-9">
           <p className="text-xs uppercase tracking-widest text-accent font-bold font-mono"># Standalone Projects</p>
           <p className="mt-0.5 text-xs text-muted-foreground font-mono">
             Standalone guided projects against a real SQLite database.
