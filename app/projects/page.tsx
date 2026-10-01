@@ -59,9 +59,6 @@ export default function ProjectsPage() {
         {/* GUIDED SCENARIOS SECTION */}
         <section className="mt-4">
           <p className="text-xs uppercase tracking-widest text-accent font-bold font-mono"># Guided Scenarios</p>
-          <p className="mt-0.5 text-xs text-muted-foreground font-mono">
-            Longer running scenarios that span multiple modules.
-          </p>
           <div className="mt-2.5 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
             {projectThreads.map((thread) => {
               const { completed, total } = getThreadProgress(thread.id);
@@ -104,9 +101,6 @@ export default function ProjectsPage() {
         {/* STANDALONE PROJECTS SECTION */}
         <section className="mt-9">
           <p className="text-xs uppercase tracking-widest text-accent font-bold font-mono"># Standalone Projects</p>
-          <p className="mt-0.5 text-xs text-muted-foreground font-mono">
-            Standalone guided projects against a real SQLite database.
-          </p>
           <div className="mt-2.5 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
             {projects.map((project) => (
               <ProjectCard key={project.slug} project={project} />
