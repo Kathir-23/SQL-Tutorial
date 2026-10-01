@@ -25,120 +25,125 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    slug: 'hr-analytics',
-    title: 'HR Analytics Report',
-    description: 'Write queries to analyze employee salaries, department payroll, and who earns above average in their own department. The last two steps use window functions (the Window Functions module), so save this one for after you reach them.',
-    difficulty: 'Advanced',
-    estimatedTime: '~30 min',
-    database: 'company',
-    databaseLabel: 'COMPANY_DB',
-    color: 'indigo',
+    slug: 'academic-review',
+    title: 'Academic Performance Review',
+    description: 'Query a school database to look at enrollment, GPA by teacher, and courses where no one got an A. Good practice for multi-table JOINs.',
+    difficulty: 'Beginner',
+    estimatedTime: '~25 min',
+    database: 'school',
+    databaseLabel: 'SCHOOL_DB',
+    color: 'amber',
     steps: [
       {
-        id: 'hr-step-1',
-        title: 'List Employees with Departments',
-        description: 'Start by retrieving all employees along with their department information.',
-        context: 'Start simple: pull every employee with their department. You\'ll build on this result in later steps.',
-        hint: 'Use SELECT to retrieve the name and department columns from the employees table.',
-        expectedColumns: ['name', 'department'],
+        id: 'academic-step-1',
+        title: 'Students with Enrolled Courses',
+        description: 'List all students along with the courses they are enrolled in.',
+        context: 'Enrollments is the junction table between students and courses. Join all three to get student names alongside course names.',
+        hint: 'Join students -> enrollments -> courses using the foreign keys student_id and course_id.',
+        expectedColumns: ['student_name', 'course_name'],
         validateFn: `
-          if (values.length < 15) return false;
-          const hasRequiredCols = columns.map(c => c.toLowerCase()).includes('name') &&
-                                   columns.map(c => c.toLowerCase()).includes('department');
-          return hasRequiredCols;
-        `,
-        solution: 'SELECT name, department FROM employees;',
-      },
-      {
-        id: 'hr-step-2',
-        title: 'Average Salary by Department',
-        description: 'Calculate the average salary for each department to understand compensation across the organization.',
-        context: 'How much does the average Engineering employee make vs. Sales? Group by department and calculate the average. Round the numbers so they\'re readable.',
-        hint: 'Use GROUP BY with AVG() function. Consider using ROUND() for cleaner numbers.',
-        expectedColumns: ['department', 'avg_salary'],
-        validateFn: `
-          if (values.length !== 5) return false;
-          const deptIdx = columns.map(c => c.toLowerCase()).indexOf('department');
-          const avgIdx = columns.findIndex(c => c.toLowerCase().includes('avg') || c.toLowerCase().includes('salary'));
-          if (deptIdx === -1 || avgIdx === -1) return false;
-          const engRow = values.find(r => r[deptIdx] === 'Engineering');
-          return engRow && engRow[avgIdx] > 90000;
-        `,
-        solution: 'SELECT department, ROUND(AVG(salary), 2) AS avg_salary FROM employees GROUP BY department;',
-      },
-      {
-        id: 'hr-step-3',
-        title: 'Employees Above Department Average',
-        description: 'Find employees who earn more than their department average.',
-        context: 'Find employees who out-earn their own department\'s average, not the company average. A correlated subquery works here: for each employee, compare their salary to the average of rows with the same department.',
-        hint: 'Use a subquery in the WHERE clause that calculates the average salary for the same department as each employee.',
-        expectedColumns: ['name', 'department', 'salary'],
-        validateFn: `
-          if (values.length < 5) return false;
-          const nameIdx = columns.map(c => c.toLowerCase()).indexOf('name');
-          const names = values.map(r => r[nameIdx]);
-          return names.includes('Sarah Chen') && names.includes('Kevin Moore');
-        `,
-        solution: `SELECT name, department, salary
-FROM employees e1
-WHERE salary > (
-  SELECT AVG(salary)
-  FROM employees e2
-  WHERE e2.department = e1.department
-)
-ORDER BY department, salary DESC;`,
-      },
-      {
-        id: 'hr-step-4',
-        title: 'Rank Employees by Salary Within Department',
-        description: 'Use window functions to rank employees by salary within their department.',
-        context: 'Rank each employee within their department by salary. ROW_NUMBER() gives unique ranks even for ties. RANK() gives tied employees the same number and skips the next. Pick whichever makes sense.',
-        hint: 'Use ROW_NUMBER() or RANK() with PARTITION BY department and ORDER BY salary DESC.',
-        expectedColumns: ['name', 'department', 'salary', 'rank'],
-        validateFn: `
-          const rankIdx = columns.findIndex(c => c.toLowerCase().includes('rank') || c.toLowerCase().includes('row'));
-          if (rankIdx === -1) return false;
-          const deptIdx = columns.map(c => c.toLowerCase()).indexOf('department');
-          const engRows = values.filter(r => r[deptIdx] === 'Engineering');
-          return engRows.length >= 6 && engRows.some(r => r[rankIdx] === 1);
+          if (values.length < 30) return false;
+          const studentIdx = columns.findIndex(c => c.toLowerCase().includes('student'));
+          const courseIdx = columns.findIndex(c => c.toLowerCase().includes('course'));
+          return studentIdx !== -1 && courseIdx !== -1;
         `,
         solution: `SELECT
-  name,
-  department,
-  salary,
-  RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank
-FROM employees
-ORDER BY department, rank;`,
+  s.name AS student_name,
+  c.name AS course_name
+FROM students s
+JOIN enrollments e ON s.id = e.student_id
+JOIN courses c ON e.course_id = c.id
+ORDER BY s.name, c.name;`,
       },
       {
-        id: 'hr-step-5',
-        title: 'Top Earner in Each Department',
-        description: 'Find the highest-paid employee in each department.',
-        context: 'One row per department, showing the highest-paid person in each. Take your ranking query from the previous step and filter it down to rank = 1.',
-        hint: 'Wrap your ranking query in a CTE or subquery, then filter WHERE rank = 1.',
-        expectedColumns: ['name', 'department', 'salary'],
+        id: 'academic-step-2',
+        title: 'Course Count per Student',
+        description: 'Count how many courses each student is taking.',
+        context: 'Count how many courses each student is taking. GROUP BY student and COUNT enrollments.',
+        hint: 'Use GROUP BY student with COUNT() on the enrollments.',
+        expectedColumns: ['student_name', 'course_count'],
         validateFn: `
-          if (values.length !== 5) return false;
-          const deptIdx = columns.map(c => c.toLowerCase()).indexOf('department');
-          const nameIdx = columns.map(c => c.toLowerCase()).indexOf('name');
-          const departments = values.map(r => r[deptIdx]);
-          const uniqueDepts = [...new Set(departments)];
-          if (uniqueDepts.length !== 5) return false;
-          const names = values.map(r => r[nameIdx]);
-          return names.includes('Sarah Chen') && names.includes('Robert Taylor');
+          if (values.length !== 20) return false;
+          const countIdx = columns.findIndex(c => c.toLowerCase().includes('count') || c.toLowerCase().includes('courses'));
+          if (countIdx === -1) return false;
+          return values.every(r => r[countIdx] >= 1 && r[countIdx] <= 5);
         `,
-        solution: `WITH ranked AS (
-  SELECT
-    name,
-    department,
-    salary,
-    RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank
-  FROM employees
+        solution: `SELECT
+  s.name AS student_name,
+  COUNT(e.course_id) AS course_count
+FROM students s
+JOIN enrollments e ON s.id = e.student_id
+GROUP BY s.id, s.name
+ORDER BY course_count DESC;`,
+      },
+      {
+        id: 'academic-step-3',
+        title: 'High-GPA Students in CS Courses',
+        description: 'Find students with GPA above 3.5 who are taking Computer Science courses.',
+        context: 'Filter students two ways at once: GPA above 3.5, and only courses in the Computer Science department. Both conditions need to be true.',
+        hint: 'Filter students by GPA in WHERE, and filter courses by department in a JOIN condition or WHERE.',
+        expectedColumns: ['student_name', 'gpa', 'course_name'],
+        validateFn: `
+          const gpaIdx = columns.findIndex(c => c.toLowerCase().includes('gpa'));
+          const courseIdx = columns.findIndex(c => c.toLowerCase().includes('course'));
+          if (gpaIdx === -1 || courseIdx === -1) return false;
+          return values.every(r => r[gpaIdx] > 3.5) && values.some(r => r[courseIdx] && r[courseIdx].toLowerCase().includes('programming'));
+        `,
+        solution: `SELECT
+  s.name AS student_name,
+  s.gpa,
+  c.name AS course_name
+FROM students s
+JOIN enrollments e ON s.id = e.student_id
+JOIN courses c ON e.course_id = c.id
+WHERE s.gpa > 3.5 AND c.department = 'Computer Science'
+ORDER BY s.gpa DESC;`,
+      },
+      {
+        id: 'academic-step-4',
+        title: 'Teacher with Highest Student GPA Average',
+        description: 'Find which teacher has students with the highest average GPA.',
+        context: 'Walk the chain: teachers to courses to enrollments to students. GROUP BY teacher and average the GPAs of every student in their classes.',
+        hint: 'Join teachers -> courses -> enrollments -> students, then GROUP BY teacher and calculate AVG(gpa).',
+        expectedColumns: ['teacher_name', 'avg_student_gpa'],
+        validateFn: `
+          if (values.length < 1) return false;
+          const nameIdx = columns.findIndex(c => c.toLowerCase().includes('teacher') || c.toLowerCase().includes('name'));
+          const avgIdx = columns.findIndex(c => c.toLowerCase().includes('avg') || c.toLowerCase().includes('gpa'));
+          if (nameIdx === -1 || avgIdx === -1) return false;
+          return values[0][avgIdx] > 3;
+        `,
+        solution: `SELECT
+  t.name AS teacher_name,
+  ROUND(AVG(s.gpa), 2) AS avg_student_gpa
+FROM teachers t
+JOIN courses c ON t.id = c.teacher_id
+JOIN enrollments e ON c.id = e.course_id
+JOIN students s ON e.student_id = s.id
+GROUP BY t.id, t.name
+ORDER BY avg_student_gpa DESC
+LIMIT 1;`,
+      },
+      {
+        id: 'academic-step-5',
+        title: 'Courses Without A Grades',
+        description: 'Find courses where no student received an A.',
+        context: 'Find courses where nobody got an A. NOT IN with a subquery that returns all course IDs that do have an A grade will work.',
+        hint: 'Use NOT IN or NOT EXISTS to find courses without any A grades in enrollments.',
+        expectedColumns: ['course_name'],
+        validateFn: `
+          const nameIdx = columns.findIndex(c => c.toLowerCase().includes('course') || c.toLowerCase().includes('name'));
+          if (nameIdx === -1) return false;
+          return values.length >= 1 && values.every(r => r[nameIdx]);
+        `,
+        solution: `SELECT c.name AS course_name
+FROM courses c
+WHERE c.id NOT IN (
+  SELECT course_id
+  FROM enrollments
+  WHERE grade = 'A'
 )
-SELECT name, department, salary
-FROM ranked
-WHERE rank = 1
-ORDER BY salary DESC;`,
+ORDER BY c.name;`,
       },
     ],
   },
@@ -293,125 +298,120 @@ ORDER BY revenue DESC;`,
     ],
   },
   {
-    slug: 'academic-review',
-    title: 'Academic Performance Review',
-    description: 'Query a school database to look at enrollment, GPA by teacher, and courses where no one got an A. Good practice for multi-table JOINs.',
-    difficulty: 'Beginner',
-    estimatedTime: '~25 min',
-    database: 'school',
-    databaseLabel: 'SCHOOL_DB',
-    color: 'amber',
+    slug: 'hr-analytics',
+    title: 'HR Analytics Report',
+    description: 'Write queries to analyze employee salaries, department payroll, and who earns above average in their own department. The last two steps use window functions (the Window Functions module), so save this one for after you reach them.',
+    difficulty: 'Advanced',
+    estimatedTime: '~30 min',
+    database: 'company',
+    databaseLabel: 'COMPANY_DB',
+    color: 'indigo',
     steps: [
       {
-        id: 'academic-step-1',
-        title: 'Students with Enrolled Courses',
-        description: 'List all students along with the courses they are enrolled in.',
-        context: 'Enrollments is the junction table between students and courses. Join all three to get student names alongside course names.',
-        hint: 'Join students -> enrollments -> courses using the foreign keys student_id and course_id.',
-        expectedColumns: ['student_name', 'course_name'],
+        id: 'hr-step-1',
+        title: 'List Employees with Departments',
+        description: 'Start by retrieving all employees along with their department information.',
+        context: 'Start simple: pull every employee with their department. You\'ll build on this result in later steps.',
+        hint: 'Use SELECT to retrieve the name and department columns from the employees table.',
+        expectedColumns: ['name', 'department'],
         validateFn: `
-          if (values.length < 30) return false;
-          const studentIdx = columns.findIndex(c => c.toLowerCase().includes('student'));
-          const courseIdx = columns.findIndex(c => c.toLowerCase().includes('course'));
-          return studentIdx !== -1 && courseIdx !== -1;
+          if (values.length < 15) return false;
+          const hasRequiredCols = columns.map(c => c.toLowerCase()).includes('name') &&
+                                   columns.map(c => c.toLowerCase()).includes('department');
+          return hasRequiredCols;
         `,
-        solution: `SELECT
-  s.name AS student_name,
-  c.name AS course_name
-FROM students s
-JOIN enrollments e ON s.id = e.student_id
-JOIN courses c ON e.course_id = c.id
-ORDER BY s.name, c.name;`,
+        solution: 'SELECT name, department FROM employees;',
       },
       {
-        id: 'academic-step-2',
-        title: 'Course Count per Student',
-        description: 'Count how many courses each student is taking.',
-        context: 'Count how many courses each student is taking. GROUP BY student and COUNT enrollments.',
-        hint: 'Use GROUP BY student with COUNT() on the enrollments.',
-        expectedColumns: ['student_name', 'course_count'],
+        id: 'hr-step-2',
+        title: 'Average Salary by Department',
+        description: 'Calculate the average salary for each department to understand compensation across the organization.',
+        context: 'How much does the average Engineering employee make vs. Sales? Group by department and calculate the average. Round the numbers so they\'re readable.',
+        hint: 'Use GROUP BY with AVG() function. Consider using ROUND() for cleaner numbers.',
+        expectedColumns: ['department', 'avg_salary'],
         validateFn: `
-          if (values.length !== 20) return false;
-          const countIdx = columns.findIndex(c => c.toLowerCase().includes('count') || c.toLowerCase().includes('courses'));
-          if (countIdx === -1) return false;
-          return values.every(r => r[countIdx] >= 1 && r[countIdx] <= 5);
+          if (values.length !== 5) return false;
+          const deptIdx = columns.map(c => c.toLowerCase()).indexOf('department');
+          const avgIdx = columns.findIndex(c => c.toLowerCase().includes('avg') || c.toLowerCase().includes('salary'));
+          if (deptIdx === -1 || avgIdx === -1) return false;
+          const engRow = values.find(r => r[deptIdx] === 'Engineering');
+          return engRow && engRow[avgIdx] > 90000;
         `,
-        solution: `SELECT
-  s.name AS student_name,
-  COUNT(e.course_id) AS course_count
-FROM students s
-JOIN enrollments e ON s.id = e.student_id
-GROUP BY s.id, s.name
-ORDER BY course_count DESC;`,
+        solution: 'SELECT department, ROUND(AVG(salary), 2) AS avg_salary FROM employees GROUP BY department;',
       },
       {
-        id: 'academic-step-3',
-        title: 'High-GPA Students in CS Courses',
-        description: 'Find students with GPA above 3.5 who are taking Computer Science courses.',
-        context: 'Filter students two ways at once: GPA above 3.5, and only courses in the Computer Science department. Both conditions need to be true.',
-        hint: 'Filter students by GPA in WHERE, and filter courses by department in a JOIN condition or WHERE.',
-        expectedColumns: ['student_name', 'gpa', 'course_name'],
+        id: 'hr-step-3',
+        title: 'Employees Above Department Average',
+        description: 'Find employees who earn more than their department average.',
+        context: 'Find employees who out-earn their own department\'s average, not the company average. A correlated subquery works here: for each employee, compare their salary to the average of rows with the same department.',
+        hint: 'Use a subquery in the WHERE clause that calculates the average salary for the same department as each employee.',
+        expectedColumns: ['name', 'department', 'salary'],
         validateFn: `
-          const gpaIdx = columns.findIndex(c => c.toLowerCase().includes('gpa'));
-          const courseIdx = columns.findIndex(c => c.toLowerCase().includes('course'));
-          if (gpaIdx === -1 || courseIdx === -1) return false;
-          return values.every(r => r[gpaIdx] > 3.5) && values.some(r => r[courseIdx] && r[courseIdx].toLowerCase().includes('programming'));
+          if (values.length < 5) return false;
+          const nameIdx = columns.map(c => c.toLowerCase()).indexOf('name');
+          const names = values.map(r => r[nameIdx]);
+          return names.includes('Sarah Chen') && names.includes('Kevin Moore');
         `,
-        solution: `SELECT
-  s.name AS student_name,
-  s.gpa,
-  c.name AS course_name
-FROM students s
-JOIN enrollments e ON s.id = e.student_id
-JOIN courses c ON e.course_id = c.id
-WHERE s.gpa > 3.5 AND c.department = 'Computer Science'
-ORDER BY s.gpa DESC;`,
-      },
-      {
-        id: 'academic-step-4',
-        title: 'Teacher with Highest Student GPA Average',
-        description: 'Find which teacher has students with the highest average GPA.',
-        context: 'Walk the chain: teachers to courses to enrollments to students. GROUP BY teacher and average the GPAs of every student in their classes.',
-        hint: 'Join teachers -> courses -> enrollments -> students, then GROUP BY teacher and calculate AVG(gpa).',
-        expectedColumns: ['teacher_name', 'avg_student_gpa'],
-        validateFn: `
-          if (values.length < 1) return false;
-          const nameIdx = columns.findIndex(c => c.toLowerCase().includes('teacher') || c.toLowerCase().includes('name'));
-          const avgIdx = columns.findIndex(c => c.toLowerCase().includes('avg') || c.toLowerCase().includes('gpa'));
-          if (nameIdx === -1 || avgIdx === -1) return false;
-          return values[0][avgIdx] > 3;
-        `,
-        solution: `SELECT
-  t.name AS teacher_name,
-  ROUND(AVG(s.gpa), 2) AS avg_student_gpa
-FROM teachers t
-JOIN courses c ON t.id = c.teacher_id
-JOIN enrollments e ON c.id = e.course_id
-JOIN students s ON e.student_id = s.id
-GROUP BY t.id, t.name
-ORDER BY avg_student_gpa DESC
-LIMIT 1;`,
-      },
-      {
-        id: 'academic-step-5',
-        title: 'Courses Without A Grades',
-        description: 'Find courses where no student received an A.',
-        context: 'Find courses where nobody got an A. NOT IN with a subquery that returns all course IDs that do have an A grade will work.',
-        hint: 'Use NOT IN or NOT EXISTS to find courses without any A grades in enrollments.',
-        expectedColumns: ['course_name'],
-        validateFn: `
-          const nameIdx = columns.findIndex(c => c.toLowerCase().includes('course') || c.toLowerCase().includes('name'));
-          if (nameIdx === -1) return false;
-          return values.length >= 1 && values.every(r => r[nameIdx]);
-        `,
-        solution: `SELECT c.name AS course_name
-FROM courses c
-WHERE c.id NOT IN (
-  SELECT course_id
-  FROM enrollments
-  WHERE grade = 'A'
+        solution: `SELECT name, department, salary
+FROM employees e1
+WHERE salary > (
+  SELECT AVG(salary)
+  FROM employees e2
+  WHERE e2.department = e1.department
 )
-ORDER BY c.name;`,
+ORDER BY department, salary DESC;`,
+      },
+      {
+        id: 'hr-step-4',
+        title: 'Rank Employees by Salary Within Department',
+        description: 'Use window functions to rank employees by salary within their department.',
+        context: 'Rank each employee within their department by salary. ROW_NUMBER() gives unique ranks even for ties. RANK() gives tied employees the same number and skips the next. Pick whichever makes sense.',
+        hint: 'Use ROW_NUMBER() or RANK() with PARTITION BY department and ORDER BY salary DESC.',
+        expectedColumns: ['name', 'department', 'salary', 'rank'],
+        validateFn: `
+          const rankIdx = columns.findIndex(c => c.toLowerCase().includes('rank') || c.toLowerCase().includes('row'));
+          if (rankIdx === -1) return false;
+          const deptIdx = columns.map(c => c.toLowerCase()).indexOf('department');
+          const engRows = values.filter(r => r[deptIdx] === 'Engineering');
+          return engRows.length >= 6 && engRows.some(r => r[rankIdx] === 1);
+        `,
+        solution: `SELECT
+  name,
+  department,
+  salary,
+  RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank
+FROM employees
+ORDER BY department, rank;`,
+      },
+      {
+        id: 'hr-step-5',
+        title: 'Top Earner in Each Department',
+        description: 'Find the highest-paid employee in each department.',
+        context: 'One row per department, showing the highest-paid person in each. Take your ranking query from the previous step and filter it down to rank = 1.',
+        hint: 'Wrap your ranking query in a CTE or subquery, then filter WHERE rank = 1.',
+        expectedColumns: ['name', 'department', 'salary'],
+        validateFn: `
+          if (values.length !== 5) return false;
+          const deptIdx = columns.map(c => c.toLowerCase()).indexOf('department');
+          const nameIdx = columns.map(c => c.toLowerCase()).indexOf('name');
+          const departments = values.map(r => r[deptIdx]);
+          const uniqueDepts = [...new Set(departments)];
+          if (uniqueDepts.length !== 5) return false;
+          const names = values.map(r => r[nameIdx]);
+          return names.includes('Sarah Chen') && names.includes('Robert Taylor');
+        `,
+        solution: `WITH ranked AS (
+  SELECT
+    name,
+    department,
+    salary,
+    RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank
+  FROM employees
+)
+SELECT name, department, salary
+FROM ranked
+WHERE rank = 1
+ORDER BY salary DESC;`,
       },
     ],
   },

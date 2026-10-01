@@ -80,21 +80,21 @@ export default function ProjectsPage() {
                 <Link
                   key={thread.id}
                   href={`/projects/thread/${thread.id}`}
-                  className="group flex flex-col justify-between h-full font-mono p-5 rounded-xl border border-border/80 bg-secondary/40 hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm"
+                  className="group flex flex-col justify-between h-full font-mono p-5 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
                   aria-label={`Open scenario ${thread.title}`}
                 >
                   <div className="flex-1 space-y-3">
-                    <div className="text-sm font-bold text-foreground">scenarios/{thread.id}/</div>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
+                    <div className="text-sm font-bold text-slate-900">scenarios/{thread.id}/</div>
+                    <p className="text-xs leading-relaxed text-slate-600">
                       {thread.description}
                     </p>
-                    <p className="text-[11px] text-muted-foreground font-semibold pt-1">
+                    <p className="text-[11px] text-slate-500 font-semibold pt-1">
                       [{thread.databaseLabel}] · modules {thread.modules[0]}-{thread.modules[thread.modules.length - 1]}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground font-medium">{completed} of {total} done</span>
+                  <div className="mt-4 pt-3 border-t border-slate-300 flex items-center justify-between text-xs">
+                    <span className="text-slate-600 font-medium">{completed} of {total} done</span>
                     <span className={statusClass}>{statusText}</span>
                   </div>
                 </Link>
