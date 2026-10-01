@@ -114,20 +114,6 @@ export default function ProjectsPage() {
           </div>
         </section>
       </main>
-
-      <footer className="border-t border-border/60 py-5 font-mono text-xs">
-        <div className="max-w-[1302px] mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-muted-foreground">
-          <span>
-            <span className="text-emerald-500 font-bold">exit 0</span> · SQL Mastery Projects
-          </span>
-          <Link
-            href="/"
-            className="hover:text-foreground transition-colors font-semibold"
-          >
-            ~ home
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
