@@ -16,34 +16,36 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   const statusText = isComplete ? '✓ complete' : progress > 0 ? 'in progress' : 'not started';
   const statusClass = isComplete
-    ? 'text-emerald-400 font-bold'
+    ? 'text-emerald-500 font-bold'
     : progress > 0
-    ? 'text-indigo-400 font-semibold'
-    : 'text-slate-500 font-medium';
+    ? 'text-accent font-semibold'
+    : 'text-muted-foreground font-medium';
 
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group block font-mono p-4 rounded border border-slate-800 bg-slate-900/40 hover:bg-slate-900 hover:border-indigo-400/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+      className="group flex flex-col justify-between h-full font-mono p-5 rounded-xl border border-border/80 bg-secondary/40 hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm"
       aria-label={`Open project ${project.title}`}
     >
-      <div className="text-sm">
-        <span className="text-slate-100">projects/{project.slug}/</span>
-      </div>
-      <p className="mt-2 text-xs leading-relaxed text-slate-400">{project.description}</p>
+      <div className="flex-1 space-y-3">
+        <div className="text-sm">
+          <span className="font-bold text-foreground">projects/{project.slug}/</span>
+        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">{project.description}</p>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
-        <span>[{project.difficulty}]</span>
-        <span>·</span>
-        <span>{project.estimatedTime}</span>
-        <span>·</span>
-        <span>{project.databaseLabel}</span>
-        <span>·</span>
-        <span>{project.steps.length} steps</span>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground font-semibold pt-1">
+          <span>[{project.difficulty}]</span>
+          <span>·</span>
+          <span>{project.estimatedTime}</span>
+          <span>·</span>
+          <span>{project.databaseLabel}</span>
+          <span>·</span>
+          <span>{project.steps.length} steps</span>
+        </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs">
-        <span className="text-slate-500">{completedStepsCount} of {project.steps.length} done</span>
+      <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-xs">
+        <span className="text-muted-foreground font-medium">{completedStepsCount} of {project.steps.length} done</span>
         <span className={statusClass}>{statusText}</span>
       </div>
     </Link>
