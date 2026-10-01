@@ -11,14 +11,15 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   const getProjectProgress = useProjectProgressStore((state) => state.getProjectProgress);
   const progress = getProjectProgress(project.slug, project.steps.length);
+  const completedStepsCount = Math.round((progress / 100) * project.steps.length);
   const isComplete = progress === 100;
 
-  const statusText = isComplete ? '✓ complete' : progress > 0 ? `${progress}%` : '─';
+  const statusText = isComplete ? '✓ complete' : progress > 0 ? 'in progress' : 'not started';
   const statusClass = isComplete
-    ? 'text-emerald-400'
+    ? 'text-emerald-400 font-bold'
     : progress > 0
-    ? 'text-indigo-400'
-    : 'text-slate-500';
+    ? 'text-indigo-400 font-semibold'
+    : 'text-slate-500 font-medium';
 
   return (
     <Link
@@ -29,7 +30,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       <div className="text-sm">
         <span className="text-slate-100">projects/{project.slug}/</span>
       </div>
-      <p className="mt-2 text-xs leading-relaxed text-slate-400 line-clamp-2">{project.description}</p>
+      <p className="mt-2 text-xs leading-relaxed text-slate-400">{project.description}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
         <span>[{project.difficulty}]</span>
@@ -42,7 +43,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs">
-        <span className="text-slate-500">progress</span>
+        <span className="text-slate-500">{completedStepsCount} of {project.steps.length} done</span>
         <span className={statusClass}>{statusText}</span>
       </div>
     </Link>
