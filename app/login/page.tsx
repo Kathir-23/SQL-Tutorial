@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LogIn, AlertCircle, ArrowRight } from 'lucide-react';
+import { LogIn, AlertCircle, ArrowRight, UserPlus } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import ThemeToggle from '@/components/ThemeToggle';
+import ModeToggle from '@/components/ModeToggle';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -32,24 +32,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
-      {/* Top Header Nav */}
-      <header className="border-b border-border/60">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between gap-3 text-xs">
-          <Link
-            href="/"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-          >
-            <span className="text-accent">$</span> cd ~/login
+    <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm selection:bg-accent/20">
+      {/* Top Header Nav matching Home Page */}
+      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur support-[backdrop-filter]:bg-background/60">
+        <div className="max-w-[1302px] mx-auto px-4 h-16 flex items-center justify-between gap-4 text-xs">
+          <Link href="/" className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity">
+            <span className="px-3 py-1 rounded-lg bg-accent/15 text-accent border border-accent/30 font-bold text-xs">$ sql-mastery</span>
           </Link>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-3">
+            <ModeToggle />
             <Link
               href="/signup"
-              className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+              className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-lg bg-accent text-white font-bold hover:opacity-90 transition-opacity shadow-sm text-xs"
             >
-              signup
+              <UserPlus className="w-3.5 h-3.5 text-white" />
+              <span>Start Free</span>
             </Link>
-            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -69,7 +68,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="p-3 rounded border border-rose-500/40 bg-rose-500/10 text-rose-300 text-xs flex items-center gap-2">
+            <div className="p-3 rounded-lg border border-rose-500/40 bg-rose-500/10 text-rose-300 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
@@ -77,7 +76,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1">
-              <label htmlFor="email" className="block text-xs uppercase tracking-wider text-muted-foreground">
+              <label htmlFor="email" className="block text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                 Email Address:
               </label>
               <input
@@ -87,12 +86,12 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@domain.com"
-                className="w-full px-3 py-2 rounded border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="pass" className="block text-xs uppercase tracking-wider text-muted-foreground">
+              <label htmlFor="pass" className="block text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                 Password:
               </label>
               <input
@@ -102,16 +101,16 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3 py-2 rounded border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-accent bg-accent text-accent-foreground font-semibold text-xs hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-accent bg-accent text-white font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
             >
               <span>Log In</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-white" />
             </button>
           </form>
 

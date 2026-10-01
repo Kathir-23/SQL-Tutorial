@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, UserCheck, AlertCircle, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, UserCheck, AlertCircle, ArrowRight, CheckCircle2, ArrowLeft, LogIn } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import ThemeToggle from '@/components/ThemeToggle';
+import ModeToggle from '@/components/ModeToggle';
 
 export default function SignUpPage() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -22,12 +22,12 @@ export default function SignUpPage() {
     setError('');
 
     if (!email.trim() || !password.trim() || !displayName.trim()) {
-      setError('Please fill in your email, password, and name.');
+      setError('Please fill in your email, password, and display name.');
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
 
@@ -54,24 +54,23 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
-      {/* Top Header Nav */}
-      <header className="border-b border-border/60">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between gap-3 text-xs">
-          <Link
-            href="/"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-          >
-            <span className="text-accent">$</span> cd ~/signup
+    <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm selection:bg-accent/20">
+      {/* Top Header Nav matching Home Page */}
+      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur support-[backdrop-filter]:bg-background/60">
+        <div className="max-w-[1302px] mx-auto px-4 h-16 flex items-center justify-between gap-4 text-xs">
+          <Link href="/" className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity">
+            <span className="px-3 py-1 rounded-lg bg-accent/15 text-accent border border-accent/30 font-bold text-xs">$ sql-mastery</span>
           </Link>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-3">
+            <ModeToggle />
             <Link
               href="/login"
-              className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border/80 text-foreground hover:bg-secondary/60 transition-colors font-semibold text-xs"
             >
-              login
+              <LogIn className="w-3.5 h-3.5 text-accent" />
+              <span>Log In</span>
             </Link>
-            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -81,16 +80,16 @@ export default function SignUpPage() {
         <div className="space-y-6">
           {/* Step Indicator Badges */}
           <div className="flex items-center justify-between gap-2 text-xs">
-            <div className={`flex-1 p-2 rounded border text-center font-bold ${step === 1 ? 'bg-accent/15 border-accent text-accent' : 'bg-card border-border/60 text-muted-foreground'}`}>
+            <div className={`flex-1 p-2 rounded-lg border text-center font-bold ${step === 1 ? 'bg-accent/15 border-accent text-accent' : 'bg-card border-border/60 text-muted-foreground'}`}>
               1. Account Details
             </div>
-            <div className={`flex-1 p-2 rounded border text-center font-bold ${step === 2 ? 'bg-accent/15 border-accent text-accent' : 'bg-card border-border/60 text-muted-foreground'}`}>
+            <div className={`flex-1 p-2 rounded-lg border text-center font-bold ${step === 2 ? 'bg-accent/15 border-accent text-accent' : 'bg-card border-border/60 text-muted-foreground'}`}>
               2. Certificate Name
             </div>
           </div>
 
           {error && (
-            <div className="p-3 rounded border border-rose-500/40 bg-rose-500/10 text-rose-300 text-xs flex items-center gap-2">
+            <div className="p-3 rounded-lg border border-rose-500/40 bg-rose-500/10 text-rose-300 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
@@ -112,8 +111,8 @@ export default function SignUpPage() {
 
               <form onSubmit={handleStep1Submit} className="space-y-4">
                 <div className="space-y-1">
-                  <label htmlFor="name" className="block text-xs uppercase tracking-wider text-muted-foreground">
-                    Your Name:
+                  <label htmlFor="name" className="block text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                    Display name:
                   </label>
                   <input
                     id="name"
@@ -122,12 +121,12 @@ export default function SignUpPage() {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="e.g. Kathiravan"
-                    className="w-full px-3 py-2 rounded border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50"
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="email" className="block text-xs uppercase tracking-wider text-muted-foreground">
+                  <label htmlFor="email" className="block text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                     Email Address:
                   </label>
                   <input
@@ -137,32 +136,32 @@ export default function SignUpPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@domain.com"
-                    className="w-full px-3 py-2 rounded border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50"
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="pass" className="block text-xs uppercase tracking-wider text-muted-foreground">
-                    Password:
+                  <label htmlFor="pass" className="block text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                    Password (min. 8 characters):
                   </label>
                   <input
                     id="pass"
                     type="password"
                     required
-                    minLength={6}
+                    minLength={8}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full px-3 py-2 rounded border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50"
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-accent bg-accent text-accent-foreground font-semibold text-xs hover:opacity-90 transition-opacity"
+                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-accent bg-accent text-white font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
                 >
                   <span>Continue to Certificate Setup</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-white" />
                 </button>
               </form>
             </div>
@@ -194,17 +193,17 @@ export default function SignUpPage() {
                     value={legalName}
                     onChange={(e) => setLegalName(e.target.value)}
                     placeholder="e.g. Kathiravan"
-                    className="w-full px-3 py-2 rounded border border-accent/60 bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                    className="w-full px-3 py-2 rounded-lg border border-accent bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>
 
                 {/* Preview Box */}
-                <div className="p-4 rounded-lg border border-accent/30 bg-accent/10 text-center space-y-1">
+                <div className="p-4 rounded-xl border border-accent/30 bg-accent/10 text-center space-y-1">
                   <span className="block text-[10px] text-muted-foreground uppercase tracking-widest">Certificate Preview</span>
                   <span className="text-xl font-bold text-accent tracking-tight">{legalName || 'Your Name'}</span>
                 </div>
 
-                <div className="p-3 rounded border border-border/60 bg-muted/20 text-[11px] text-muted-foreground leading-relaxed">
+                <div className="p-3 rounded-lg border border-border/60 bg-muted/20 text-[11px] text-muted-foreground leading-relaxed">
                   💡 <strong>Note:</strong> You will receive 1 free correction credit after registration to fix any typo before permanent certificate lock.
                 </div>
 
@@ -212,7 +211,7 @@ export default function SignUpPage() {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="flex-1 px-3 py-2.5 rounded border border-border bg-card text-foreground text-xs hover:bg-muted transition-colors flex items-center justify-center gap-1"
+                    className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-card text-foreground text-xs font-semibold hover:bg-muted transition-colors flex items-center justify-center gap-1"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Back</span>
@@ -220,9 +219,9 @@ export default function SignUpPage() {
 
                   <button
                     type="submit"
-                    className="flex-1 px-3 py-2.5 rounded border border-accent bg-accent text-accent-foreground font-semibold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5"
+                    className="flex-1 px-3 py-2.5 rounded-lg border border-accent bg-accent text-white font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
                   >
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4 text-white" />
                     <span>Confirm & Create Account</span>
                   </button>
                 </div>
