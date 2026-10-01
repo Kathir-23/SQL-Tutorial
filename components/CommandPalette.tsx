@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   runTerminalCommand,
   completeCommand,
@@ -33,6 +33,8 @@ export default function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   // Global Cmd/Ctrl+K toggles the palette (unless the code editor owns focus).
   useEffect(() => {
@@ -120,18 +122,20 @@ export default function CommandPalette() {
 
   return (
     <>
-      {/* Always-present, understated trigger. Dodges the bottom-right tutor dock. */}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label="Open command menu (Command K)"
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        className="fixed bottom-4 left-4 z-40 inline-flex items-center gap-1.5 rounded border border-slate-700 bg-slate-900/80 px-2.5 py-1.5 font-mono text-xs text-slate-400 backdrop-blur hover:text-slate-100 hover:border-indigo-400/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-      >
-        <span className="text-indigo-400" aria-hidden="true">{">_"}</span>
-        <span className="hidden sm:inline" aria-hidden="true">⌘K</span>
-      </button>
+      {/* Hidden on homepage (/); Light mode trigger button on modules & lesson pages. */}
+      {!isHomePage && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open command menu (Command K)"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          className="fixed bottom-4 left-4 z-40 inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-card text-foreground px-3 py-1.5 font-mono text-xs shadow-sm backdrop-blur hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          <span className="text-accent font-bold" aria-hidden="true">{">_"}</span>
+          <span className="hidden sm:inline font-semibold text-muted-foreground" aria-hidden="true">⌘K</span>
+        </button>
+      )}
 
       {open && (
         <div

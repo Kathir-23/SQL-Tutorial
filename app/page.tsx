@@ -166,20 +166,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-
-      <footer className="border-t border-border/60 py-5 text-xs">
-        <div className="max-w-[1302px] mx-auto px-4 flex flex-wrap items-center justify-between gap-4 text-muted-foreground">
-          <span>
-            <span className="text-emerald-500 font-bold">exit 0</span> · SQL Mastery LMS · Next.js + SQLite WASM
-          </span>
-          <span className="flex flex-wrap gap-x-4 gap-y-1">
-            <Link href="/learn" className="hover:text-foreground transition-colors">dashboard</Link>
-            <Link href="/glossary" className="hover:text-foreground transition-colors">glossary</Link>
-            <Link href="/next-steps" className="hover:text-foreground transition-colors">certificate</Link>
-            <Link href="/playground" className="hover:text-foreground transition-colors">playground</Link>
-          </span>
-        </div>
-      </footer>
     </div>
   );
 }
