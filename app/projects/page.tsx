@@ -51,8 +51,8 @@ export default function ProjectsPage() {
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
             Projects
           </h1>
-          <p className="mt-2 text-xs text-slate-300 dark:text-slate-300 font-semibold">
-            {completedStepsCombined} of {totalStepsCombined} steps done
+          <p className="mt-0.5 text-xs text-[#64748b] font-normal">
+            {completedStepsCombined} of {totalStepsCombined} steps done across 3 guided scenarios and 3 standalone projects
           </p>
         </section>
 
