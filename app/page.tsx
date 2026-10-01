@@ -33,10 +33,11 @@ export default function HomePage() {
             {isAuthenticated && user ? (
               <Link
                 href="/learn"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent text-accent-foreground font-semibold hover:opacity-90 transition-opacity text-xs"
+                style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity text-xs"
               >
-                <User className="w-3.5 h-3.5" />
-                <span>Dashboard →</span>
+                <User className="w-3.5 h-3.5" style={{ color: '#ffffff' }} />
+                <span style={{ color: '#ffffff' }}>Dashboard →</span>
               </Link>
             ) : (
               <div className="flex items-center gap-2.5">
