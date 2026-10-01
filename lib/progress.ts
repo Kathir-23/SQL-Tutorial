@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { isShowcase } from '@/lib/mode';
+import { supabase } from '@/lib/supabase';
 
 // Spaced repetition: a completed lesson is due immediately, then the gap
 // widens each time it's reviewed: +1d -> +3d -> +7d -> +16d -> +35d.
@@ -90,7 +90,6 @@ export const useProgressStore = create<ProgressState>()(
       reviewedAt: {},
 
       completeLesson: (slug: string) => {
-        if (isShowcase()) return;
         const state = get();
 
         if (state.completedLessons.includes(slug)) {
@@ -98,59 +97,81 @@ export const useProgressStore = create<ProgressState>()(
         }
 
         const newStreak = calculateStreak(state.lastActivity, state.streak);
+        const newCompleted = [...state.completedLessons, slug];
+        const newXP = state.xp + 10;
 
         set({
-          completedLessons: [...state.completedLessons, slug],
-          xp: state.xp + 10,
+          completedLessons: newCompleted,
+          xp: newXP,
           streak: newStreak,
           maxStreak: Math.max(state.maxStreak, newStreak),
           lastActivity: getToday(),
         });
+
+        // Cloud sync if user logged in
+        if (typeof window !== 'undefined') {
+          const activeUserId = localStorage.getItem('sql-mastery-active-user-id');
+          if (activeUserId) {
+            syncProgressToCloud(activeUserId, newCompleted, newStreak, newXP);
+          }
+        }
       },
 
       completeCheckpoint: (moduleSlug: string) => {
-        if (isShowcase()) return;
         const key = checkpointKey(moduleSlug);
         const state = get();
         const done = state.completedCheckpoints ?? [];
         if (done.includes(moduleSlug)) {
-          // Already completed: a re-do counts as a spaced review (advance the box).
           get().markReviewed(key);
           return;
         }
         const newStreak = calculateStreak(state.lastActivity, state.streak);
+        const newCheckpoints = [...done, moduleSlug];
+        const newXP = state.xp + XP_VALUES.CHECKPOINT_COMPLETE;
+
         set({
-          completedCheckpoints: [...done, moduleSlug],
-          xp: state.xp + XP_VALUES.CHECKPOINT_COMPLETE,
+          completedCheckpoints: newCheckpoints,
+          xp: newXP,
           streak: newStreak,
           maxStreak: Math.max(state.maxStreak, newStreak),
           lastActivity: getToday(),
-          // Enter spaced review at box 0 (due again tomorrow).
           reviewedAt: {
             ...state.reviewedAt,
             [key]: { at: new Date().toISOString(), box: 0 },
           },
         });
+
+        if (typeof window !== 'undefined') {
+          const activeUserId = localStorage.getItem('sql-mastery-active-user-id');
+          if (activeUserId) {
+            syncProgressToCloud(activeUserId, state.completedLessons, newStreak, newXP);
+          }
+        }
       },
 
       addXP: (amount: number) => {
-        if (isShowcase()) return;
         const state = get();
         const newStreak = calculateStreak(state.lastActivity, state.streak);
+        const newXP = state.xp + amount;
 
         set({
-          xp: state.xp + amount,
+          xp: newXP,
           streak: newStreak,
           maxStreak: Math.max(state.maxStreak, newStreak),
           lastActivity: getToday(),
         });
+
+        if (typeof window !== 'undefined') {
+          const activeUserId = localStorage.getItem('sql-mastery-active-user-id');
+          if (activeUserId) {
+            syncProgressToCloud(activeUserId, state.completedLessons, newStreak, newXP);
+          }
+        }
       },
 
       markReviewed: (slug: string) => {
-        if (isShowcase()) return;
         const state = get();
         const cur = normalizeReview(state.reviewedAt[slug]);
-        // Don't inflate the interval by reopening a lesson that isn't due yet.
         if (cur && !isLessonDue(slug, state.reviewedAt)) return;
         const nextBox = cur
           ? Math.min(cur.box + 1, SRS_INTERVALS_DAYS.length - 1)
@@ -198,6 +219,74 @@ export const useProgressStore = create<ProgressState>()(
     }
   )
 );
+
+// Cloud sync helper function
+export async function syncProgressToCloud(
+  userId: string,
+  completedLessons: string[],
+  streak: number,
+  xp: number
+) {
+  if (!userId) return;
+  try {
+    await supabase.from('user_progress').upsert({
+      user_id: userId,
+      completed_lessons: completedLessons,
+      streak_count: streak,
+      xp: xp,
+      updated_at: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.warn('Failed to sync user progress to Supabase:', err);
+  }
+}
+
+// Requirement 2: Merge browser's saved lessons with cloud lessons (combine both, never overwrite)
+export async function mergeCloudProgress(userId: string) {
+  if (!userId) return;
+  try {
+    const { data } = await supabase
+      .from('user_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    const localState = useProgressStore.getState();
+
+    let cloudLessons: string[] = [];
+    let cloudStreak = 0;
+    let cloudXP = 0;
+
+    if (data) {
+      cloudLessons = Array.isArray(data.completed_lessons) ? data.completed_lessons : [];
+      cloudStreak = data.streak_count ?? 0;
+      cloudXP = data.xp ?? 0;
+    }
+
+    // Merge: Combine arrays uniquely without overwriting
+    const mergedLessons = Array.from(new Set([...cloudLessons, ...localState.completedLessons]));
+    const mergedStreak = Math.max(cloudStreak, localState.streak);
+    const mergedXP = Math.max(cloudXP, localState.xp);
+
+    useProgressStore.setState({
+      completedLessons: mergedLessons,
+      streak: mergedStreak,
+      maxStreak: Math.max(localState.maxStreak, mergedStreak),
+      xp: mergedXP,
+    });
+
+    // Save merged state back to cloud DB
+    await supabase.from('user_progress').upsert({
+      user_id: userId,
+      completed_lessons: mergedLessons,
+      streak_count: mergedStreak,
+      xp: mergedXP,
+      updated_at: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.warn('Failed to merge cloud progress:', err);
+  }
+}
 
 export const XP_VALUES = {
   LESSON_COMPLETE: 10,

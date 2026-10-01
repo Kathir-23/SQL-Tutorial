@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useTransition } from 'react';
 import { supabase } from './supabase';
+import { mergeCloudProgress } from '@/lib/progress';
 
 export interface User {
   id: string;
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const USERS_DB_KEY = 'sql-mastery-users-db';
 const SESSION_KEY = 'sql-mastery-active-session';
+const ACTIVE_USER_ID_KEY = 'sql-mastery-active-user-id';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -54,6 +56,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               nameEditCredits: data.name_edit_credits ?? 1,
               createdAt: data.created_at,
             };
+            localStorage.setItem(ACTIVE_USER_ID_KEY, cloudUser.id);
+            await mergeCloudProgress(cloudUser.id);
             startTransition(() => {
               setUser(cloudUser);
             });
@@ -70,6 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (users[cleanEmail]) {
             const { pass, ...userData } = users[cleanEmail];
             void pass;
+            localStorage.setItem(ACTIVE_USER_ID_KEY, userData.id);
+            await mergeCloudProgress(userData.id);
             startTransition(() => {
               setUser(userData);
             });
@@ -140,6 +146,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       users[cleanEmail] = { ...newUser, pass };
       localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
       localStorage.setItem(SESSION_KEY, cleanEmail);
+      localStorage.setItem(ACTIVE_USER_ID_KEY, newUser.id);
+      await mergeCloudProgress(newUser.id);
       setUser(newUser);
 
       return { success: true };
@@ -172,8 +180,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           createdAt: data.created_at,
         };
 
-        // Cache session locally
+        // Cache session locally & merge progress
         localStorage.setItem(SESSION_KEY, cleanEmail);
+        localStorage.setItem(ACTIVE_USER_ID_KEY, cloudUser.id);
+        await mergeCloudProgress(cloudUser.id);
         setUser(cloudUser);
         return { success: true };
       }
@@ -196,6 +206,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { pass: _, ...userData } = existing;
       void _;
       localStorage.setItem(SESSION_KEY, cleanEmail);
+      localStorage.setItem(ACTIVE_USER_ID_KEY, userData.id);
+      await mergeCloudProgress(userData.id);
       setUser(userData);
       return { success: true };
     } catch {
@@ -206,6 +218,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     try {
       localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(ACTIVE_USER_ID_KEY);
     } catch {
       // ignore
     }
