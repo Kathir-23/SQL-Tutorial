@@ -71,10 +71,10 @@ export default function ProjectsPage() {
               const done = percent === 100;
               const statusText = done ? '✓ complete' : percent > 0 ? 'in progress' : 'not started';
               const statusClass = done
-                ? 'text-emerald-500 font-bold'
+                ? 'text-emerald-700 font-bold'
                 : percent > 0
-                ? 'text-accent font-semibold'
-                : 'text-muted-foreground font-medium';
+                ? 'text-purple-800 font-bold'
+                : 'text-slate-700 font-semibold';
 
               return (
                 <Link
@@ -85,16 +85,16 @@ export default function ProjectsPage() {
                 >
                   <div className="flex-1 space-y-3">
                     <div className="text-sm font-bold text-slate-900">scenarios/{thread.id}/</div>
-                    <p className="text-xs leading-relaxed text-slate-600">
+                    <p className="text-xs leading-relaxed text-slate-800">
                       {thread.description}
                     </p>
-                    <p className="text-[11px] text-slate-500 font-semibold pt-1">
+                    <p className="text-[11px] text-slate-700 font-semibold pt-1">
                       [{thread.databaseLabel}] · modules {thread.modules[0]}-{thread.modules[thread.modules.length - 1]}
                     </p>
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-slate-300 flex items-center justify-between text-xs">
-                    <span className="text-slate-600 font-medium">{completed} of {total} done</span>
+                    <span className="text-slate-800 font-medium">{completed} of {total} done</span>
                     <span className={statusClass}>{statusText}</span>
                   </div>
                 </Link>
