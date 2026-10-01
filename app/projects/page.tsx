@@ -46,23 +46,23 @@ export default function ProjectsPage() {
       {/* Shared Sticky Header */}
       <Header />
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-10">
+      <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-4 sm:py-5">
         <section className="font-mono">
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
             Projects
           </h1>
-          <p className="mt-2 text-xs text-slate-300 dark:text-slate-300 font-semibold">
+          <p className="mt-1.5 text-xs text-slate-300 dark:text-slate-300 font-semibold">
             {completedStepsCombined} of {totalStepsCombined} steps done across 3 guided scenarios and 3 standalone projects
           </p>
         </section>
 
         {/* GUIDED SCENARIOS SECTION */}
-        <section className="mt-10">
+        <section className="mt-4 sm:mt-5">
           <p className="text-xs uppercase tracking-widest text-accent font-bold font-mono"># Guided Scenarios</p>
-          <p className="mt-1 text-xs text-muted-foreground font-mono">
+          <p className="mt-0.5 text-xs text-muted-foreground font-mono">
             Longer running scenarios that span multiple modules.
           </p>
-          <div className="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="mt-2.5 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
             {projectThreads.map((thread) => {
               const { completed, total } = getThreadProgress(thread.id);
               const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -78,20 +78,20 @@ export default function ProjectsPage() {
                 <Link
                   key={thread.id}
                   href={`/projects/thread/${thread.id}`}
-                  className="group flex flex-col justify-between h-full font-mono p-5 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
+                  className="group flex flex-col justify-between h-full font-mono p-3.5 sm:p-4 rounded-xl border border-border/80 bg-[#f1f5f9] hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-sm text-slate-900"
                   aria-label={`Open scenario ${thread.title}`}
                 >
-                  <div className="flex-1 space-y-3">
+                  <div className="flex-1 space-y-1.5">
                     <div className="text-sm font-bold text-slate-900">scenarios/{thread.id}/</div>
                     <p className="text-xs leading-relaxed text-[#475569]">
                       {thread.description}
                     </p>
-                    <p className="text-[11px] text-[#64748b] font-semibold pt-1">
+                    <p className="text-[11px] text-[#64748b] font-semibold pt-0.5">
                       [{thread.databaseLabel}] · modules {thread.modules[0]}-{thread.modules[thread.modules.length - 1]}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-300 flex items-center justify-between text-xs">
+                  <div className="mt-2.5 pt-2 border-t border-slate-300 flex items-center justify-between text-xs">
                     <span className="text-[#475569] font-medium">{completed} of {total} done</span>
                     <span className={statusClass}>{statusText}</span>
                   </div>
@@ -102,12 +102,12 @@ export default function ProjectsPage() {
         </section>
 
         {/* STANDALONE PROJECTS SECTION */}
-        <section className="mt-10">
+        <section className="mt-4 sm:mt-5">
           <p className="text-xs uppercase tracking-widest text-accent font-bold font-mono"># Standalone Projects</p>
-          <p className="mt-1 text-xs text-muted-foreground font-mono">
+          <p className="mt-0.5 text-xs text-muted-foreground font-mono">
             Standalone guided projects against a real SQLite database.
           </p>
-          <div className="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="mt-2.5 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
             {projects.map((project) => (
               <ProjectCard key={project.slug} project={project} />
             ))}
