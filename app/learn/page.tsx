@@ -39,9 +39,19 @@ export default function LearnPage() {
         <section className="p-6 md:p-8 rounded-lg border border-border/80 bg-card space-y-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-accent">
-                <Trophy className="w-4 h-4 text-accent" />
-                <span className="uppercase font-bold tracking-wider">{currentRank.name} · RANK</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-accent">
+                <div className="flex items-center gap-1.5">
+                  <Trophy className="w-4 h-4 text-accent" />
+                  <span className="uppercase font-bold tracking-wider">{currentRank.name} · RANK</span>
+                </div>
+                <span className="text-muted-foreground/60 font-normal">|</span>
+                <Link
+                  href="/next-steps"
+                  className="inline-flex items-center gap-1 text-accent hover:underline font-bold transition-colors"
+                >
+                  <Award className="w-3.5 h-3.5 text-accent" />
+                  <span>Certificate Status</span>
+                </Link>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                 {isAuthenticated && user ? `Welcome back, ${user.certificateName} 👋` : 'Welcome to SQL Mastery 👋'}
@@ -134,16 +144,6 @@ export default function LearnPage() {
           </div>
         </section>
       </main>
-
-      <footer className="border-t border-border/60 py-5 text-xs">
-        <div className="max-w-[1302px] mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-muted-foreground">
-          <span><span className="text-emerald-500">exit 0</span> · SQL Mastery Dashboard</span>
-          <Link href="/next-steps" className="hover:text-foreground transition-colors flex items-center gap-1 font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-accent" />
-            <span>Certificate Status</span>
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
