@@ -14,7 +14,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -23,7 +23,7 @@ export default function LoginPage() {
       return;
     }
 
-    const res = login(email, password);
+    const res = await login(email, password);
     if (!res.success) {
       setError(res.error || 'Invalid credentials.');
     } else {

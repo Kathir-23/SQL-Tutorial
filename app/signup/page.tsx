@@ -36,7 +36,7 @@ export default function SignUpPage() {
     setStep(2);
   };
 
-  const handleStep2FinalSubmit = (e: React.FormEvent) => {
+  const handleStep2FinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -46,7 +46,7 @@ export default function SignUpPage() {
     }
 
     const uppercaseLegalName = legalName.trim().toUpperCase();
-    const res = signup(email, password, uppercaseLegalName);
+    const res = await signup(email, password, uppercaseLegalName);
     if (!res.success) {
       setError(res.error || 'Failed to create account.');
     } else {
