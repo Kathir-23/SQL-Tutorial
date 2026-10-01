@@ -158,10 +158,11 @@ export default function SignUpPage() {
 
                 <button
                   type="submit"
-                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-[#7c3aed] bg-[#7c3aed] text-white font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
+                  style={{ color: '#ffffff', backgroundColor: '#7c3aed', borderColor: '#7c3aed' }}
+                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
                 >
-                  <span className="text-white font-bold">Continue to Certificate Setup</span>
-                  <ArrowRight className="w-4 h-4 text-white" />
+                  <span style={{ color: '#ffffff' }} className="font-bold">Continue to Certificate Setup</span>
+                  <ArrowRight className="w-4 h-4" style={{ color: '#ffffff' }} />
                 </button>
               </form>
             </div>
@@ -219,10 +220,11 @@ export default function SignUpPage() {
 
                   <button
                     type="submit"
-                    className="flex-1 px-3 py-2.5 rounded-lg border border-[#7c3aed] bg-[#7c3aed] text-white font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
+                    style={{ color: '#ffffff', backgroundColor: '#7c3aed', borderColor: '#7c3aed' }}
+                    className="flex-1 px-3 py-2.5 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-white" />
-                    <span className="text-white font-bold">Confirm & Create Account</span>
+                    <CheckCircle2 className="w-4 h-4" style={{ color: '#ffffff' }} />
+                    <span style={{ color: '#ffffff' }} className="font-bold">Confirm & Create Account</span>
                   </button>
                 </div>
               </form>

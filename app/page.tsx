@@ -49,10 +49,11 @@ export default function HomePage() {
                 </Link>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-lg bg-accent text-accent-foreground font-bold hover:opacity-90 transition-opacity shadow-sm text-xs"
+                  style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+                  className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-lg font-bold hover:opacity-90 transition-opacity shadow-sm text-xs"
                 >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  <span>Start Free</span>
+                  <UserPlus className="w-3.5 h-3.5" style={{ color: '#ffffff' }} />
+                  <span style={{ color: '#ffffff' }}>Start Free</span>
                 </Link>
               </div>
             )}
@@ -82,20 +83,22 @@ export default function HomePage() {
               {isAuthenticated ? (
                 <Link
                   href="/learn"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-[58px] px-[30px] text-[15px] rounded-lg bg-accent text-accent-foreground font-bold hover:opacity-90 transition-all shadow-sm"
+                  style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-[58px] px-[30px] text-[15px] rounded-lg font-bold hover:opacity-90 transition-all shadow-sm"
                 >
-                  <BookOpen className="w-4 h-4" />
-                  <span>Continue to Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <BookOpen className="w-4 h-4" style={{ color: '#ffffff' }} />
+                  <span style={{ color: '#ffffff' }}>Continue to Dashboard</span>
+                  <ArrowRight className="w-4 h-4" style={{ color: '#ffffff' }} />
                 </Link>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center">
                   <Link
                     href="/signup"
-                    className="inline-flex items-center justify-center gap-2 h-[58px] px-[30px] text-[15px] rounded-lg bg-accent text-accent-foreground font-bold hover:opacity-90 transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+                    className="inline-flex items-center justify-center gap-2 h-[58px] px-[30px] text-[15px] rounded-lg font-bold hover:opacity-90 transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
-                    <span>Create Free Account</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span style={{ color: '#ffffff' }}>Create Free Account</span>
+                    <ArrowRight className="w-4 h-4" style={{ color: '#ffffff' }} />
                   </Link>
 
                   <Link

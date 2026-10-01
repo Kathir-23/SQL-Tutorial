@@ -44,10 +44,11 @@ export default function LoginPage() {
             <ModeToggle />
             <Link
               href="/signup"
-              className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-lg bg-accent text-white font-bold hover:opacity-90 transition-opacity shadow-sm text-xs"
+              style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+              className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-lg font-bold hover:opacity-90 transition-opacity shadow-sm text-xs"
             >
-              <UserPlus className="w-3.5 h-3.5 text-white" />
-              <span>Start Free</span>
+              <UserPlus className="w-3.5 h-3.5" style={{ color: '#ffffff' }} />
+              <span style={{ color: '#ffffff' }}>Start Free</span>
             </Link>
           </div>
         </div>
@@ -107,10 +108,11 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-accent bg-accent text-white font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
+              style={{ color: '#ffffff', backgroundColor: '#7c3aed', borderColor: '#7c3aed' }}
+              className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
             >
-              <span>Log In</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <span style={{ color: '#ffffff' }} className="font-bold">Log In</span>
+              <ArrowRight className="w-4 h-4" style={{ color: '#ffffff' }} />
             </button>
           </form>
 
