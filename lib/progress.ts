@@ -164,17 +164,14 @@ export const useProgressStore = create<ProgressState>()(
       },
 
       isLessonCompleted: (slug: string) => {
-        if (isShowcase()) return true;
         return get().completedLessons.includes(slug);
       },
 
       isCheckpointCompleted: (moduleSlug: string) => {
-        if (isShowcase()) return true;
         return (get().completedCheckpoints ?? []).includes(moduleSlug);
       },
 
       getModuleProgress: (moduleSlug: string, totalLessons: number) => {
-        if (isShowcase()) return 100;
         const completedInModule = get().completedLessons.filter(
           slug => slug.startsWith(`${moduleSlug}/`)
         ).length;

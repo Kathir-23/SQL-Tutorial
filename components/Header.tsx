@@ -54,13 +54,13 @@ export default function Header() {
                 })}
               </nav>
 
-              <ModeToggle />
-
               {/* Profile Badge */}
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent/15 text-accent border border-accent/30 font-bold text-xs">
                 <User className="w-3.5 h-3.5" />
                 <span>{user.certificateName}</span>
               </div>
+
+              <ModeToggle />
             </div>
           ) : (
             /* Logged-Out Nav */
