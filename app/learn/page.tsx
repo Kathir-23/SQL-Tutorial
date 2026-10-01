@@ -39,7 +39,7 @@ export default function LearnPage() {
         <section className="p-6 md:p-8 rounded-lg border border-border/80 bg-card space-y-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-accent">
+              <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-accent">
                 <div className="flex items-center gap-1.5">
                   <Trophy className="w-4 h-4 text-accent" />
                   <span className="uppercase font-bold tracking-wider">{currentRank.name} · RANK</span>
@@ -47,10 +47,10 @@ export default function LearnPage() {
                 <span className="text-muted-foreground/60 font-normal">|</span>
                 <Link
                   href="/next-steps"
-                  className="inline-flex items-center gap-1 text-accent hover:underline font-bold transition-colors"
+                  className="inline-flex items-center gap-1 text-accent font-bold tracking-wider hover:opacity-80 transition-opacity uppercase"
                 >
-                  <Award className="w-3.5 h-3.5 text-accent" />
-                  <span>Certificate Status</span>
+                  <Award className="w-4 h-4 text-accent" />
+                  <span>CERTIFICATE</span>
                 </Link>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
