@@ -1,12 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import HomeTerminal from "@/components/HomeTerminal";
 import ModeToggle from "@/components/ModeToggle";
-import DownloadNotesButton from "@/components/DownloadNotesButton";
-import { getAllModules, getModuleBySlug, getModuleLessons } from "@/lib/lessons";
-import { useShowcase } from "@/lib/mode";
 import { useAuth } from "@/lib/auth";
 import {
   Database,
@@ -21,57 +16,7 @@ import {
   BookOpen,
 } from "lucide-react";
 
-const MODULE_DESCRIPTIONS: Record<string, string> = {
-  "start-here": "New to all this? Start at zero.",
-  "getting-started": "SELECT, WHERE, ORDER BY.",
-  "data-analysis": "Aggregates, GROUP BY, HAVING.",
-  "joining-tables": "INNER, LEFT, self-joins.",
-  "subqueries-ctes": "Nested queries and WITH clauses.",
-  "modifying-data": "INSERT, UPDATE, DELETE.",
-  "functions": "String, date, math.",
-  "window-functions": "RANK, LAG, running totals.",
-  "database-objects": "Views, indexes, constraints.",
-  "advanced": "Recursive CTEs, pivot, optimization.",
-  "school-advanced": "Course notes: procs, dynamic SQL, JSON.",
-  "set-design": "UNION/INTERSECT/EXCEPT, normalization, keys.",
-  "window-advanced": "Frames, NTILE, FIRST_VALUE.",
-  "recursive-queries": "Walk hierarchies and trees.",
-  "performance-indexing": "EXPLAIN plans and useful indexes.",
-  "capstone": "Put every piece together.",
-};
-
-const modules = getAllModules().map((m, i) => {
-  const lessons = getModuleLessons(m.slug);
-  return {
-    num: String(i + 1).padStart(2, "0"),
-    slug: m.slug,
-    firstLesson: lessons[0]?.lessonSlug ?? "",
-    title: m.slug,
-    name: m.name,
-    desc: MODULE_DESCRIPTIONS[m.slug] ?? "",
-    lessons: lessons.length,
-  };
-});
-
-interface PersistedProgress {
-  state?: { completedLessons?: string[] };
-}
-
-function loadCompletedLessons(): Set<string> {
-  if (typeof window === "undefined") return new Set();
-  try {
-    const raw = localStorage.getItem("sql-mastery-progress");
-    if (!raw) return new Set();
-    const parsed: PersistedProgress = JSON.parse(raw);
-    return new Set(parsed.state?.completedLessons ?? []);
-  } catch {
-    return new Set();
-  }
-}
-
 export default function HomePage() {
-  const [completed] = useState(loadCompletedLessons);
-  const showcase = useShowcase();
   const { user, isAuthenticated } = useAuth();
 
   return (
@@ -97,7 +42,7 @@ export default function HomePage() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-border/80 text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-border/80 text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
                 >
                   <LogIn className="w-3.5 h-3.5 text-accent" />
                   <span>Log In</span>
@@ -115,16 +60,16 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-5xl mx-auto w-full px-6 py-8 md:py-12 space-y-12">
-        {/* 2-COLUMN SIDE-BY-SIDE SPLIT HERO VIEWPORT */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2 md:pt-4">
+      {/* FIRST PAGE HERO VIEWPORT ONLY */}
+      <main id="main" tabIndex={-1} className="flex-1 max-w-5xl mx-auto w-full px-6 py-10 md:py-16 flex flex-col justify-center">
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* LEFT COLUMN: Headline & CTAs */}
-          <div className="lg:col-span-6 space-y-5">
+          <div className="lg:col-span-6 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
               <span>100% In-Browser SQLite · 52 Interactive Lessons</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold tracking-tight text-foreground leading-[1.18]">
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-extrabold tracking-tight text-foreground leading-[1.18]">
               Master SQL by Writing Real Queries in Your Browser.
             </h1>
 
@@ -174,7 +119,7 @@ export default function HomePage() {
           </div>
 
           {/* RIGHT COLUMN: 2x2 Feature Grid */}
-          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="p-4 rounded-xl border border-border/80 bg-card/70 hover:border-accent/40 transition-colors space-y-2 shadow-sm">
               <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                 <Database className="w-4 h-4" />
@@ -216,71 +161,9 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* EMBEDDED INTERACTIVE TERMINAL PROMPT */}
-        <section className="p-5 rounded-lg border border-border/80 bg-card space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-accent uppercase tracking-wider"># Interactive Command Shell</span>
-            <span className="text-muted-foreground">// type `help` or module slug</span>
-          </div>
-          <HomeTerminal modules={modules} />
-        </section>
-
-        {/* CURRICULUM MODULES LIST */}
-        <section id="curriculum" className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs uppercase tracking-widest text-muted-foreground font-bold"># MODULES</h2>
-            <span className="text-xs text-muted-foreground">{modules.length} Modules Total</span>
-          </div>
-
-          <ul className="border-y border-border/60 divide-y divide-border/40">
-            {modules.map((m) => {
-              const doneCount = showcase
-                ? m.lessons
-                : Array.from(completed).filter((k) =>
-                    k === m.slug || k.startsWith(`${m.slug}/`)
-                  ).length;
-              const status = doneCount === 0
-                ? "─"
-                : doneCount >= m.lessons
-                ? "✓ complete"
-                : `${doneCount}/${m.lessons}`;
-              const statusClass = doneCount >= m.lessons
-                ? "text-emerald-500"
-                : doneCount > 0
-                ? "text-accent"
-                : "text-muted-foreground";
-              return (
-                <li key={m.slug} className="flex items-center gap-1">
-                  <Link
-                    href={`/learn/${m.slug}/${m.firstLesson}`}
-                    className="group grid flex-1 grid-cols-[2.5rem_minmax(0,1fr)_5rem_7rem_1rem] gap-3 items-center py-2.5 px-2 -ml-2 rounded hover:bg-card/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                    aria-label={`Open module: ${m.name}`}
-                  >
-                    <span className="text-muted-foreground font-bold">{m.num}</span>
-                    <span className="min-w-0 truncate">
-                      <span className="text-foreground font-semibold">modules/{m.title}/</span>
-                      <span className="text-muted-foreground hidden md:inline"> {m.desc}</span>
-                    </span>
-                    <span className="text-muted-foreground text-xs">{m.lessons} lessons</span>
-                    <span className={`text-xs ${statusClass}`}>{status}</span>
-                    <span className="text-muted-foreground group-hover:text-accent transition-colors">→</span>
-                  </Link>
-                  {(() => {
-                    const mi = getModuleBySlug(m.slug);
-                    const ml = getModuleLessons(m.slug);
-                    return mi ? (
-                      <DownloadNotesButton moduleInfo={mi} lessons={ml} compact />
-                    ) : null;
-                  })()}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
       </main>
 
-      <footer className="border-t border-border/60 py-6 text-xs mt-8">
+      <footer className="border-t border-border/60 py-5 text-xs">
         <div className="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4 text-muted-foreground">
           <span>
             <span className="text-emerald-500 font-bold">exit 0</span> · SQL Mastery LMS · Next.js + SQLite WASM
