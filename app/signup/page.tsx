@@ -158,9 +158,9 @@ export default function SignUpPage() {
 
                 <button
                   type="submit"
-                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-accent bg-accent text-white font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
+                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-[#7c3aed] bg-[#7c3aed] text-white font-bold text-xs hover:opacity-90 transition-opacity shadow-sm"
                 >
-                  <span>Continue to Certificate Setup</span>
+                  <span className="text-white font-bold">Continue to Certificate Setup</span>
                   <ArrowRight className="w-4 h-4 text-white" />
                 </button>
               </form>
@@ -219,10 +219,10 @@ export default function SignUpPage() {
 
                   <button
                     type="submit"
-                    className="flex-1 px-3 py-2.5 rounded-lg border border-accent bg-accent text-white font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
+                    className="flex-1 px-3 py-2.5 rounded-lg border border-[#7c3aed] bg-[#7c3aed] text-white font-bold text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1.5 shadow-sm"
                   >
                     <CheckCircle2 className="w-4 h-4 text-white" />
-                    <span>Confirm & Create Account</span>
+                    <span className="text-white font-bold">Confirm & Create Account</span>
                   </button>
                 </div>
               </form>
