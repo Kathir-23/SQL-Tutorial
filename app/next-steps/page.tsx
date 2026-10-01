@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
+import Header from "@/components/Header";
 import CertificateCard from "@/components/CertificateCard";
 import CertificateLockGate from "@/components/CertificateLockGate";
 import { useProgressStore } from "@/lib/progress";
@@ -25,19 +25,8 @@ export default function NextStepsPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
-      <header className="border-b border-border/60">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
-            <span className="text-accent">$</span> cd ~
-          </Link>
-          <nav className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <Link href="/learn" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">lessons</Link>
-            <Link href="/start" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">start</Link>
-            <Link href="/glossary" className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">glossary</Link>
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+      {/* Shared Sticky Header */}
+      <Header />
 
       <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-12">
         {/* Certificate Section */}

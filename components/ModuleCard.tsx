@@ -51,12 +51,20 @@ export default function ModuleCard({ module, lessonCount, firstLessonSlug }: Mod
     };
   })();
 
-  const statusText = isComplete ? '✓ complete' : progress > 0 ? `${progress}%` : '─';
-  const statusClass = isComplete
-    ? 'text-emerald-400'
-    : progress > 0
-    ? 'text-indigo-400'
-    : 'text-slate-500';
+  const projectsFinished = threadProgress.total === 0 || threadProgress.completed === threadProgress.total;
+  const isModuleFullyComplete = isComplete && projectsFinished;
+
+  const statusText = isModuleFullyComplete
+    ? '✓ complete'
+    : progress > 0 || threadProgress.completed > 0
+    ? 'in progress'
+    : 'not started';
+
+  const statusClass = isModuleFullyComplete
+    ? 'text-emerald-400 font-bold'
+    : progress > 0 || threadProgress.completed > 0
+    ? 'text-indigo-400 font-semibold'
+    : 'text-slate-500 font-medium';
 
   return (
     <Link

@@ -225,10 +225,25 @@ const RANKS: Rank[] = [
   { name: 'database engineer', threshold: 4000, next: null, blurb: 'all 52 lessons cleared. you ship sql other people read.' },
 ];
 
+export const LESSON_RANKS: Rank[] = [
+  { name: 'novice', threshold: 0, next: 17, blurb: 'Getting started & SQL fundamentals (Lessons 0–16).' },
+  { name: 'apprentice', threshold: 17, next: 35, blurb: 'JOINs, aggregations, & Subqueries (Lessons 17–34).' },
+  { name: 'practitioner', threshold: 35, next: 68, blurb: 'Window Functions, CTEs, & Objects (Lessons 35–67).' },
+  { name: 'sql master', threshold: 68, next: null, blurb: 'All 68 lessons cleared! Official SQL Master.' },
+];
+
 export function getRank(xp: number): Rank {
   let current = RANKS[0];
   for (const r of RANKS) {
     if (xp >= r.threshold) current = r;
+  }
+  return current;
+}
+
+export function getRankByLessons(completedCount: number): Rank {
+  let current = LESSON_RANKS[0];
+  for (const r of LESSON_RANKS) {
+    if (completedCount >= r.threshold) current = r;
   }
   return current;
 }

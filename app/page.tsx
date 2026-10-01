@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import ModeToggle from "@/components/ModeToggle";
+import Header from "@/components/Header";
 import { useAuth } from "@/lib/auth";
 import {
   Database,
@@ -10,57 +10,16 @@ import {
   Award,
   ArrowRight,
   CheckCircle2,
-  LogIn,
-  UserPlus,
-  User,
   BookOpen,
 } from "lucide-react";
 
 export default function HomePage() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono selection:bg-accent/20">
-      {/* Sticky Top Navigation Bar */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur support-[backdrop-filter]:bg-background/60">
-        <div className="max-w-[1302px] mx-auto px-4 h-16 flex items-center justify-between gap-4 text-xs">
-          <Link href="/" className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity">
-            <span className="px-3 py-1 rounded-lg bg-accent/15 text-accent border border-accent/30 font-bold text-xs">$ sql-mastery</span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <ModeToggle />
-            {isAuthenticated && user ? (
-              <Link
-                href="/learn"
-                style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity text-xs"
-              >
-                <User className="w-3.5 h-3.5" style={{ color: '#ffffff' }} />
-                <span style={{ color: '#ffffff' }}>Dashboard →</span>
-              </Link>
-            ) : (
-              <div className="flex items-center gap-2.5">
-                <Link
-                  href="/login"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border/80 text-foreground hover:bg-secondary/60 transition-colors font-semibold text-xs"
-                >
-                  <LogIn className="w-3.5 h-3.5 text-accent" />
-                  <span>Log In</span>
-                </Link>
-                <Link
-                  href="/signup"
-                  style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
-                  className="inline-flex items-center gap-1.5 px-4.5 py-2 rounded-lg font-bold hover:opacity-90 transition-opacity shadow-sm text-xs"
-                >
-                  <UserPlus className="w-3.5 h-3.5" style={{ color: '#ffffff' }} />
-                  <span style={{ color: '#ffffff' }}>Start Free</span>
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      {/* Shared Sticky Header */}
+      <Header />
 
       {/* HERO SECTION CONTAINER: max-w 1302px, 16px padding (px-4), pt-[84px] below header */}
       <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 pt-[84px] pb-16">

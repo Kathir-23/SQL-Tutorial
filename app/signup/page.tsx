@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, UserCheck, AlertCircle, ArrowRight, CheckCircle2, ArrowLeft, LogIn } from 'lucide-react';
+import { ShieldCheck, UserCheck, AlertCircle, ArrowRight, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import ModeToggle from '@/components/ModeToggle';
+import Header from '@/components/Header';
 
 export default function SignUpPage() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -56,25 +56,8 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm selection:bg-accent/20">
-      {/* Top Header Nav matching Home Page */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur support-[backdrop-filter]:bg-background/60">
-        <div className="max-w-[1302px] mx-auto px-4 h-16 flex items-center justify-between gap-4 text-xs">
-          <Link href="/" className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity">
-            <span className="px-3 py-1 rounded-lg bg-accent/15 text-accent border border-accent/30 font-bold text-xs">$ sql-mastery</span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <ModeToggle />
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border/80 text-foreground hover:bg-secondary/60 transition-colors font-semibold text-xs"
-            >
-              <LogIn className="w-3.5 h-3.5 text-accent" />
-              <span>Log In</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Shared Sticky Header Nav */}
+      <Header />
 
       {/* Main Wizard Form Container */}
       <main id="main" tabIndex={-1} className="flex-1 max-w-md mx-auto w-full px-6 py-12 flex flex-col justify-center">
