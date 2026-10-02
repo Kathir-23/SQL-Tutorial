@@ -187,7 +187,8 @@ export default function SQLEditor({
         <button
           onClick={onRun}
           disabled={isRunning || readOnly}
-          className="px-3 py-1 rounded bg-[#7c3aed] text-white font-medium hover:bg-[#6d28d9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+          className="px-3 py-1 rounded font-medium hover:bg-[#6d28d9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
         >
           {isRunning ? 'running…' : 'run'}
         </button>

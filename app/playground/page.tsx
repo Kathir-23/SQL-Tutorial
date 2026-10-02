@@ -95,19 +95,21 @@ export default function PlaygroundPage() {
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
       <Header />
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-4 sm:py-5">
-        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch">
-          {/* Left Column: Title, Grey Line, Database Buttons, Editor, Results */}
-          <div className="space-y-4 min-w-0 flex flex-col">
-            <section className="font-mono">
-              <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                Playground
-              </h1>
-              <p className="mt-0.5 text-xs text-[#64748b] font-normal">
-                Practice freely. Your changes reset when you reload, and nothing here counts toward your certificate.
-              </p>
-            </section>
+      <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-4 sm:py-5 space-y-4">
+        {/* Title and Subtitle */}
+        <section className="font-mono">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            Playground
+          </h1>
+          <p className="mt-0.5 text-xs text-[#64748b] font-normal">
+            Practice freely. Your changes reset when you reload, and nothing here counts toward your certificate.
+          </p>
+        </section>
 
+        {/* 2-Column Layout starting from Database Buttons */}
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch">
+          {/* Left Column: Database Buttons, Editor, Results */}
+          <div className="space-y-4 min-w-0 flex flex-col">
             <section className="font-mono text-xs">
               <p className="text-slate-500 mb-2"># database</p>
               <div className="flex flex-wrap items-center gap-2">
@@ -162,17 +164,17 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* Right Column: Tables Panel (starts at same top as page title, ends at bottom of results) */}
-          <aside className="font-mono w-full lg:w-[300px] flex flex-col h-full">
-            <div className="flex flex-col h-full rounded-xl border border-border/80 bg-[#f1f5f9] p-4 text-slate-900 shadow-sm min-h-[350px]">
-              <div className="pb-2.5 mb-3 border-b border-slate-300 text-xs font-bold text-slate-900">
+          {/* Right Column: Tables Panel (exact height matching the Left Column) */}
+          <aside className="font-mono w-full lg:w-[300px] flex flex-col h-full min-h-0">
+            <div className="flex flex-col h-full min-h-0 rounded-xl border border-border/80 bg-[#f1f5f9] p-4 text-slate-900 shadow-sm">
+              <div className="pb-2.5 mb-3 border-b border-slate-300 text-xs font-bold text-slate-900 flex-shrink-0">
                 Tables · {databaseLabels[selectedDb].name}.db
               </div>
-              <div className="flex-1 overflow-y-auto space-y-4 text-xs pr-1 max-h-[450px] lg:max-h-none">
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-4 text-xs pr-1">
                 {Object.entries(schema).map(([tableName, columns]) => (
                   <div key={tableName}>
-                    <p className="font-bold text-purple-700 mb-1.5 text-xs">
-                      .tables: {tableName}
+                    <p className="font-bold text-slate-900 text-xs mb-1.5">
+                      {tableName}
                     </p>
                     <ul className="space-y-1 pl-3 border-l-2 border-slate-300">
                       {columns.map((col) => (
