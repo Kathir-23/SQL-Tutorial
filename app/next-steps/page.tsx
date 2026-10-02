@@ -70,9 +70,9 @@ export default function NextStepsPage() {
       {/* Shared Sticky Header */}
       <Header />
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-12">
+      <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 pt-4 pb-8 space-y-6">
         {/* Certificate Section */}
-        <section className="space-y-6">
+        <section className="space-y-3">
           <div className="space-y-1">
             <span className="text-xs font-mono uppercase tracking-widest text-accent"># Course Completion & Credential</span>
             <h1 className="text-2xl font-semibold">Your Verified Certificate</h1>
@@ -241,13 +241,6 @@ export default function NextStepsPage() {
           </div>
         )}
       </main>
-
-      <footer className="border-t border-border/60 py-5 text-xs">
-        <div className="max-w-3xl mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-muted-foreground">
-          <span><span className="text-success">exit 0</span> · keep querying</span>
-          <Link href="/learn" className="hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">back to lessons</Link>
-        </div>
-      </footer>
     </div>
   );
 }
