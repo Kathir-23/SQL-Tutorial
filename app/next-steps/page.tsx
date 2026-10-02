@@ -51,7 +51,7 @@ export default function NextStepsPage() {
                 {overrideUnlocked ? (
                   <>
                     <Lock className="w-3 h-3 text-amber-500" />
-                    <span>View Lock Gate</span>
+                    <span>Back to locked view</span>
                   </>
                 ) : (
                   <>
