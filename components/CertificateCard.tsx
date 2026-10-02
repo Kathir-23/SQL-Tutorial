@@ -150,11 +150,15 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
         <div className="pt-6 border-t border-border/60 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
           <div>
             <span className="block font-semibold text-foreground">Issued On:</span>
-            <span>{issueDate}</span>
+            <span className={isSample ? 'text-amber-600 dark:text-amber-400 font-bold' : ''}>
+              {issueDate}
+            </span>
           </div>
           <div>
             <span className="block font-semibold text-foreground">Verification URL:</span>
-            <span className="text-accent">{verificationUrl}</span>
+            <span className={isSample ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-accent'}>
+              {verificationUrl}
+            </span>
           </div>
         </div>
       </div>
