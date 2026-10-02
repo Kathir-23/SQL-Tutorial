@@ -31,18 +31,18 @@ export interface ProjectThread {
 // Three project threads - one per module group
 export const projectThreads: ProjectThread[] = [
   {
-    id: 'company-dashboard',
-    title: 'Building a Company Dashboard',
-    description: 'Create a complete HR analytics dashboard for Acme Corp',
-    scenario: `You just joined Acme Corp as a data analyst. Your manager, Sarah, needs a series of reports for the executive team. Over the next few modules, you'll build queries that power their company dashboard - from basic employee listings to sophisticated payroll analytics.
+    id: 'school-analytics',
+    title: 'School Performance Analytics',
+    description: 'Analyze student and teacher performance for a school district',
+    scenario: `Greenfield School District hired you to work on their analytics. The superintendent wants reports on student achievement, teacher effectiveness, and course outcomes.
 
-Each lesson teaches you a concept, and then you apply it immediately to build the next piece of the dashboard.`,
-    database: 'company',
-    databaseLabel: 'COMPANY_DB',
-    color: 'blue',
-    modules: [1, 2, 3],
-    totalSteps: 15,
-    previewDescription: 'A dashboard showing employee directories, department summaries, salary analytics, and aggregated HR metrics.',
+Using window functions, CTEs, and advanced joins, you'll build the queries that run their reporting dashboard.`,
+    database: 'school',
+    databaseLabel: 'SCHOOL_DB',
+    color: 'amber',
+    modules: [7, 8, 9],
+    totalSteps: 13,
+    previewDescription: 'An analytics suite showing student performance trends, teacher metrics, course statistics, and academic rankings.',
   },
   {
     id: 'ecommerce-intelligence',
@@ -59,18 +59,18 @@ As you learn JOINs, subqueries, and window functions, you'll build out the repor
     previewDescription: 'A sales intelligence report with customer rankings, revenue trends, category performance, and product analytics.',
   },
   {
-    id: 'school-analytics',
-    title: 'School Performance Analytics',
-    description: 'Analyze student and teacher performance for a school district',
-    scenario: `Greenfield School District hired you to work on their analytics. The superintendent wants reports on student achievement, teacher effectiveness, and course outcomes.
+    id: 'company-dashboard',
+    title: 'Building a Company Dashboard',
+    description: 'Create a complete HR analytics dashboard for Acme Corp',
+    scenario: `You just joined Acme Corp as a data analyst. Your manager, Sarah, needs a series of reports for the executive team. Over the next few modules, you'll build queries that power their company dashboard - from basic employee listings to sophisticated payroll analytics.
 
-Using window functions, CTEs, and advanced joins, you'll build the queries that run their reporting dashboard.`,
-    database: 'school',
-    databaseLabel: 'SCHOOL_DB',
-    color: 'amber',
-    modules: [7, 8, 9],
-    totalSteps: 13,
-    previewDescription: 'An analytics suite showing student performance trends, teacher metrics, course statistics, and academic rankings.',
+Each lesson teaches you a concept, and then you apply it immediately to build the next piece of the dashboard.`,
+    database: 'company',
+    databaseLabel: 'COMPANY_DB',
+    color: 'blue',
+    modules: [1, 2, 3],
+    totalSteps: 15,
+    previewDescription: 'A dashboard showing employee directories, department summaries, salary analytics, and aggregated HR metrics.',
   },
 ];
 
