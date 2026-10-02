@@ -38,22 +38,35 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
     }
   };
 
-  const displayName = learnerName.trim() || 'Your Name';
-  const credentialId = generateCredentialId(displayName);
-  const issueDate = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const isSample = !initialName && typeof window !== 'undefined' && !localStorage.getItem('sql-mastery-cert-name');
+  
+  // Format learner name: CAPITAL letters, default to user/prop or KATHIRAVAN V
+  const rawName = learnerName || initialName || 'KATHIRAVAN V';
+  const displayName = rawName.trim().toUpperCase();
 
-  const verificationUrl = origin ? `${origin}/verify/${credentialId}` : `/verify/${credentialId}`;
+  const credentialId = isSample ? 'SQL-PREVIEW-000000 (sample)' : generateCredentialId(displayName);
+  const issueDate = isSample
+    ? 'Issued when you complete all 16 modules'
+    : new Date().toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
+
+  const verificationUrl = isSample
+    ? 'Sample, not valid. Cannot be verified.'
+    : origin
+    ? `${origin}/verify/${credentialId}`
+    : `/verify/${credentialId}`;
+
   const linkedInUrl = buildLinkedInCertUrl({
     learnerName: displayName,
-    credentialId,
-    verificationUrl,
+    credentialId: isSample ? 'SQL-PREVIEW-000000' : credentialId,
+    verificationUrl: isSample ? 'https://sql-tutorial.vercel.app' : verificationUrl,
   });
 
   const handleCopyLink = async () => {
+    if (isSample) return;
     try {
       await navigator.clipboard.writeText(verificationUrl);
       setCopied(true);
@@ -69,21 +82,6 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
 
   return (
     <div className="w-full space-y-6">
-      {/* Name Input Bar */}
-      <div className="p-4 rounded-lg border border-border bg-card/60 backdrop-blur space-y-2">
-        <label htmlFor="cert-name-input" className="block text-xs font-mono uppercase tracking-widest text-muted-foreground">
-          Enter Your Full Name for the Certificate:
-        </label>
-        <input
-          id="cert-name-input"
-          type="text"
-          value={learnerName}
-          onChange={(e) => handleNameChange(e.target.value)}
-          placeholder="e.g. Alex Mercer"
-          className="w-full max-w-md px-3 py-2 rounded border border-border bg-background text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/50"
-        />
-      </div>
-
       {/* Main Certificate Display Frame */}
       <div
         id="certificate-print-area"
@@ -107,7 +105,13 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight">SQL Mastery</h2>
           </div>
           <div className="text-right">
-            <span className="inline-block px-2.5 py-1 rounded bg-accent/10 text-accent border border-accent/20 text-xs font-mono font-semibold">
+            <span
+              className={`inline-block px-2.5 py-1 rounded text-xs font-mono font-semibold ${
+                isSample
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                  : 'bg-accent/10 text-accent border border-accent/20'
+              }`}
+            >
               ID: {credentialId}
             </span>
           </div>
@@ -116,17 +120,17 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
         {/* Recipient Body */}
         <div className="py-8 space-y-4">
           <p className="text-xs uppercase tracking-widest text-muted-foreground">This certifies that</p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground border-b border-border/40 pb-2 inline-block min-w-[200px]">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground border-b border-border/40 pb-2 inline-block min-w-[200px] uppercase">
             {displayName}
           </h1>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-            has successfully completed the complete <strong className="text-foreground">Advanced SQL Mastery</strong> curriculum, demonstrating hands-on proficiency in executing relational queries, optimization, and database architecture.
+            has successfully completed the <strong className="text-foreground font-semibold">SQL Mastery</strong> curriculum, demonstrating hands-on proficiency in executing relational queries, optimization, and database architecture.
           </p>
         </div>
 
         {/* Verified Skills Grid */}
         <div className="py-4 border-t border-border/60 space-y-3">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground flex items-center gap-1.5 font-semibold">
             <Sparkles className="w-3.5 h-3.5 text-accent" />
             <span>Verified Core Competencies:</span>
           </p>
@@ -134,7 +138,7 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
             {VERIFIED_SKILLS.map((skill, i) => (
               <span
                 key={i}
-                className="px-2.5 py-1 rounded border border-border/80 bg-muted/30 text-foreground/90 font-mono text-[11px]"
+                className="px-2.5 py-1 rounded border border-purple-400/30 bg-purple-500/10 text-purple-900 dark:text-purple-300 font-mono text-[11px] font-medium"
               >
                 ✓ {skill}
               </span>

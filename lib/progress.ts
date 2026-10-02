@@ -308,7 +308,7 @@ const RANKS: Rank[] = [
   { name: 'data analyst', threshold: 100, next: 500, blurb: 'GROUP BY, HAVING, aggregates. you can answer a question without exporting to excel.' },
   { name: 'bi developer', threshold: 500, next: 1500, blurb: 'JOINs, subqueries, CTEs. you can stitch tables together without flattening to a giant view.' },
   { name: 'query architect', threshold: 1500, next: 4000, blurb: 'window functions, optimization, ranking. you reach for PARTITION BY before a self-join.' },
-  { name: 'database engineer', threshold: 4000, next: null, blurb: 'all 52 lessons cleared. you ship sql other people read.' },
+  { name: 'database engineer', threshold: 4000, next: null, blurb: 'all 68 lessons cleared. you ship sql other people read.' },
 ];
 
 export const LESSON_RANKS: Rank[] = [

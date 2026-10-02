@@ -8,9 +8,10 @@ import { CheckCircle2, Lock, ArrowRight, BookOpen, ShieldAlert } from "lucide-re
 export default function CertificateLockGate() {
   const { completedLessons } = useProgressStore();
 
-  // Core curriculum lessons (all lessons in our curriculum)
+  // Core curriculum lessons (unique valid slugs in curriculum)
   const totalLessonsCount = lessons.length;
-  const completedCount = lessons.filter((l) => completedLessons.includes(l.slug)).length;
+  const validLessonSlugs = new Set(lessons.map((l) => l.slug));
+  const completedCount = new Set(completedLessons.filter((slug) => validLessonSlugs.has(slug))).size;
   const overallPercentage = Math.round((completedCount / totalLessonsCount) * 100);
 
   // Find first incomplete lesson to jump to
@@ -33,7 +34,7 @@ export default function CertificateLockGate() {
               Official Certificate Locked
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-              Finish all 16 modules to unlock your official certificate.
+              Finish all {modules.length} modules to unlock your official certificate.
             </p>
           </div>
 
@@ -48,9 +49,9 @@ export default function CertificateLockGate() {
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* Progress Bar: 8px tall light grey track (#e2e8f0) */}
         <div className="mt-6 space-y-2">
-          <div className="w-full bg-secondary h-3 rounded-full overflow-hidden p-0.5 border border-border/40">
+          <div className="w-full bg-[#e2e8f0] dark:bg-slate-800 h-2 rounded-full overflow-hidden border border-border/30">
             <div
               className="bg-accent h-full rounded-full transition-all duration-500 ease-out"
               style={{ width: `${overallPercentage}%` }}

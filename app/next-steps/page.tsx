@@ -15,7 +15,8 @@ export default function NextStepsPage() {
   const showcase = useShowcase();
 
   const totalLessonsCount = lessons.length;
-  const completedCount = lessons.filter((l) => completedLessons.includes(l.slug)).length;
+  const validLessonSlugs = new Set(lessons.map((l) => l.slug));
+  const completedCount = new Set(completedLessons.filter((slug) => validLessonSlugs.has(slug))).size;
   const isCompleted100 = completedCount >= totalLessonsCount;
 
   // Allow manual override toggle for demonstration / testing in development

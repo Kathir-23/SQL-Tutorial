@@ -14,13 +14,28 @@ export const VERIFIED_SKILLS = [
   'Subqueries & Common Table Expressions (CTEs)',
   'Window Functions (ROW_NUMBER, RANK, LAG/LEAD)',
   'Database Indexing & Query Execution Optimization',
+  'Temporal Tables & Time-Series Analytics',
   'Stored Procedures, Triggers & User-Defined Functions (UDFs)',
   'JSON & XML Data Manipulation',
-  'Temporal Tables & Time-Series Analytics',
 ];
 
 /**
- * Generates a clean, deterministic Credential ID from user name and timestamp.
+ * Generates a 6-character random uppercase unguessable Certificate ID.
+ * Format: SQL-2026-XXXXXX
+ */
+export function generateRandomCertificateId(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let randomCode = '';
+  for (let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    randomCode += chars[randomIndex];
+  }
+  const year = new Date().getFullYear();
+  return `SQL-${year}-${randomCode}`;
+}
+
+/**
+ * Generates a clean Credential ID (fallback / deterministic).
  * Format: SQL-2026-XXXXXX
  */
 export function generateCredentialId(name: string, seed: string = 'SQL-MASTERY'): string {

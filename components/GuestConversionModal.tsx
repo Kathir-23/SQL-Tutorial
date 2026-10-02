@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { UserPlus, LogIn, X, Sparkles } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { lessons } from '@/lib/lessons';
 
 interface GuestConversionModalProps {
   isOpen: boolean;
@@ -54,7 +55,7 @@ export default function GuestConversionModal({ isOpen, onClose, lessonTitle }: G
         <div className="p-3 rounded border border-border/60 bg-muted/20 text-[11px] text-muted-foreground space-y-1">
           <div className="font-semibold text-foreground">Why create an account?</div>
           <ul className="list-disc list-inside space-y-0.5 text-muted-foreground">
-            <li>Save progress across 52 core lessons</li>
+            <li>Save progress across {lessons.length} core lessons</li>
             <li>Unlock daily AI Tutor query credits</li>
             <li>Official LinkedIn-verified certificate</li>
           </ul>
