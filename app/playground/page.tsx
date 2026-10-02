@@ -96,7 +96,7 @@ export default function PlaygroundPage() {
       <Header />
 
       <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-4 sm:py-5">
-        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
           {/* Left Column: Title, Subtitle, Database Buttons, Editor, Results */}
           <div className="space-y-4 min-w-0 flex flex-col">
             <section className="font-mono">
@@ -162,33 +162,31 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* Right Column: Tables Panel (starts level with top of "Playground" title, bottom lines up with results) */}
-          <aside className="font-mono w-full lg:w-[300px] flex flex-col h-[360px] lg:h-full min-h-[320px]">
-            <div className="flex flex-col h-full min-h-[320px] rounded-xl border border-border/80 bg-[#f1f5f9] p-4 text-slate-900 shadow-sm relative">
-              <div className="pb-2.5 mb-3 border-b border-slate-300 text-xs font-bold text-slate-900 flex-shrink-0">
+          {/* Right Column: Tables Panel (fits schema content height per database, sticky on scroll, no empty space) */}
+          <aside className="font-mono w-full lg:w-[300px] lg:sticky lg:top-20">
+            <div className="rounded-xl border border-border/80 bg-[#f1f5f9] p-4 text-slate-900 shadow-sm">
+              <div className="pb-2.5 mb-3 border-b border-slate-300 text-xs font-bold text-slate-900">
                 Tables · {databaseLabels[selectedDb].name}.db
               </div>
-              <div className="relative flex-1 min-h-0 w-full">
-                <div className="absolute inset-0 overflow-y-auto space-y-4 text-xs [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                  {Object.entries(schema).map(([tableName, columns]) => (
-                    <div key={tableName}>
-                      <h2 className="font-bold text-slate-900 text-xs mb-1.5">
-                        {tableName}
-                      </h2>
-                      <ul className="space-y-1">
-                        {columns.map((col) => (
-                          <li key={col.name} className="grid grid-cols-[1fr_auto] gap-2 items-baseline">
-                            <span className={col.pk ? 'text-[#b45309] font-bold' : 'text-slate-800 font-medium'}>
-                              {col.pk && <span aria-label="primary key" className="text-[#b45309] font-bold mr-0.5">*</span>}
-                              {col.name}
-                            </span>
-                            <span className="text-[11px] text-[#475569] font-normal">{col.type.toLowerCase()}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
+              <div className="space-y-4 text-xs">
+                {Object.entries(schema).map(([tableName, columns]) => (
+                  <div key={tableName}>
+                    <h2 className="font-bold text-slate-900 text-xs mb-1.5">
+                      {tableName}
+                    </h2>
+                    <ul className="space-y-1">
+                      {columns.map((col) => (
+                        <li key={col.name} className="grid grid-cols-[1fr_auto] gap-2 items-baseline">
+                          <span className={col.pk ? 'text-[#b45309] font-bold' : 'text-slate-800 font-medium'}>
+                            {col.pk && <span aria-label="primary key" className="text-[#b45309] font-bold mr-0.5">*</span>}
+                            {col.name}
+                          </span>
+                          <span className="text-[11px] text-[#475569] font-normal">{col.type.toLowerCase()}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           </aside>
