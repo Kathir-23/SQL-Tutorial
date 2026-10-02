@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
+import Header from '@/components/Header';
 import SQLEditor from '@/components/SQLEditor';
 import ResultsTable from '@/components/ResultsTable';
 import { createDatabase, runQuery, getDatabaseSchema, type QueryResponse } from '@/lib/db';
 import { COMPANY_DB, STORE_DB, SCHOOL_DB, type DatabaseName } from '@/lib/databases';
+import { useAuth } from '@/lib/auth';
 import type { Database as SqlJsDatabase } from 'sql.js';
 
 const databases: Record<DatabaseName, string> = {
@@ -21,6 +22,11 @@ const databaseLabels: Record<DatabaseName, { name: string; description: string }
 };
 
 export default function PlaygroundPage() {
+  const { user } = useAuth();
+  const username = user?.certificateName
+    ? user.certificateName.trim().split(/\s+/)[0].toLowerCase()
+    : 'guest';
+
   const [selectedDb, setSelectedDb] = useState<DatabaseName>('company');
   const [database, setDatabase] = useState<SqlJsDatabase | null>(null);
   const [schema, setSchema] = useState<Record<string, Array<{ name: string; type: string; pk?: boolean }>>>({});
@@ -92,46 +98,19 @@ export default function PlaygroundPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800/60">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between text-xs font-mono">
-          <Link
-            href="/"
-            className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-          >
-            <span className="text-indigo-400">$</span> cd ~
-          </Link>
-          <div className="flex items-center gap-5">
-            <Link
-              href="/learn"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              lessons
-            </Link>
-            <Link
-              href="/projects"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              projects
-            </Link>
-            <span className="text-slate-100">&gt; playground</span>
-            <Link
-              href="/stats"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              stats
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main id="main" tabIndex={-1} className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
         <section className="font-mono text-sm mb-6">
           <p>
-            <span className="text-indigo-400">kathir@sql</span>
+            <span className="text-indigo-400">{username}@sql</span>
             <span className="text-slate-500">:</span>
             <span className="text-slate-500">~/playground$</span>{' '}
             <span>sqlite3 {selectedDb}.db</span>
             <span className="ml-1 inline-block w-2 h-4 align-text-bottom bg-slate-100 terminal-cursor" aria-hidden="true" />
+          </p>
+          <p className="text-xs text-slate-400 mt-1.5 font-sans">
+            Practice freely. Your changes reset when you reload, and nothing here counts toward your certificate.
           </p>
         </section>
 
@@ -189,20 +168,20 @@ export default function PlaygroundPage() {
             )}
           </div>
 
-          <aside className="lg:sticky lg:top-8 lg:self-start space-y-4 font-mono">
+          <aside className="lg:sticky lg:top-20 lg:self-start space-y-4 font-mono">
             <div className="rounded border border-slate-800 bg-slate-900/40">
               <div className="px-3 py-2 border-b border-slate-800 text-xs text-slate-400">
                 # schema · {databaseLabels[selectedDb].name}.db
               </div>
-              <div className="p-3 space-y-3 max-h-[55vh] overflow-y-auto text-xs">
+              <div className="p-3 space-y-3 max-h-[calc(100vh-10rem)] overflow-y-auto text-xs">
                 {Object.entries(schema).map(([tableName, columns]) => (
                   <div key={tableName}>
                     <p className="text-indigo-400 mb-1">.tables: {tableName}</p>
                     <ul className="space-y-0.5 pl-3 border-l border-slate-800">
                       {columns.map((col) => (
                         <li key={col.name} className="grid grid-cols-[1fr_auto] gap-2 items-baseline">
-                          <span className={col.pk ? 'text-amber-300' : 'text-slate-200'}>
-                            {col.pk && <span aria-label="primary key" className="text-amber-400">*</span>}
+                          <span className={col.pk ? 'text-[#b45309] font-medium' : 'text-slate-200'}>
+                            {col.pk && <span aria-label="primary key" className="text-[#b45309] font-bold">*</span>}
                             {col.name}
                           </span>
                           <span className="text-[10px] text-slate-600">{col.type.toLowerCase()}</span>
@@ -220,18 +199,6 @@ export default function PlaygroundPage() {
           </aside>
         </div>
       </main>
-
-      <footer className="border-t border-slate-800/60 py-5 font-mono text-xs">
-        <div className="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-slate-500">
-          <span><span className="text-emerald-400">exit 0</span> · personal use · next.js + sql.js</span>
-          <Link
-            href="/"
-            className="hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-          >
-            ~ home
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
