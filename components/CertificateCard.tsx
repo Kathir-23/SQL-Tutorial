@@ -66,9 +66,25 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
   });
 
   const handleCopyLink = async () => {
-    if (isSample) return;
+    const cleanId = isSample ? 'SQL-PREVIEW-000000' : credentialId;
+    const urlToCopy = origin
+      ? `${origin}/verify/${cleanId}`
+      : `https://sql-tutorial.vercel.app/verify/${cleanId}`;
+
     try {
-      await navigator.clipboard.writeText(verificationUrl);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(urlToCopy);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = urlToCopy;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
