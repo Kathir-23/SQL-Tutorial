@@ -169,13 +169,13 @@ export default function PlaygroundPage() {
                 Tables · {databaseLabels[selectedDb].name}.db
               </div>
               <div className="relative flex-1 min-h-0 w-full">
-                <div className="absolute inset-0 overflow-y-auto space-y-4 text-xs pr-1">
+                <div className="absolute inset-0 overflow-y-auto space-y-4 text-xs [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                   {Object.entries(schema).map(([tableName, columns]) => (
                     <div key={tableName}>
                       <h2 className="font-bold text-slate-900 text-xs mb-1.5">
                         {tableName}
                       </h2>
-                      <ul className="space-y-1 pl-3 border-l-2 border-slate-300">
+                      <ul className="space-y-1">
                         {columns.map((col) => (
                           <li key={col.name} className="grid grid-cols-[1fr_auto] gap-2 items-baseline">
                             <span className={col.pk ? 'text-[#b45309] font-bold' : 'text-slate-800 font-medium'}>
