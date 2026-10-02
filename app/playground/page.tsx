@@ -125,7 +125,6 @@ export default function PlaygroundPage() {
                     {selectedDb === key && '> '}{name}
                   </button>
                 ))}
-                <span className="text-slate-500 ml-2">{databaseLabels[selectedDb].description}</span>
               </div>
             </section>
 
