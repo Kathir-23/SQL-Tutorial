@@ -100,7 +100,7 @@ export default function PlaygroundPage() {
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <Header />
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
+      <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-6 py-8">
         <section className="font-mono text-sm mb-6">
           <p>
             <span className="text-indigo-400">{username}@sql</span>
@@ -135,8 +135,8 @@ export default function PlaygroundPage() {
           </div>
         </section>
 
-        <div className="grid lg:grid-cols-[1fr,300px] gap-6">
-          <div className="space-y-4">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-start">
+          <div className="space-y-4 min-w-0">
             {isLoading ? (
               <div className="h-[300px] bg-slate-900 rounded border border-slate-800 flex items-center justify-center font-mono text-xs text-slate-500">
                 loading {selectedDb}.db…
@@ -168,7 +168,7 @@ export default function PlaygroundPage() {
             )}
           </div>
 
-          <aside className="lg:sticky lg:top-20 lg:self-start space-y-4 font-mono">
+          <aside className="lg:sticky lg:top-20 lg:self-start space-y-4 font-mono w-full lg:w-[300px]">
             <div className="rounded border border-slate-800 bg-slate-900/40">
               <div className="px-3 py-2 border-b border-slate-800 text-xs text-slate-400">
                 # schema · {databaseLabels[selectedDb].name}.db
