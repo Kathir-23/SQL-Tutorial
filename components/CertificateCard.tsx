@@ -7,9 +7,15 @@ import { useTheme } from '@/lib/theme';
 
 interface CertificateCardProps {
   initialName?: string;
+  serverCertificateId?: string;
+  issuedAtDate?: string;
 }
 
-export default function CertificateCard({ initialName = '' }: CertificateCardProps) {
+export default function CertificateCard({
+  initialName = '',
+  serverCertificateId,
+  issuedAtDate,
+}: CertificateCardProps) {
   const [learnerName, setLearnerName] = useState(initialName);
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState('');
@@ -38,16 +44,22 @@ export default function CertificateCard({ initialName = '' }: CertificateCardPro
     }
   };
 
-  const isSample = !initialName && typeof window !== 'undefined' && !localStorage.getItem('sql-mastery-cert-name');
-  
+  // Real certificate is displayed ONLY if a server-issued certificate ID is present
+  const certIdToUse =
+    serverCertificateId ||
+    (typeof window !== 'undefined' ? localStorage.getItem('sql-mastery-issued-cert-id') : null);
+  const isSample = !certIdToUse;
+
   // Format learner name: CAPITAL letters, default to user/prop or KATHIRAVAN V
   const rawName = learnerName || initialName || 'KATHIRAVAN V';
   const displayName = rawName.trim().toUpperCase();
 
-  const credentialId = isSample ? 'SQL-PREVIEW-000000 (sample)' : generateCredentialId(displayName);
+  const credentialId = isSample ? 'SQL-PREVIEW-000000 (sample)' : certIdToUse;
   const issueDate = isSample
     ? 'Issued when you complete all 16 modules'
-    : new Date().toLocaleDateString('en-US', {
+    : issuedAtDate ||
+      (typeof window !== 'undefined' && localStorage.getItem('sql-mastery-issued-cert-date')) ||
+      new Date().toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric',

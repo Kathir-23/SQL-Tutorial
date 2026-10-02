@@ -1,28 +1,78 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import CertificateCard from "@/components/CertificateCard";
-import CertificateLockGate from "@/components/CertificateLockGate";
 import { useProgressStore } from "@/lib/progress";
-import { lessons } from "@/lib/lessons";
-import { useShowcase } from "@/lib/mode";
-import { ShieldCheck, Lock } from "lucide-react";
+import { modules, lessons } from "@/lib/lessons";
+import { ShieldCheck, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
 
 export default function NextStepsPage() {
   const { completedLessons } = useProgressStore();
-  const showcase = useShowcase();
 
+  // Dynamically compute valid lesson completion count against lib/lessons.ts
   const totalLessonsCount = lessons.length;
   const validLessonSlugs = new Set(lessons.map((l) => l.slug));
-  const completedCount = new Set(completedLessons.filter((slug) => validLessonSlugs.has(slug))).size;
+  const completedCount = new Set(
+    completedLessons.filter((slug) => validLessonSlugs.has(slug))
+  ).size;
+  const overallPercentage = Math.round((completedCount / totalLessonsCount) * 100);
   const isCompleted100 = completedCount >= totalLessonsCount;
 
-  // Allow manual override toggle for demonstration / testing in development
-  const [overrideUnlocked, setOverrideUnlocked] = useState(false);
+  // Server-issued certificate state
+  const [serverCertificateId, setServerCertificateId] = useState<string | null>(null);
+  const [issuedAtDate, setIssuedAtDate] = useState<string | null>(null);
 
-  const isUnlocked = isCompleted100 || showcase || overrideUnlocked;
+  useEffect(() => {
+    // Read saved server cert ID if available
+    const savedCertId = localStorage.getItem("sql-mastery-issued-cert-id");
+    const savedCertDate = localStorage.getItem("sql-mastery-issued-cert-date");
+    if (savedCertId) {
+      setServerCertificateId(savedCertId);
+      if (savedCertDate) setIssuedAtDate(savedCertDate);
+    }
+
+    // Attempt server certificate issuance if requirements are met
+    if (isCompleted100) {
+      const savedName = localStorage.getItem("sql-mastery-cert-name") || "KATHIRAVAN V";
+      fetch("/api/certificate/issue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          completedLessons,
+          certificateName: savedName,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.certificateId) {
+            setServerCertificateId(data.certificateId);
+            const formattedDate = new Date(data.issuedAt || Date.now()).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+            setIssuedAtDate(formattedDate);
+            try {
+              localStorage.setItem("sql-mastery-issued-cert-id", data.certificateId);
+              localStorage.setItem("sql-mastery-issued-cert-date", formattedDate);
+            } catch {}
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch server issued certificate:", err);
+        });
+    }
+  }, [completedLessons, isCompleted100]);
+
+  // First incomplete lesson for "Continue Learning" CTA link
+  const firstIncompleteLesson = lessons.find((l) => !completedLessons.includes(l.slug));
+  const continueHref = firstIncompleteLesson
+    ? `/learn/${firstIncompleteLesson.moduleSlug}/${firstIncompleteLesson.lessonSlug}`
+    : "/learn";
+
+  const hasServerIssuedCert = !!serverCertificateId;
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
@@ -31,39 +81,121 @@ export default function NextStepsPage() {
 
       <main id="main" tabIndex={-1} className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-12">
         {/* Certificate Section */}
-        <section>
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div className="space-y-1">
-              <span className="text-xs font-mono uppercase tracking-widest text-accent"># Course Completion & Credential</span>
-              <h1 className="text-2xl font-semibold">Your Verified Certificate</h1>
-              <p className="text-xs text-muted-foreground">
-                Official SQL Mastery Credential of Completion and LinkedIn Integration.
-              </p>
-            </div>
-
-            {/* Dev / Showcase Testing Toggle */}
-            {!showcase && !isCompleted100 && (
-              <button
-                onClick={() => setOverrideUnlocked(!overrideUnlocked)}
-                className="text-[11px] px-2.5 py-1 rounded bg-secondary text-muted-foreground hover:text-foreground border border-border/60 transition-colors flex items-center gap-1.5"
-                title="Toggle unlocked preview mode"
-              >
-                {overrideUnlocked ? (
-                  <>
-                    <Lock className="w-3 h-3 text-amber-500" />
-                    <span>Back to locked view</span>
-                  </>
-                ) : (
-                  <>
-                    <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                    <span>Preview Unlocked Certificate</span>
-                  </>
-                )}
-              </button>
-            )}
+        <section className="space-y-6">
+          <div className="space-y-1">
+            <span className="text-xs font-mono uppercase tracking-widest text-accent"># Course Completion & Credential</span>
+            <h1 className="text-2xl font-semibold">Your Verified Certificate</h1>
+            <p className="text-xs text-muted-foreground">
+              Official SQL Mastery Credential of Completion and LinkedIn Integration.
+            </p>
           </div>
 
-          {isUnlocked ? <CertificateCard /> : <CertificateLockGate />}
+          {/* Status & Progress Strip Above Certificate */}
+          <div className="p-4 sm:p-5 rounded-lg border border-border/80 bg-card space-y-4 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                {hasServerIssuedCert ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Certificate Unlocked</span>
+                  </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground font-semibold">
+                    {completedCount} of {totalLessonsCount} lessons cleared
+                  </span>
+                )}
+              </div>
+
+              <Link
+                href={continueHref}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-accent text-accent-foreground hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>{hasServerIssuedCert ? "Review Lessons" : "Continue Learning"}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Progress Bar: 8px tall track with light grey background (#e2e8f0 / dark:bg-slate-800) */}
+            <div className="w-full bg-[#e2e8f0] dark:bg-slate-800 h-2 rounded-full overflow-hidden border border-border/30">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ease-out ${
+                  hasServerIssuedCert ? "bg-emerald-500" : "bg-accent"
+                }`}
+                style={{ width: `${overallPercentage}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Single Unified Certificate Display */}
+          <CertificateCard
+            serverCertificateId={serverCertificateId || undefined}
+            issuedAtDate={issuedAtDate || undefined}
+          />
+        </section>
+
+        {/* Module Completion Roadmap Section using Dashboard's exact status labels */}
+        <section className="space-y-4 pt-4 border-t border-border/60">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <span className="text-accent">$</span> Module Completion Roadmap
+            </h2>
+            <span className="text-xs text-muted-foreground">{modules.length} Modules Total</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {modules.map((mod, idx) => {
+              const modLessons = lessons.filter((l) => l.moduleSlug === mod.slug);
+              const modTotal = modLessons.length;
+              const modCompleted = modLessons.filter((l) => completedLessons.includes(l.slug)).length;
+              const isFinished = modTotal > 0 && modCompleted === modTotal;
+              const isInProgress = modCompleted > 0 && !isFinished;
+
+              return (
+                <div
+                  key={mod.slug}
+                  className={`p-4 rounded border transition-colors flex items-start justify-between gap-3 ${
+                    isFinished
+                      ? "bg-emerald-500/5 border-emerald-500/20"
+                      : isInProgress
+                      ? "bg-accent/5 border-accent/30"
+                      : "bg-card border-border/60 text-muted-foreground"
+                  }`}
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-muted-foreground">
+                        M{idx + 1}
+                      </span>
+                      <h3 className="text-sm font-medium text-foreground">
+                        {mod.name}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {modCompleted} / {modTotal} lessons completed
+                    </p>
+                  </div>
+
+                  <div>
+                    {isFinished ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>complete</span>
+                      </span>
+                    ) : isInProgress ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                        <span>in progress</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded border border-border/40">
+                        <span>not started</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         <section className="pt-6 border-t border-border/60">
