@@ -28,7 +28,7 @@ export default function LessonNav({
       aria-label="Module lessons"
     >
       <div className="rounded border border-slate-800 bg-slate-900/40 p-3">
-        <p className="px-2 py-1 text-[10px] uppercase tracking-widest text-slate-500"># {moduleInfo.slug}</p>
+        <p className="px-2 py-1 text-[10px] uppercase tracking-widest text-slate-500"># {moduleInfo.name}</p>
 
         <ul className="mt-1 space-y-0.5">
           {moduleLessons.map((lesson, idx) => {

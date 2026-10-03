@@ -37,7 +37,7 @@ export default function LessonAnchorNav({ sections }: LessonAnchorNavProps) {
     <nav
       data-tour-target="anchor-nav"
       aria-label="lesson sections"
-      className="sticky top-[88px] z-30 -mx-6 px-6 py-2 bg-slate-950/95 backdrop-blur border-b border-slate-800/60 font-mono text-xs"
+      className="sticky top-[64px] z-30 -mx-6 px-6 py-2 bg-slate-950/95 backdrop-blur border-b border-slate-800/60 font-mono text-xs"
     >
       <ul className="flex items-center gap-4 overflow-x-auto">
         {sections.map((s) => {

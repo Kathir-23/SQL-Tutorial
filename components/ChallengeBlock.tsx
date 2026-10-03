@@ -353,9 +353,6 @@ export default function ChallengeBlock({
             >
               ─ drag to resize ─
             </button>
-            <span className="px-3 py-1 font-mono text-[10px] text-slate-500" aria-hidden="true">
-              {editorHeight}px
-            </span>
           </div>
         </div>
         {expanded && (

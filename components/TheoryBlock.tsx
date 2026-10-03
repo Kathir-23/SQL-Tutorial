@@ -25,7 +25,7 @@ export default function TheoryBlock({ content, className = '' }: TheoryBlockProp
 
   // Content is from controlled lesson data (not user input), sanitization not required
   return (
-    <div className={`theory-block space-y-6 ${className}`}>
+    <div className={`theory-block w-full max-w-none space-y-6 ${className}`}>
       <div dangerouslySetInnerHTML={{ __html: renderedContent }} />
     </div>
   );
@@ -33,6 +33,33 @@ export default function TheoryBlock({ content, className = '' }: TheoryBlockProp
 
 function parseMarkdown(markdown: string): string {
   let html = markdown;
+  const placeholders: string[] = [];
+
+  // Protect code blocks with language; apply syntax highlighting for SQL
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+    const language = lang || 'sql';
+    const trimmedCode = code.trim();
+    const highlightedCode = language === 'sql' ? highlightSQL(trimmedCode) : escapeHtml(trimmedCode);
+    const blockHtml = `
+    <div class="code-block-wrapper">
+      <div class="code-block-header">
+        <span class="code-block-lang">${language.toUpperCase()}</span>
+        <span class="code-block-label">Syntax</span>
+      </div>
+      <pre class="code-block"><code class="language-${language}">${highlightedCode}</code></pre>
+    </div>`;
+    const idx = placeholders.length;
+    placeholders.push(blockHtml);
+    return `__THEORY_CODE_BLOCK_${idx}__`;
+  });
+
+  // Protect inline code
+  html = html.replace(/`([^`]+)`/g, (_, codeContent) => {
+    const inlineHtml = `<code class="inline-code">${escapeHtml(codeContent)}</code>`;
+    const idx = placeholders.length;
+    placeholders.push(inlineHtml);
+    return `__THEORY_INLINE_CODE_${idx}__`;
+  });
 
   html = html.replace(
     /(?:^|\n)>\s*💡\s*\*\*Key Concept[:\s]*\*\*\s*(.+?)(?=\n[^>]|\n\n|$)/gi,
@@ -57,24 +84,6 @@ function parseMarkdown(markdown: string): string {
     (_, content) => `
     <div class="callout callout-pro-tip"><span class="callout-bang">!</span><span class="callout-title">pro tip</span><span class="callout-content">${escapeHtml(content.trim())}</span></div>`
   );
-
-  // Code blocks with language; apply syntax highlighting for SQL
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-    const language = lang || 'sql';
-    const trimmedCode = code.trim();
-    const highlightedCode = language === 'sql' ? highlightSQL(trimmedCode) : escapeHtml(trimmedCode);
-    return `
-    <div class="code-block-wrapper">
-      <div class="code-block-header">
-        <span class="code-block-lang">${language.toUpperCase()}</span>
-        <span class="code-block-label">Syntax</span>
-      </div>
-      <pre class="code-block"><code class="language-${language}">${highlightedCode}</code></pre>
-    </div>`;
-  });
-
-  // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
 
   // Section headers with special styling based on content
   html = html.replace(/^## (Mental Model|How It Works|When To Use This|Syntax|Operators|Key Rules|Key Points|Overview)$/gm, (_, title) => {
@@ -139,10 +148,14 @@ function parseMarkdown(markdown: string): string {
   );
 
   // Paragraphs, exclude already-processed elements
-  html = html.replace(/^(?!<[hupltd]|<code|<pre|<div|<ul|<ol|<li)(.+)$/gm, '<p class="theory-paragraph">$1</p>');
+  html = html.replace(/^(?!<[hupltd]|<code|<pre|<div|<ul|<ol|<li|__THEORY_)(.+)$/gm, '<p class="theory-paragraph">$1</p>');
 
   // Clean up empty paragraphs
   html = html.replace(/<p[^>]*>\s*<\/p>/g, '');
+
+  // Restore placeholders
+  html = html.replace(/__THEORY_INLINE_CODE_(\d+)__/g, (_, idx) => placeholders[parseInt(idx, 10)] || '');
+  html = html.replace(/__THEORY_CODE_BLOCK_(\d+)__/g, (_, idx) => placeholders[parseInt(idx, 10)] || '');
 
   return html;
 }

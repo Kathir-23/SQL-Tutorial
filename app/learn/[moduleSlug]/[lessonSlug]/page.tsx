@@ -32,8 +32,8 @@ import { useProgressStore, XP_VALUES, isLessonDue } from '@/lib/progress';
 import { useShowcase } from '@/lib/mode';
 import { getProjectChallengeForLesson, getProjectThread } from '@/lib/project-threads';
 import type { Database as SqlJsDatabase } from 'sql.js';
-import ThemeToggle from '@/components/ThemeToggle';
 import { useAuth } from '@/lib/auth';
+import Header from '@/components/Header';
 import GuestConversionModal from '@/components/GuestConversionModal';
 
 const databases = {
@@ -234,30 +234,7 @@ export default function LessonPage({ params }: LessonPageProps) {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800 sticky top-0 z-40 bg-slate-950/95 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-3 text-xs font-mono">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setMobileNavOpen(true)}
-              className="lg:hidden px-2 py-1 rounded border border-slate-800 text-slate-400 hover:text-slate-100 hover:border-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-              aria-label="open module nav"
-            >
-              ☰
-            </button>
-            <Link
-              href="/learn"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              <span className="text-indigo-400">$</span> cd ../lessons
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <XPBadge />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <MobileModuleNav
         open={mobileNavOpen}
@@ -268,31 +245,32 @@ export default function LessonPage({ params }: LessonPageProps) {
       />
 
       <div className="border-b border-slate-800/60 bg-slate-900/20">
-        <div className="max-w-7xl mx-auto px-6 py-2 font-mono text-xs text-slate-400">
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1 truncate">
-            <Link
-              href="/"
-              className="hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              ~
-            </Link>
-            <span>/</span>
+        <div className="max-w-7xl mx-auto px-6 py-2.5 font-mono text-xs text-slate-400 flex items-center justify-between">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 truncate">
             <Link
               href="/learn"
-              className="hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
+              className="hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 rounded"
             >
-              lessons
+              Dashboard
             </Link>
-            <span>/</span>
-            <span className="text-slate-300 truncate">{lesson.moduleSlug}</span>
-            <span>/</span>
-            <span className="text-slate-100 truncate">{lesson.lessonSlug}</span>
+            <span className="text-slate-600">/</span>
+            <span className="text-slate-300 truncate">{moduleInfo.name}</span>
+            <span className="text-slate-600">/</span>
+            <span className="text-slate-100 font-medium truncate">{lesson.title}</span>
           </nav>
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            className="lg:hidden px-2 py-1 rounded border border-slate-800 text-slate-400 hover:text-slate-100 hover:border-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+            aria-label="open module nav"
+          >
+            ☰ lessons
+          </button>
         </div>
       </div>
 
       <div className="flex">
-        <aside className="hidden lg:block w-72 border-r border-slate-800 p-4 sticky top-[88px] h-[calc(100vh-88px)] overflow-y-auto">
+        <aside className="hidden lg:block w-72 border-r border-slate-800 p-4 sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto">
           <LessonNav currentLesson={lesson} moduleLessons={moduleLessons} moduleInfo={moduleInfo} />
         </aside>
 
@@ -352,13 +330,13 @@ export default function LessonPage({ params }: LessonPageProps) {
             </div>
           ) : (
             <div className="space-y-10">
-              <section id="theory" className="scroll-mt-32">
+              <section id="theory" className="scroll-mt-40">
                 <p className="font-mono text-xs uppercase tracking-widest text-slate-500 mb-3"># theory</p>
                 <TheoryBlock content={lesson.theory.content} />
               </section>
 
               {lesson.examples.length > 0 && database && (
-                <section id="examples" className="scroll-mt-32">
+                <section id="examples" className="scroll-mt-40">
                   <p className="font-mono text-xs uppercase tracking-widest text-slate-500 mb-3">
                     # examples <span className="text-slate-600">[{lesson.examples.length}]</span>
                   </p>
@@ -379,7 +357,7 @@ export default function LessonPage({ params }: LessonPageProps) {
               <YourTurn moduleSlug={moduleSlug} lessonSlug={lessonSlug} />
 
               {hasChallenges && database && (
-                <section id="challenges" className="scroll-mt-32">
+                <section id="challenges" className="scroll-mt-40">
                   <p className="font-mono text-xs uppercase tracking-widest text-slate-500 mb-3">
                     # challenges <span className="text-slate-600">[{totalChallenges}]</span>
                   </p>
@@ -406,7 +384,7 @@ export default function LessonPage({ params }: LessonPageProps) {
               )}
 
               {projectChallenge && projectThread && database && (
-                <section id="project" className="pt-2 scroll-mt-32">
+                <section id="project" className="pt-2 scroll-mt-40">
                   <div className="mb-3 px-3 py-2 rounded border border-amber-400/30 bg-amber-400/[0.04] font-mono text-xs">
                     <p>
                       <span className="text-amber-400">✦ project thread</span>
