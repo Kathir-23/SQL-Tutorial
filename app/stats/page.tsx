@@ -180,7 +180,7 @@ export default function StatsPage() {
                   return (
                     <div
                       key={r.name}
-                      className={`p-4 rounded-xl border flex flex-col justify-between gap-2.5 transition-all shadow-sm ${
+                      className={`p-4 rounded-xl border flex flex-col justify-start gap-2.5 transition-all shadow-sm ${
                         isCurrent
                           ? 'border-purple-400 bg-[#f3e8ff] text-slate-900 ring-2 ring-purple-400/40'
                           : 'border-slate-300/80 bg-[#f1f5f9] text-slate-900'

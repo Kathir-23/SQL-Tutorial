@@ -347,7 +347,7 @@ const RANKS: Rank[] = [
   { name: 'Data Analyst', threshold: 600, next: 1800, blurb: 'GROUP BY, HAVING, aggregates. You can answer questions without Excel.' },
   { name: 'BI Developer', threshold: 1800, next: 3600, blurb: 'JOINs, subqueries, CTEs. You can stitch tables together cleanly.' },
   { name: 'Query Architect', threshold: 3600, next: 5400, blurb: 'Window functions, optimization, ranking. PARTITION BY over self-joins.' },
-  { name: 'Database Engineer', threshold: 5400, next: null, blurb: 'All 68 lessons cleared. You ship SQL other people read.' },
+  { name: 'Database Engineer', threshold: 5400, next: null, blurb: 'You ship SQL other people read.' },
 ];
 
 export function getRank(xp: number): Rank {
