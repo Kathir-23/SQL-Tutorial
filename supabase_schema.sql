@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS public.user_progress (
   completed_lessons JSONB DEFAULT '[]'::jsonb,
   streak_count INT DEFAULT 0,
   xp INT DEFAULT 0,
+  last_activity TEXT DEFAULT '',
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 

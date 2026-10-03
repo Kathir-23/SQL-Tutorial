@@ -96,23 +96,29 @@ export const useProgressStore = create<ProgressState>()(
           return;
         }
 
+        const today = getToday();
         const newStreak = calculateStreak(state.lastActivity, state.streak);
         const newCompleted = [...state.completedLessons, slug];
         const newXP = state.xp + 10;
+        const newReviewedAt = {
+          ...state.reviewedAt,
+          [slug]: state.reviewedAt[slug] ?? { at: new Date().toISOString(), box: 0 },
+        };
 
         set({
           completedLessons: newCompleted,
           xp: newXP,
           streak: newStreak,
           maxStreak: Math.max(state.maxStreak, newStreak),
-          lastActivity: getToday(),
+          lastActivity: today,
+          reviewedAt: newReviewedAt,
         });
 
         // Cloud sync if user logged in
         if (typeof window !== 'undefined') {
           const activeUserId = localStorage.getItem('sql-mastery-active-user-id');
           if (activeUserId) {
-            syncProgressToCloud(activeUserId, newCompleted, newStreak, newXP);
+            syncProgressToCloud(activeUserId, newCompleted, newStreak, newXP, today);
           }
         }
       },
@@ -125,6 +131,7 @@ export const useProgressStore = create<ProgressState>()(
           get().markReviewed(key);
           return;
         }
+        const today = getToday();
         const newStreak = calculateStreak(state.lastActivity, state.streak);
         const newCheckpoints = [...done, moduleSlug];
         const newXP = state.xp + XP_VALUES.CHECKPOINT_COMPLETE;
@@ -134,7 +141,7 @@ export const useProgressStore = create<ProgressState>()(
           xp: newXP,
           streak: newStreak,
           maxStreak: Math.max(state.maxStreak, newStreak),
-          lastActivity: getToday(),
+          lastActivity: today,
           reviewedAt: {
             ...state.reviewedAt,
             [key]: { at: new Date().toISOString(), box: 0 },
@@ -144,13 +151,14 @@ export const useProgressStore = create<ProgressState>()(
         if (typeof window !== 'undefined') {
           const activeUserId = localStorage.getItem('sql-mastery-active-user-id');
           if (activeUserId) {
-            syncProgressToCloud(activeUserId, state.completedLessons, newStreak, newXP);
+            syncProgressToCloud(activeUserId, state.completedLessons, newStreak, newXP, today);
           }
         }
       },
 
       addXP: (amount: number) => {
         const state = get();
+        const today = getToday();
         const newStreak = calculateStreak(state.lastActivity, state.streak);
         const newXP = state.xp + amount;
 
@@ -158,13 +166,13 @@ export const useProgressStore = create<ProgressState>()(
           xp: newXP,
           streak: newStreak,
           maxStreak: Math.max(state.maxStreak, newStreak),
-          lastActivity: getToday(),
+          lastActivity: today,
         });
 
         if (typeof window !== 'undefined') {
           const activeUserId = localStorage.getItem('sql-mastery-active-user-id');
           if (activeUserId) {
-            syncProgressToCloud(activeUserId, state.completedLessons, newStreak, newXP);
+            syncProgressToCloud(activeUserId, state.completedLessons, newStreak, newXP, today);
           }
         }
       },
@@ -225,23 +233,36 @@ export async function syncProgressToCloud(
   userId: string,
   completedLessons: string[],
   streak: number,
-  xp: number
+  xp: number,
+  lastActivity?: string
 ) {
   if (!userId) return;
+  const today = lastActivity || useProgressStore.getState().lastActivity || getToday();
   try {
-    await supabase.from('user_progress').upsert({
+    const { error } = await supabase.from('user_progress').upsert({
       user_id: userId,
       completed_lessons: completedLessons,
       streak_count: streak,
       xp: xp,
+      last_activity: today,
       updated_at: new Date().toISOString(),
     });
+    // Fallback if last_activity column does not exist in Supabase yet
+    if (error && error.message?.includes('last_activity')) {
+      await supabase.from('user_progress').upsert({
+        user_id: userId,
+        completed_lessons: completedLessons,
+        streak_count: streak,
+        xp: xp,
+        updated_at: new Date().toISOString(),
+      });
+    }
   } catch (err) {
     console.warn('Failed to sync user progress to Supabase:', err);
   }
 }
 
-// Requirement 2: Merge browser's saved lessons with cloud lessons (combine both, never overwrite)
+// Merge browser's saved lessons with cloud lessons (combine both, never overwrite)
 export async function mergeCloudProgress(userId: string) {
   if (!userId) return;
   try {
@@ -256,33 +277,51 @@ export async function mergeCloudProgress(userId: string) {
     let cloudLessons: string[] = [];
     let cloudStreak = 0;
     let cloudXP = 0;
+    let cloudLastActivity = '';
 
     if (data) {
       cloudLessons = Array.isArray(data.completed_lessons) ? data.completed_lessons : [];
       cloudStreak = data.streak_count ?? 0;
       cloudXP = data.xp ?? 0;
+      cloudLastActivity = data.last_activity ?? (data.updated_at ? data.updated_at.split('T')[0] : '');
     }
 
     // Merge: Combine arrays uniquely without overwriting
     const mergedLessons = Array.from(new Set([...cloudLessons, ...localState.completedLessons]));
     const mergedStreak = Math.max(cloudStreak, localState.streak);
     const mergedXP = Math.max(cloudXP, localState.xp);
+    const mergedLastActivity = localState.lastActivity || cloudLastActivity || getToday();
 
     useProgressStore.setState({
       completedLessons: mergedLessons,
       streak: mergedStreak,
       maxStreak: Math.max(localState.maxStreak, mergedStreak),
       xp: mergedXP,
+      lastActivity: mergedLastActivity,
     });
 
     // Save merged state back to cloud DB
-    await supabase.from('user_progress').upsert({
-      user_id: userId,
-      completed_lessons: mergedLessons,
-      streak_count: mergedStreak,
-      xp: mergedXP,
-      updated_at: new Date().toISOString(),
-    });
+    try {
+      const { error } = await supabase.from('user_progress').upsert({
+        user_id: userId,
+        completed_lessons: mergedLessons,
+        streak_count: mergedStreak,
+        xp: mergedXP,
+        last_activity: mergedLastActivity,
+        updated_at: new Date().toISOString(),
+      });
+      if (error && error.message?.includes('last_activity')) {
+        await supabase.from('user_progress').upsert({
+          user_id: userId,
+          completed_lessons: mergedLessons,
+          streak_count: mergedStreak,
+          xp: mergedXP,
+          updated_at: new Date().toISOString(),
+        });
+      }
+    } catch {
+      /* ignore cloud error */
+    }
   } catch (err) {
     console.warn('Failed to merge cloud progress:', err);
   }
@@ -304,32 +343,17 @@ export interface Rank {
 }
 
 const RANKS: Rank[] = [
-  { name: 'select novice', threshold: 0, next: 100, blurb: 'SELECT, WHERE, ORDER BY. you can read a table.' },
-  { name: 'data analyst', threshold: 100, next: 500, blurb: 'GROUP BY, HAVING, aggregates. you can answer a question without exporting to excel.' },
-  { name: 'bi developer', threshold: 500, next: 1500, blurb: 'JOINs, subqueries, CTEs. you can stitch tables together without flattening to a giant view.' },
-  { name: 'query architect', threshold: 1500, next: 4000, blurb: 'window functions, optimization, ranking. you reach for PARTITION BY before a self-join.' },
-  { name: 'database engineer', threshold: 4000, next: null, blurb: 'all 68 lessons cleared. you ship sql other people read.' },
-];
-
-export const LESSON_RANKS: Rank[] = [
-  { name: 'novice', threshold: 0, next: 17, blurb: 'Getting started & SQL fundamentals (Lessons 0–16).' },
-  { name: 'apprentice', threshold: 17, next: 35, blurb: 'JOINs, aggregations, & Subqueries (Lessons 17–34).' },
-  { name: 'practitioner', threshold: 35, next: 68, blurb: 'Window Functions, CTEs, & Objects (Lessons 35–67).' },
-  { name: 'sql master', threshold: 68, next: null, blurb: 'All 68 lessons cleared! Official SQL Master.' },
+  { name: 'Novice', threshold: 0, next: 600, blurb: 'SELECT, WHERE, ORDER BY. You can read a table.' },
+  { name: 'Data Analyst', threshold: 600, next: 1800, blurb: 'GROUP BY, HAVING, aggregates. You can answer questions without Excel.' },
+  { name: 'BI Developer', threshold: 1800, next: 3600, blurb: 'JOINs, subqueries, CTEs. You can stitch tables together cleanly.' },
+  { name: 'Query Architect', threshold: 3600, next: 5400, blurb: 'Window functions, optimization, ranking. PARTITION BY over self-joins.' },
+  { name: 'Database Engineer', threshold: 5400, next: null, blurb: 'All 68 lessons cleared. You ship SQL other people read.' },
 ];
 
 export function getRank(xp: number): Rank {
   let current = RANKS[0];
   for (const r of RANKS) {
     if (xp >= r.threshold) current = r;
-  }
-  return current;
-}
-
-export function getRankByLessons(completedCount: number): Rank {
-  let current = LESSON_RANKS[0];
-  for (const r of LESSON_RANKS) {
-    if (completedCount >= r.threshold) current = r;
   }
   return current;
 }

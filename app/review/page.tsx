@@ -85,10 +85,17 @@ function ReviewSession() {
 
   if (items.length === 0) {
     return (
-      <p className="font-mono text-sm text-slate-400">
-        # nothing to review yet. finish a lesson first.{' '}
-        <Link href="/learn" className="text-indigo-400 hover:underline">cd ~/lessons</Link>
-      </p>
+      <div className="font-mono text-sm text-slate-300 space-y-2">
+        <p>No lessons are due for review right now.</p>
+        <p className="text-xs text-[#64748b]">
+          Complete lessons and check back tomorrow for spaced repetition reviews.
+        </p>
+        <div className="pt-2">
+          <Link href="/learn" className="text-indigo-400 hover:underline text-xs font-semibold">
+            ← Back to Lessons
+          </Link>
+        </div>
+      </div>
     );
   }
 
