@@ -269,12 +269,15 @@ button, a, input, textarea {
 
 /* Lists */
 .theory-list {
-  list-style: none;
+  list-style: none !important;
+  list-style-type: none !important;
   margin: 1rem 0;
   padding-left: 0;
 }
 
 .theory-list-item {
+  list-style: none !important;
+  list-style-type: none !important;
   position: relative;
   padding-left: 1.5rem;
   margin: 0.5rem 0;

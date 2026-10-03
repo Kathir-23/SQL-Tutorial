@@ -61,29 +61,22 @@ function parseMarkdown(markdown: string): string {
     return `__THEORY_INLINE_CODE_${idx}__`;
   });
 
-  html = html.replace(
-    /(?:^|\n)>\s*💡\s*\*\*Key Concept[:\s]*\*\*\s*(.+?)(?=\n[^>]|\n\n|$)/gi,
-    (_, content) => `
-    <div class="callout callout-key-concept"><span class="callout-bang">!</span><span class="callout-title">key concept</span><span class="callout-content">${escapeHtml(content.trim())}</span></div>`
-  );
+  const formatCallout = (typeClass: string, titleLabel: string, pattern: string) => {
+    const regex = new RegExp(`(?:^|\\n)>\\s*(?:💡|🎯|⚠️|⚡|✨)\\s*\\*\\*${pattern}[:\\s]*\\*\\*([\\s\\S]*?)(?=\\n[^>]|\\n\\n|$)`, 'gi');
+    html = html.replace(regex, (_, rawContent) => {
+      const cleanContent = rawContent
+        .split('\n')
+        .map((line: string) => line.replace(/^>\s?/, ''))
+        .join(' ')
+        .trim();
+      return `\n<div class="callout ${typeClass}"><span class="callout-bang">!</span><span class="callout-title">${titleLabel}</span><span class="callout-content">${cleanContent}</span></div>`;
+    });
+  };
 
-  html = html.replace(
-    /(?:^|\n)>\s*🎯\s*\*\*Why This Matters[:\s]*\*\*\s*(.+?)(?=\n[^>]|\n\n|$)/gi,
-    (_, content) => `
-    <div class="callout callout-why-matters"><span class="callout-bang">!</span><span class="callout-title">why this matters</span><span class="callout-content">${escapeHtml(content.trim())}</span></div>`
-  );
-
-  html = html.replace(
-    /(?:^|\n)>\s*⚠️\s*\*\*Common Mistake[:\s]*\*\*\s*(.+?)(?=\n[^>]|\n\n|$)/gi,
-    (_, content) => `
-    <div class="callout callout-warning"><span class="callout-bang">!</span><span class="callout-title">common mistake</span><span class="callout-content">${escapeHtml(content.trim())}</span></div>`
-  );
-
-  html = html.replace(
-    /(?:^|\n)>\s*⚡\s*\*\*Pro Tip[:\s]*\*\*\s*(.+?)(?=\n[^>]|\n\n|$)/gi,
-    (_, content) => `
-    <div class="callout callout-pro-tip"><span class="callout-bang">!</span><span class="callout-title">pro tip</span><span class="callout-content">${escapeHtml(content.trim())}</span></div>`
-  );
+  formatCallout('callout-key-concept', 'key concept', 'Key(?: Concept)?');
+  formatCallout('callout-why-matters', 'why this matters', 'Why This Matters');
+  formatCallout('callout-warning', 'common mistake', 'Common Mistake');
+  formatCallout('callout-pro-tip', 'pro tip', '(?:Pro )?Tip');
 
   // Section headers with special styling based on content
   html = html.replace(/^## (Mental Model|How It Works|When To Use This|Syntax|Operators|Key Rules|Key Points|Overview)$/gm, (_, title) => {
@@ -147,11 +140,24 @@ function parseMarkdown(markdown: string): string {
     }
   );
 
-  // Paragraphs, exclude already-processed elements
-  html = html.replace(/^(?!<[hupltd]|<code|<pre|<div|<ul|<ol|<li|__THEORY_)(.+)$/gm, '<p class="theory-paragraph">$1</p>');
-
-  // Clean up empty paragraphs
-  html = html.replace(/<p[^>]*>\s*<\/p>/g, '');
+  // Paragraphs: process blocks separated by double newlines to avoid splitting single paragraphs into multiple <p> tags
+  const blocks = html.split(/\n\s*\n/);
+  html = blocks
+    .map((block) => {
+      const trimmed = block.trim();
+      if (!trimmed) return '';
+      if (/^(<[hupltd]|<code|<pre|<div|<ul|<ol|<li|<table|__THEORY_)/i.test(trimmed)) {
+        return trimmed;
+      }
+      const text = trimmed
+        .split('\n')
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .join(' ');
+      return `<p class="theory-paragraph">${text}</p>`;
+    })
+    .filter(Boolean)
+    .join('\n\n');
 
   // Restore placeholders
   html = html.replace(/__THEORY_INLINE_CODE_(\d+)__/g, (_, idx) => placeholders[parseInt(idx, 10)] || '');
