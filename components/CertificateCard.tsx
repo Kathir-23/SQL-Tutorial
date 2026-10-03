@@ -4,30 +4,29 @@ import { useState, useEffect, useTransition } from 'react';
 import { Award, Share2, Printer, Check, ExternalLink, Sparkles } from 'lucide-react';
 import { generateCredentialId, buildLinkedInCertUrl, VERIFIED_SKILLS } from '@/lib/certificate';
 import { useTheme } from '@/lib/theme';
+import { useAuth } from '@/lib/auth';
 
 interface CertificateCardProps {
   initialName?: string;
+  learnerName?: string;
   serverCertificateId?: string;
   issuedAtDate?: string;
 }
 
 export default function CertificateCard({
   initialName = '',
+  learnerName: propLearnerName,
   serverCertificateId,
   issuedAtDate,
 }: CertificateCardProps) {
-  const [learnerName, setLearnerName] = useState(initialName);
+  const { user, isAuthenticated } = useAuth();
+  const [learnerName, setLearnerName] = useState(propLearnerName || initialName);
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState('');
   const { theme } = useTheme();
   const [, startTransition] = useTransition();
 
   useEffect(() => {
-    // Read saved learner name from localStorage if available
-    const savedName = localStorage.getItem('sql-mastery-cert-name');
-    if (savedName) {
-      setLearnerName(savedName);
-    }
     if (typeof window !== 'undefined') {
       startTransition(() => {
         setOrigin(window.location.origin);
@@ -35,23 +34,20 @@ export default function CertificateCard({
     }
   }, []);
 
-  const handleNameChange = (newName: string) => {
-    setLearnerName(newName);
-    try {
-      localStorage.setItem('sql-mastery-cert-name', newName);
-    } catch {
-      // ignore
-    }
-  };
-
   // Real certificate is displayed ONLY if a server-issued certificate ID is present
   const certIdToUse =
     serverCertificateId ||
     (typeof window !== 'undefined' ? localStorage.getItem('sql-mastery-issued-cert-id') : null);
   const isSample = !certIdToUse;
 
-  // Format learner name: CAPITAL letters, default to user/prop or KATHIRAVAN V
-  const rawName = learnerName || initialName || 'KATHIRAVAN V';
+  // Format learner name: Priority -> propLearnerName -> initialName -> authenticated user.certificateName -> localStorage -> YOUR NAME
+  const rawName =
+    propLearnerName ||
+    learnerName ||
+    initialName ||
+    (isAuthenticated && user?.certificateName ? user.certificateName : '') ||
+    (typeof window !== 'undefined' ? localStorage.getItem('sql-mastery-cert-name') || '' : '') ||
+    'YOUR NAME';
   const displayName = rawName.trim().toUpperCase();
 
   const credentialId = isSample ? 'SQL-PREVIEW-000000 (sample)' : certIdToUse;

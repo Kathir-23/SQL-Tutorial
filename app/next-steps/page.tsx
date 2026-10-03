@@ -6,9 +6,11 @@ import Header from "@/components/Header";
 import CertificateCard from "@/components/CertificateCard";
 import { useProgressStore } from "@/lib/progress";
 import { lessons } from "@/lib/lessons";
+import { useAuth } from "@/lib/auth";
 
 export default function NextStepsPage() {
   const { completedLessons } = useProgressStore();
+  const { user, isAuthenticated } = useAuth();
 
   const totalLessonsCount = lessons.length;
   const validLessonSlugs = new Set(lessons.map((l) => l.slug));
@@ -30,15 +32,15 @@ export default function NextStepsPage() {
       if (savedCertDate) setIssuedAtDate(savedCertDate);
     }
 
-    // Attempt server certificate issuance if requirements are met
-    if (isCompleted100) {
-      const savedName = localStorage.getItem("sql-mastery-cert-name") || "KATHIRAVAN V";
+    // Attempt server certificate issuance ONLY if student is authenticated and has finished 100%
+    if (isCompleted100 && isAuthenticated && user) {
       fetch("/api/certificate/issue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           completedLessons,
-          certificateName: savedName,
+          userId: user.id,
+          email: user.email,
         }),
       })
         .then((res) => res.json())
@@ -61,7 +63,7 @@ export default function NextStepsPage() {
           console.error("Failed to fetch server issued certificate:", err);
         });
     }
-  }, [completedLessons, isCompleted100]);
+  }, [completedLessons, isCompleted100, isAuthenticated, user]);
 
   const hasServerIssuedCert = !!serverCertificateId;
 

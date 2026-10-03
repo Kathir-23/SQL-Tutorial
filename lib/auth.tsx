@@ -219,6 +219,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.removeItem(SESSION_KEY);
       localStorage.removeItem(ACTIVE_USER_ID_KEY);
+      localStorage.removeItem('sql-mastery-cert-name');
+      localStorage.removeItem('sql-mastery-issued-cert-id');
+      localStorage.removeItem('sql-mastery-issued-cert-date');
     } catch {
       // ignore
     }

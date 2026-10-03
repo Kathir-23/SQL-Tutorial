@@ -104,7 +104,7 @@ export default function SignUpPage() {
                     required
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="e.g. Kathiravan"
+                    placeholder="e.g. Alex Morgan"
                     className="w-full px-3 py-2 rounded-lg border border-border bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>
@@ -177,7 +177,7 @@ export default function SignUpPage() {
                     required
                     value={legalName}
                     onChange={(e) => setLegalName(e.target.value)}
-                    placeholder="e.g. Kathiravan"
+                    placeholder="e.g. Alex Morgan"
                     className="w-full px-3 py-2 rounded-lg border border-accent bg-card text-foreground font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 </div>

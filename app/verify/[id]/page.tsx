@@ -3,6 +3,7 @@ import { ShieldCheck, Award, CheckCircle2, ArrowRight, AlertTriangle, XCircle } 
 import { VERIFIED_SKILLS } from '@/lib/certificate';
 import { modules, lessons } from '@/lib/lessons';
 import ThemeToggle from '@/components/ThemeToggle';
+import { supabase } from '@/lib/supabase';
 
 interface VerifyPageProps {
   params: Promise<{ id: string }>;
@@ -12,16 +13,46 @@ export default async function VerifyCertificatePage({ params }: VerifyPageProps)
   const { id } = await params;
   const rawId = (id || '').trim();
   const credentialId = rawId.toUpperCase();
-  const isSample = credentialId.includes('PREVIEW') || credentialId === 'SQL-PREVIEW-000000';
+  const isSample = credentialId === 'SQL-PREVIEW-000000' || credentialId.includes('PREVIEW');
 
-  // Sample or valid fallback demonstration ID
-  const isKnown = isSample || credentialId.startsWith('SQL-2026-');
-  const studentName = 'KATHIRAVAN V';
-  const issueDate = new Date().toLocaleDateString('en-US', {
+  let isKnown = false;
+  let studentName = '';
+  let courseName = 'SQL Mastery';
+  let issueDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
   });
+
+  if (isSample) {
+    isKnown = true;
+    studentName = 'YOUR NAME';
+    issueDate = 'Issued upon completing all 16 modules';
+  } else if (credentialId) {
+    // Look up real certificate record from database
+    try {
+      const { data: certRecord } = await supabase
+        .from('certificates')
+        .select('*')
+        .eq('id', credentialId)
+        .maybeSingle();
+
+      if (certRecord && certRecord.recipient_name) {
+        isKnown = true;
+        studentName = certRecord.recipient_name.trim().toUpperCase();
+        courseName = certRecord.course_name || 'SQL Mastery';
+        if (certRecord.issued_at) {
+          issueDate = new Date(certRecord.issued_at).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Error verifying certificate in database:', err);
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground font-mono text-sm">
@@ -112,7 +143,7 @@ export default async function VerifyCertificatePage({ params }: VerifyPageProps)
               </div>
               <div className="p-3 rounded border border-border/60 bg-muted/20">
                 <span className="block text-muted-foreground uppercase tracking-wider text-[10px]">Course Name</span>
-                <span className="font-semibold text-foreground text-sm">SQL Mastery</span>
+                <span className="font-semibold text-foreground text-sm">{courseName}</span>
               </div>
               <div className="p-3 rounded border border-border/60 bg-muted/20">
                 <span className="block text-muted-foreground uppercase tracking-wider text-[10px]">Curriculum Status</span>
