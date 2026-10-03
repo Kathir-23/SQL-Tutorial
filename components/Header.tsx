@@ -20,9 +20,9 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur support-[backdrop-filter]:bg-background/60">
       <div className="max-w-[1302px] mx-auto px-4 h-16 flex items-center justify-between gap-4 text-xs font-mono">
-        {/* Left: Logo linking to / */}
+        {/* Left: Logo linking to /learn when authenticated, or / when guest */}
         <Link
-          href="/"
+          href={isAuthenticated ? '/learn' : '/'}
           className="flex items-center gap-2 font-bold text-foreground hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg"
         >
           <span className="px-3 py-1 rounded-lg bg-accent/15 text-accent border border-accent/30 font-bold text-xs">

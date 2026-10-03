@@ -254,7 +254,16 @@ export default function LessonPage({ params }: LessonPageProps) {
               Dashboard
             </Link>
             <span className="text-slate-600">/</span>
-            <span className="text-slate-300 truncate">{moduleInfo.name}</span>
+            {moduleLessons[0] ? (
+              <Link
+                href={`/learn/${moduleInfo.slug}/${moduleLessons[0].lessonSlug}`}
+                className="hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 rounded truncate"
+              >
+                {moduleInfo.name}
+              </Link>
+            ) : (
+              <span className="text-slate-300 truncate">{moduleInfo.name}</span>
+            )}
             <span className="text-slate-600">/</span>
             <span className="text-slate-100 font-medium truncate">{lesson.title}</span>
           </nav>
