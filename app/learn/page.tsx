@@ -4,13 +4,13 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import ModuleCard from '@/components/ModuleCard';
 import { getAllModules, getModuleLessons, lessons } from '@/lib/lessons';
-import { useProgressStore, getDueLessons, getRankByLessons } from '@/lib/progress';
+import { useProgressStore, getDueLessons, getRank } from '@/lib/progress';
 import { useAuth } from '@/lib/auth';
 import { BookOpen, ArrowRight, ShieldCheck, Flame, Trophy, Award } from 'lucide-react';
 
 export default function LearnPage() {
   const modules = getAllModules();
-  const { completedLessons, reviewedAt, streak } = useProgressStore();
+  const { completedLessons, reviewedAt, streak, xp } = useProgressStore();
   const { user, isAuthenticated } = useAuth();
 
   const totalLessons = lessons.length;
@@ -18,7 +18,7 @@ export default function LearnPage() {
   const overallPercentage = Math.round((completedCount / totalLessons) * 100);
   const dueCount = getDueLessons(completedLessons, reviewedAt).length;
 
-  const currentRank = getRankByLessons(completedCount);
+  const currentRank = getRank(xp);
 
   // Find next lesson to continue or all completed message
   const firstIncomplete = lessons.find((l) => !completedLessons.includes(l.slug));

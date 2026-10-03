@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
 import { useProgressStore, getRank, getRankLadder, isLessonDue, checkpointKey } from '@/lib/progress';
-import { useShowcase } from '@/lib/mode';
 import { MODULE_CHECKPOINTS } from '@/lib/checkpoints';
 import { useProjectProgressStore } from '@/lib/project-progress';
 import { useThreadProgressStore } from '@/lib/thread-progress';
@@ -11,9 +11,15 @@ import { lessons, modules } from '@/lib/lessons';
 import { getAllProjects } from '@/lib/projects';
 import { projectThreads, projectChallenges } from '@/lib/project-threads';
 
-function bar(pct: number, width = 12): string {
-  const filled = Math.round((pct / 100) * width);
-  return '█'.repeat(filled) + '░'.repeat(Math.max(0, width - filled));
+function ProgressBar({ value }: { value: number }) {
+  return (
+    <div className="w-24 sm:w-32 h-[6px] bg-slate-700/60 rounded-full overflow-hidden">
+      <div
+        className="h-full bg-purple-500 rounded-full transition-all duration-300"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
+  );
 }
 
 function daysAgo(iso: string): string {
@@ -30,9 +36,7 @@ function daysAgo(iso: string): string {
 
 export default function StatsPage() {
   const [mounted, setMounted] = useState(false);
-  // Captured once (lazy init) so relative-time labels stay pure across renders.
   const [now] = useState(() => Date.now());
-  const showcase = useShowcase();
 
   const xp = useProgressStore((s) => s.xp);
   const streak = useProgressStore((s) => s.streak);
@@ -64,44 +68,33 @@ export default function StatsPage() {
   const totalLessons = lessons.length;
   const totalProjectSteps = allProjects.reduce((s, p) => s + p.steps.length, 0);
   const totalChallenges = Object.keys(projectChallenges).length;
-  const completedChallengeCount = showcase
-    ? totalChallenges
-    : Object.keys(projectChallenges).filter((k) => completedChallenges[k]).length;
-  const completedProjectSteps = showcase
-    ? totalProjectSteps
-    : allProjects.reduce(
-        (sum, p) => sum + (completedSteps[p.slug]?.length ?? 0),
-        0,
-      );
+  const completedChallengeCount = Object.keys(projectChallenges).filter((k) => completedChallenges[k]).length;
+  const completedProjectSteps = allProjects.reduce(
+    (sum, p) => sum + (completedSteps[p.slug]?.length ?? 0),
+    0,
+  );
 
-  // Filter stale slugs from localStorage that no longer match current lesson data
   const validLessonKeys = new Set(lessons.map((l) => `${l.moduleSlug}/${l.lessonSlug}`));
-  const effectiveCompleted = showcase
-    ? [...validLessonKeys]
-    : completedLessons.filter((k) => validLessonKeys.has(k));
+  const effectiveCompleted = completedLessons.filter((k) => validLessonKeys.has(k));
   const liveCompletedLessonCount = effectiveCompleted.length;
 
   const moduleRows = modules.map((m) => {
     const moduleLessons = lessons.filter((l) => l.moduleSlug === m.slug);
-    const done = showcase
-      ? moduleLessons.length
-      : moduleLessons.filter((l) =>
-          completedLessons.includes(`${l.moduleSlug}/${l.lessonSlug}`),
-        ).length;
+    const done = moduleLessons.filter((l) =>
+      completedLessons.includes(`${l.moduleSlug}/${l.lessonSlug}`),
+    ).length;
     const total = moduleLessons.length;
     const pct = total > 0 ? Math.round((done / total) * 100) : 0;
     return { slug: m.slug, name: m.name, done, total, pct };
   });
 
-  // Review queue: spaced repetition. Due lessons (never reviewed since
-  // completion, or past their interval) float to the top.
-  const reviewItems = (showcase ? [] : completedLessons)
+  const reviewItems = completedLessons
     .filter((k) => validLessonKeys.has(k))
     .map((k) => {
-      const [moduleSlug, lessonSlug] = k.split("/");
+      const [moduleSlug, lessonSlug] = k.split('/');
       const lesson = lessons.find((l) => l.moduleSlug === moduleSlug && l.lessonSlug === lessonSlug);
       const entry = reviewedAt[k];
-      const ts = typeof entry === "string" ? entry : entry?.at ?? "";
+      const ts = typeof entry === 'string' ? entry : entry?.at ?? '';
       return {
         key: k,
         moduleSlug,
@@ -113,10 +106,9 @@ export default function StatsPage() {
     });
   const dueCount = reviewItems.filter((r) => r.due).length;
 
-  // Module checkpoints: done, and due for a spaced re-check.
   const checkpointRows = Object.keys(MODULE_CHECKPOINTS).map((slug) => {
-    const done = showcase || completedCheckpoints.includes(slug);
-    const due = done && !showcase && isLessonDue(checkpointKey(slug), reviewedAt);
+    const done = completedCheckpoints.includes(slug);
+    const due = done && isLessonDue(checkpointKey(slug), reviewedAt);
     return { slug, done, due };
   });
   const checkpointsDone = checkpointRows.filter((c) => c.done).length;
@@ -128,126 +120,80 @@ export default function StatsPage() {
     })
     .slice(0, 8);
 
-  const weakModules = moduleRows.filter((m) => m.pct < 50 && m.total > 0).slice(0, 5);
+  const weakModules = moduleRows.filter((m) => m.pct > 0 && m.pct < 50 && m.total > 0).slice(0, 5);
 
   const daysSince = (iso: string): string => {
-    if (!iso) return "never";
-    const days = Math.round(
-      (now - new Date(iso).getTime()) / 86_400_000,
-    );
-    if (days <= 0) return "today";
-    if (days === 1) return "1d ago";
+    if (!iso) return 'never';
+    const days = Math.round((now - new Date(iso).getTime()) / 86_400_000);
+    if (days <= 0) return 'today';
+    if (days === 1) return '1d ago';
     return `${days}d ago`;
   };
 
   const projectRows = allProjects.map((p) => {
     const total = p.steps.length;
-    const done = showcase ? total : (completedSteps[p.slug]?.length ?? 0);
+    const done = completedSteps[p.slug]?.length ?? 0;
     const pct = total > 0 ? Math.round((done / total) * 100) : 0;
     return { slug: p.slug, title: p.title, done, total, pct };
   });
 
-  const threadRows = projectThreads.map((t) => {
+  const scenarioRows = projectThreads.map((t) => {
     const keys = Object.entries(projectChallenges)
       .filter(([, c]) => c.threadId === t.id)
       .map(([k]) => k);
     const total = keys.length;
-    const done = showcase ? total : keys.filter((k) => completedChallenges[k]).length;
+    const done = keys.filter((k) => completedChallenges[k]).length;
     const pct = total > 0 ? Math.round((done / total) * 100) : 0;
     return { id: t.id, title: t.title, done, total, pct };
   });
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800/60">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between text-xs font-mono">
-          <Link
-            href="/"
-            className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-          >
-            <span className="text-indigo-400">$</span> cd ~
-          </Link>
-          <div className="flex items-center gap-5">
-            <Link
-              href="/learn"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              lessons
-            </Link>
-            <Link
-              href="/projects"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              projects
-            </Link>
-            <Link
-              href="/playground"
-              className="text-slate-400 hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-            >
-              playground
-            </Link>
-            <span className="text-slate-100">&gt; stats</span>
-          </div>
-        </div>
-      </header>
+      <Header />
 
-      <main id="main" tabIndex={-1} className="flex-1 max-w-5xl mx-auto w-full px-6 py-10 font-mono">
-        <section className="text-sm">
-          <p>
-            <span className="text-indigo-400">kathir@sql</span>
-            <span className="text-slate-500">:</span>
-            <span className="text-slate-500">~$</span>{' '}
-            <span>stats --all</span>
-            <span className="ml-1 inline-block w-2 h-4 align-text-bottom bg-slate-100 terminal-cursor" aria-hidden="true" />
+      <main id="main" tabIndex={-1} className="flex-1 max-w-[1302px] mx-auto w-full px-4 sm:px-6 py-4 sm:py-6 font-mono">
+        <section className="font-mono">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            Stats
+          </h1>
+          <p className="mt-0.5 text-xs text-[#64748b] font-normal">
+            Your complete learning progress, XP, ranks, and spaced repetition queue
           </p>
         </section>
+        <div className="border-b border-border/60 my-4" />
 
         {!mounted ? (
-          <p className="mt-8 text-xs text-slate-500">loading state from localstorage…</p>
+          <p className="mt-8 text-xs text-[#64748b]">loading state from localstorage…</p>
         ) : (
           <>
-            {showcase && (
-              <section className="mt-8">
-                <p className="text-xs uppercase tracking-widest text-slate-500"># status</p>
-                <p className="mt-3 text-sm">
-                  <span className="text-emerald-400">course complete</span>
-                  <span className="text-slate-500">
-                    {' '}· {totalLessons} / {totalLessons} lessons · {totalProjectSteps} /{' '}
-                    {totalProjectSteps} project steps · {totalChallenges} / {totalChallenges}{' '}
-                    challenges
-                  </span>
-                </p>
-              </section>
-            )}
-            {!showcase && (
-            <section className="mt-8">
-              <p className="text-xs uppercase tracking-widest text-slate-500"># profile</p>
+            <section className="mt-6">
+              <p className="text-xs uppercase tracking-widest text-[#64748b]"># profile</p>
               <div className="mt-3 grid sm:grid-cols-2 gap-x-10 gap-y-2 text-sm">
                 <p>
-                  <span className="text-slate-500">rank</span>
+                  <span className="text-[#64748b]">rank</span>
                   {'  '}
                   <span className="text-indigo-400">[{rank.name}]</span>
                 </p>
                 <p>
-                  <span className="text-slate-500">xp</span>
+                  <span className="text-[#64748b]">xp</span>
                   {'    '}
                   <span className="text-slate-100">{xp.toLocaleString()}</span>
                   {nextRank && (
-                    <span className="text-slate-500">
+                    <span className="text-[#64748b]">
                       {' · '}
                       {xpToNext} to <span className="text-indigo-400">{nextRank.name}</span>
                     </span>
                   )}
                 </p>
                 <p>
-                  <span className="text-slate-500">streak</span>
+                  <span className="text-[#64748b]">streak</span>
                   {' '}
                   <span className="text-amber-400">{streak}d</span>
-                  <span className="text-slate-500"> · max </span>
+                  <span className="text-[#64748b]"> · max </span>
                   <span className="text-slate-300">{maxStreak}d</span>
                 </p>
                 <p>
-                  <span className="text-slate-500">last seen</span>
+                  <span className="text-[#64748b]">last seen</span>
                   {' '}
                   <span className="text-slate-300">{daysAgo(lastActivity)}</span>
                 </p>
@@ -255,7 +201,7 @@ export default function StatsPage() {
 
               {nextRank && (
                 <div className="mt-4 max-w-md">
-                  <p className="text-[11px] text-slate-500 mb-1">
+                  <p className="text-[11px] text-[#64748b] mb-1">
                     progress to {nextRank.name}: {rankProgress}%
                   </p>
                   <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
@@ -267,39 +213,36 @@ export default function StatsPage() {
                 </div>
               )}
             </section>
-            )}
 
             <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500"># totals</p>
+              <p className="text-xs uppercase tracking-widest text-[#64748b]"># totals</p>
               <div className="mt-2 text-sm text-slate-300 space-y-1">
                 <p>
                   lessons{'    '}
                   <span className="text-slate-100">{liveCompletedLessonCount}</span>
-                  <span className="text-slate-500"> / {totalLessons}</span>
+                  <span className="text-[#64748b]"> / {totalLessons}</span>
                 </p>
                 <p>
                   project steps{'  '}
                   <span className="text-slate-100">{completedProjectSteps}</span>
-                  <span className="text-slate-500"> / {totalProjectSteps}</span>
+                  <span className="text-[#64748b]"> / {totalProjectSteps}</span>
                 </p>
                 <p>
-                  thread challenges{'  '}
+                  scenario challenges{'  '}
                   <span className="text-slate-100">{completedChallengeCount}</span>
-                  <span className="text-slate-500"> / {totalChallenges}</span>
+                  <span className="text-[#64748b]"> / {totalChallenges}</span>
                 </p>
               </div>
             </section>
 
             <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500"># lessons by module</p>
-              <ul className="mt-3 text-xs space-y-1">
+              <p className="text-xs uppercase tracking-widest text-[#64748b]"># lessons by module</p>
+              <ul className="mt-3 text-xs space-y-2">
                 {moduleRows.map((m) => (
-                  <li key={m.slug} className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline">
-                    <span className="text-slate-300 truncate">{m.slug}</span>
-                    <span className={`tabular-nums ${m.pct === 100 ? 'text-emerald-400' : 'text-indigo-300'}`}>
-                      {bar(m.pct)}
-                    </span>
-                    <span className="text-slate-500 tabular-nums">
+                  <li key={m.slug} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center">
+                    <span className="text-slate-300 truncate">{m.name}</span>
+                    <ProgressBar value={m.pct} />
+                    <span className="text-[#64748b] tabular-nums min-w-[3rem] text-right">
                       {m.done}/{m.total}
                     </span>
                   </li>
@@ -308,10 +251,10 @@ export default function StatsPage() {
             </section>
 
             <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500">
-                # checkpoints <span className="text-slate-600">[{checkpointsDone}/{checkpointRows.length} done{checkpointsDue > 0 ? ` · ${checkpointsDue} due to review` : ''}]</span>
+              <p className="text-xs uppercase tracking-widest text-[#64748b]">
+                # checkpoints <span className="text-slate-500">[{checkpointsDone}/{checkpointRows.length} done{checkpointsDue > 0 ? ` · ${checkpointsDue} due to review` : ''}]</span>
               </p>
-              <ul className="mt-3 text-xs grid sm:grid-cols-2 gap-x-6 gap-y-1">
+              <ul className="mt-3 text-xs grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
                 {checkpointRows.map((c) => (
                   <li key={c.slug} className="flex items-baseline justify-between gap-3">
                     <span className="text-slate-300 truncate">{c.slug}</span>
@@ -328,23 +271,21 @@ export default function StatsPage() {
             </section>
 
             <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500"># projects</p>
+              <p className="text-xs uppercase tracking-widest text-[#64748b]"># projects</p>
               {projectRows.length === 0 ? (
-                <p className="mt-2 text-xs text-slate-500">no projects yet</p>
+                <p className="mt-2 text-xs text-[#64748b]">no projects yet</p>
               ) : (
-                <ul className="mt-3 text-xs space-y-1">
+                <ul className="mt-3 text-xs space-y-2">
                   {projectRows.map((p) => (
-                    <li key={p.slug} className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline">
+                    <li key={p.slug} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center">
                       <Link
                         href={`/projects/${p.slug}`}
                         className="text-slate-300 hover:text-slate-100 truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
                       >
-                        {p.slug}
+                        {p.title}
                       </Link>
-                      <span className={`tabular-nums ${p.pct === 100 ? 'text-emerald-400' : 'text-indigo-300'}`}>
-                        {bar(p.pct)}
-                      </span>
-                      <span className="text-slate-500 tabular-nums">
+                      <ProgressBar value={p.pct} />
+                      <span className="text-[#64748b] tabular-nums min-w-[3rem] text-right">
                         {p.done}/{p.total}
                       </span>
                     </li>
@@ -354,20 +295,18 @@ export default function StatsPage() {
             </section>
 
             <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500"># threads</p>
-              <ul className="mt-3 text-xs space-y-1">
-                {threadRows.map((t) => (
-                  <li key={t.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline">
+              <p className="text-xs uppercase tracking-widest text-[#64748b]"># scenarios</p>
+              <ul className="mt-3 text-xs space-y-2">
+                {scenarioRows.map((t) => (
+                  <li key={t.id} className="grid grid-cols-[1fr_auto_auto] gap-4 items-center">
                     <Link
                       href={`/projects/thread/${t.id}`}
                       className="text-slate-300 hover:text-slate-100 truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
                     >
-                      {t.id}
+                      {t.title}
                     </Link>
-                    <span className={`tabular-nums ${t.pct === 100 ? 'text-emerald-400' : 'text-indigo-300'}`}>
-                      {bar(t.pct)}
-                    </span>
-                    <span className="text-slate-500 tabular-nums">
+                    <ProgressBar value={t.pct} />
+                    <span className="text-[#64748b] tabular-nums min-w-[3rem] text-right">
                       {t.done}/{t.total}
                     </span>
                   </li>
@@ -375,9 +314,8 @@ export default function StatsPage() {
               </ul>
             </section>
 
-            {!showcase && (
             <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500">
+              <p className="text-xs uppercase tracking-widest text-[#64748b]">
                 # review queue
                 {dueCount > 0 && (
                   <span className="ml-2 text-amber-400 normal-case tracking-normal">
@@ -385,15 +323,13 @@ export default function StatsPage() {
                   </span>
                 )}
               </p>
-              <p className="mt-1 text-[11px] text-slate-500">
-                spaced repetition. re-solving a query in a due lesson from
-                memory (not just opening it) records the review and pushes the
-                next one further out. due ones are first.
+              <p className="mt-1 text-[11px] text-[#64748b]">
+                Spaced repetition. Re-solving due lessons from memory records your review and pushes the next review further out.
               </p>
               {reviewQueue.length === 0 ? (
-                <p className="mt-3 text-xs text-slate-500">no completed lessons yet</p>
+                <p className="mt-3 text-xs text-[#64748b]">no completed lessons yet</p>
               ) : (
-                <ul className="mt-3 text-xs space-y-1">
+                <ul className="mt-3 text-xs space-y-1.5">
                   {reviewQueue.map((r) => (
                     <li key={r.key} className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline">
                       <Link
@@ -402,34 +338,32 @@ export default function StatsPage() {
                       >
                         {r.moduleSlug}/{r.lessonSlug}
                       </Link>
-                      <span className="text-slate-500 truncate hidden md:inline">{r.title}</span>
-                      <span className={`tabular-nums ${r.due ? "text-amber-400" : "text-slate-500"}`}>
+                      <span className="text-[#64748b] truncate hidden md:inline">{r.title}</span>
+                      <span className={`tabular-nums ${r.due ? "text-amber-400" : "text-[#64748b]"}`}>
                         {r.due ? "due now" : daysSince(r.ts)}
                       </span>
                     </li>
                   ))}
                 </ul>
               )}
-              <p className="mt-3 text-[11px] text-slate-600">
+              <p className="mt-3 text-[11px] text-[#64748b]">
                 <Link href="/review" className="text-indigo-400 hover:underline">
                   start mixed review →
                 </Link>{' '}
-                · interleaved across modules, due first. or type{' '}
-                <span className="text-slate-400">review</span> in the home shell.
+                · interleaved across modules, due first.
               </p>
             </section>
-            )}
 
             {weakModules.length > 0 && (
               <section className="mt-10">
-                <p className="text-xs uppercase tracking-widest text-slate-500"># weak modules</p>
-                <p className="mt-1 text-[11px] text-slate-500">
-                  under 50% complete. worth a pass.
+                <p className="text-xs uppercase tracking-widest text-[#64748b]"># weak modules</p>
+                <p className="mt-1 text-[11px] text-[#64748b]">
+                  over 0% and under 50% complete. worth a pass.
                 </p>
-                <ul className="mt-3 text-xs space-y-1">
+                <ul className="mt-3 text-xs space-y-1.5">
                   {weakModules.map((m) => (
                     <li key={m.slug} className="grid grid-cols-[1fr_auto] gap-4 items-baseline">
-                      <span className="text-slate-300 truncate">{m.slug}</span>
+                      <span className="text-slate-300 truncate">{m.name}</span>
                       <span className="text-rose-400 tabular-nums">{m.pct}%</span>
                     </li>
                   ))}
@@ -437,9 +371,8 @@ export default function StatsPage() {
               </section>
             )}
 
-            {!showcase && (
-            <section className="mt-10">
-              <p className="text-xs uppercase tracking-widest text-slate-500"># rank ladder</p>
+            <section className="mt-10 mb-8">
+              <p className="text-xs uppercase tracking-widest text-[#64748b]"># rank ladder</p>
               <ul className="mt-3 text-xs space-y-2">
                 {ladder.map((r) => {
                   const reached = xp >= r.threshold;
@@ -448,11 +381,11 @@ export default function StatsPage() {
                       <span className={reached ? 'text-emerald-400' : 'text-slate-600'}>
                         {reached ? '✓' : '·'}
                       </span>
-                      <span className={reached ? 'text-slate-200' : 'text-slate-500'}>
+                      <span className={reached ? 'text-slate-200' : 'text-[#64748b]'}>
                         <span>{r.name}</span>
-                        <span className="ml-2 text-slate-500">{r.blurb}</span>
+                        <span className="ml-2 text-[#64748b]">{r.blurb}</span>
                       </span>
-                      <span className="text-slate-500 tabular-nums">
+                      <span className="text-[#64748b] tabular-nums">
                         {r.threshold} xp
                       </span>
                     </li>
@@ -460,24 +393,10 @@ export default function StatsPage() {
                 })}
               </ul>
             </section>
-            )}
           </>
         )}
       </main>
-
-      <footer className="border-t border-slate-800/60 py-5 text-xs">
-        <div className="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-slate-500 font-mono">
-          <span>
-            <span className="text-emerald-400">exit 0</span> · personal use · all state lives in your browser
-          </span>
-          <Link
-            href="/"
-            className="hover:text-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded"
-          >
-            ~ home
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
+
