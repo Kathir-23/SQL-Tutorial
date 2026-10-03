@@ -276,38 +276,40 @@ button, a, input, textarea {
 }
 
 .theory-list-item {
-  list-style: none !important;
-  list-style-type: none !important;
-  position: relative;
-  padding-left: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
   margin: 0.5rem 0;
   color: #cbd5e1;
   line-height: 1.7;
+  list-style: none !important;
+  list-style-type: none !important;
 }
 
-.theory-list-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.6em;
+.theory-list-marker {
   width: 6px;
   height: 6px;
-  background: #6366f1;
+  min-width: 6px;
+  min-height: 6px;
   border-radius: 50%;
+  background-color: #6366f1;
+  flex-shrink: 0;
+  margin-top: 0.65em;
+  aspect-ratio: 1 / 1;
 }
 
-.theory-list-ordered {
-  counter-increment: list-counter;
-}
-
-.theory-list-ordered::before {
-  content: counter(list-counter);
-  width: auto;
-  height: auto;
-  background: none;
+.theory-list-ordered-number {
   color: #818cf8;
   font-weight: 600;
   font-size: 0.875rem;
+  font-family: var(--font-geist-mono), monospace;
+  flex-shrink: 0;
+  min-width: 1.25rem;
+}
+
+.theory-list-content {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Inline Code */
