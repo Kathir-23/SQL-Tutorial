@@ -17,6 +17,7 @@ export interface Lesson {
     title: string;
     explanation: string;
     sql: string;
+    readOnly?: boolean;
   }>;
   challenges: Array<{
     id: string;
