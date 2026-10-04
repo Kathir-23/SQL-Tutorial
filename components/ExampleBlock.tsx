@@ -12,6 +12,7 @@ interface Example {
   title: string;
   explanation: string;
   sql: string;
+  readOnly?: boolean;
 }
 
 interface ExampleBlockProps {
@@ -36,14 +37,14 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
   }, [onQueryChange]);
 
   const handleRun = useCallback(() => {
-    if (!query.trim()) return;
+    if (!query.trim() || example.readOnly) return;
     const startTime = performance.now();
     const res = runQuery(database, query);
     const endTime = performance.now();
     setExecutionTime(Math.round(endTime - startTime));
     setResult(res);
     onQueryChange?.(query);
-  }, [query, database, onQueryChange]);
+  }, [query, database, onQueryChange, example.readOnly]);
 
   const handleReset = useCallback(() => {
     setQuery(example.sql);
@@ -65,9 +66,16 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
   return (
     <div className="rounded border border-slate-800 bg-slate-900/40 overflow-hidden">
       <div className="px-4 py-3 border-b border-slate-800 font-mono text-xs flex items-center justify-between bg-slate-800/60">
-        <span className="text-indigo-400 font-medium">
-          # example {String(index + 1).padStart(2, '0')}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-indigo-400 font-medium">
+            # example {String(index + 1).padStart(2, '0')}
+          </span>
+          {example.readOnly && (
+            <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30">
+              SQL Server syntax: read only
+            </span>
+          )}
+        </div>
         <button
           onClick={handleCopy}
           className="flex items-center gap-1.5 px-2 py-1 text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded transition-colors"
@@ -113,6 +121,8 @@ export default function ExampleBlock({ example, database, index, onQueryChange }
           onRun={handleRun}
           onReset={handleReset}
           initialValue={example.sql}
+          readOnly={example.readOnly}
+          hideRun={example.readOnly}
           height="120px"
         />
         {result && <ResultsTable result={result} executionTime={executionTime} className="mt-4" />}

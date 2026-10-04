@@ -24,6 +24,7 @@ interface SQLEditorProps {
   onRun: () => void;
   onReset?: () => void;
   readOnly?: boolean;
+  hideRun?: boolean;
   height?: string;
   initialValue?: string;
   isRunning?: boolean;
@@ -95,6 +96,7 @@ export default function SQLEditor({
   onRun,
   onReset,
   readOnly = false,
+  hideRun = false,
   height = '200px',
   initialValue,
   isRunning = false,
@@ -114,10 +116,10 @@ export default function SQLEditor({
       // Ctrl/Cmd + Enter to run query
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
-        onRun();
+        if (!readOnly && !hideRun) onRun();
       }
     },
-    [onRun]
+    [onRun, readOnly, hideRun]
   );
 
   const handleReset = useCallback(() => {
@@ -177,36 +179,38 @@ export default function SQLEditor({
         />
       </div>
 
-      <div
-        className="flex items-center gap-2 px-3 py-2 border-t border-slate-800 font-mono text-xs"
-        style={{
-          background: theme === 'light' ? '#f8fafc' : undefined,
-          borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b',
-        }}
-      >
-        <button
-          onClick={onRun}
-          disabled={isRunning || readOnly}
-          style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
-          className="px-3 py-1 rounded font-medium hover:bg-[#6d28d9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+      {!hideRun && (
+        <div
+          className="flex items-center gap-2 px-3 py-2 border-t border-slate-800 font-mono text-xs"
+          style={{
+            background: theme === 'light' ? '#f8fafc' : undefined,
+            borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b',
+          }}
         >
-          {isRunning ? 'running…' : 'run'}
-        </button>
-
-        {(onReset || initialValue !== undefined) && (
           <button
-            onClick={handleReset}
-            disabled={readOnly}
-            className="px-2 py-1 rounded border border-slate-800 text-slate-400 hover:text-slate-100 hover:border-slate-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            onClick={onRun}
+            disabled={isRunning || readOnly}
+            style={{ color: '#ffffff', backgroundColor: '#7c3aed' }}
+            className="px-3 py-1 rounded font-medium hover:bg-[#6d28d9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
           >
-            reset
+            {isRunning ? 'running…' : 'run'}
           </button>
-        )}
 
-        <span className="ml-auto text-slate-500">
-          <kbd className="opacity-70">⌘↵</kbd> to run
-        </span>
-      </div>
+          {(onReset || initialValue !== undefined) && (
+            <button
+              onClick={handleReset}
+              disabled={readOnly}
+              className="px-2 py-1 rounded border border-slate-800 text-slate-400 hover:text-slate-100 hover:border-slate-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            >
+              reset
+            </button>
+          )}
+
+          <span className="ml-auto text-slate-500">
+            <kbd className="opacity-70">⌘↵</kbd> to run
+          </span>
+        </div>
+      )}
     </div>
   );
 }
